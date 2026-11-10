@@ -17,7 +17,7 @@ import EduDropLoader from "@/app/sharedComponents/Loders/EduDropLoader";
 import {
   Check,
   Copy,
-  ArrowRight,
+  Download,
   UserCheck,
   CheckCircle2,
   PackageCheck,
@@ -27,6 +27,7 @@ import {
   CreditCard,
   Hash,
 } from "lucide-react";
+import { generateOrderInvoice } from "@/app/utility/generateOrderInvoice";
 
 interface ICredentials {
   email: string;
@@ -68,7 +69,19 @@ const TransactionContent = () => {
         orderPayload,
       );
       if (response.status === 200) {
-        const creds = response.data?.data?.newAccountCredentials;
+        const createdOrder = response.data?.data;
+        if (createdOrder) {
+          setShowOrder((prev) => ({
+            ...(prev || ({} as IOrder)),
+            ...createdOrder,
+            products:
+              Array.isArray(createdOrder?.products) && createdOrder.products.length > 0
+                ? createdOrder.products
+                : prev?.products || [],
+            paymentStatus: true,
+          }));
+        }
+        const creds = createdOrder?.newAccountCredentials;
         if (creds) {
           setCreatedCredentials(creds);
         }
@@ -268,8 +281,8 @@ const TransactionContent = () => {
             </div>
           )}
 
-          {/* Total Row */}
-          <div className="border-t border-border-subtle/70 pt-4 flex items-baseline justify-between">
+          {/* Total Row & Receipt Action */}
+          <div className="border-t border-border-subtle/70 pt-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <span className="text-xs font-bold uppercase tracking-wider text-text-body">
                 Total Direct Contribution
@@ -278,9 +291,26 @@ const TransactionContent = () => {
                 Official 501(c)(3) tax receipt emailed
               </p>
             </div>
-            <span className="font-display text-2xl font-extrabold text-surface-forest sm:text-3xl">
-              ${totalAmount ? totalAmount.toFixed(2) : "0.00"}
-            </span>
+            <div className="flex flex-wrap items-center justify-between sm:justify-end gap-4">
+              <span className="font-display text-2xl font-extrabold text-surface-forest sm:text-3xl">
+                ${totalAmount ? totalAmount.toFixed(2) : "0.00"}
+              </span>
+              {showOrder && (
+                <button
+                  type="button"
+                  onClick={() =>
+                    generateOrderInvoice(
+                      { ...showOrder, paymentStatus: true },
+                      { audience: "donor" }
+                    )
+                  }
+                  className="inline-flex items-center gap-2 rounded-full bg-surface-forest px-4 py-2 text-xs font-bold text-white shadow-sm transition-all hover:bg-surface-forest-light active:scale-[0.98]"
+                >
+                  <Download className="h-3.5 w-3.5 text-brand-lime" />
+                  Download PDF Receipt
+                </button>
+              )}
+            </div>
           </div>
         </BentoCard>
 
@@ -348,7 +378,6 @@ const TransactionContent = () => {
                 size="md"
               >
                 Log In to Donor Dashboard
-                <ArrowRight className="h-4 w-4" />
               </ActionPillButton>
               <ActionPillButton
                 variant="outline-glass"
@@ -426,8 +455,8 @@ const TransactionContent = () => {
               href="/donar-dashboard/my-orders"
               size="lg"
             >
-              <PackageCheck className="h-4 w-4 mr-1.5" />
-              View My Orders in Dashboard
+              <PackageCheck className="h-4 w-4 shrink-0" />
+              <span>View My Orders in Dashboard</span>
             </ActionPillButton>
             <ActionPillButton
               variant="outline-dark"

@@ -3,11 +3,13 @@
     "_id": {
       "$oid": "6583194225636757de9e1ca7"
     },
-    "name": "Claire Hawthorne",
+    "firstName": "Claire",
+    "lastName": "Hawthorne",
     "email": "claire.hawthorne@example.com",
-    "subject": "Corporate Matching Gift Inquiry",
-    "message": "Hello EduDrop team, our company would love to match employee monthly sponsorships for Oakridge Technical High School. Could you share details on corporate partner onboarding?",
-    "isRead": true,
+    "message": "Corporate Matching Gift Inquiry: Hello EduDrop team, our company would love to match employee monthly sponsorships for Oakridge Technical High School. Could you share details on corporate partner onboarding?",
+    "seen": true,
+    "status": "read",
+    "isDeleted": false,
     "createdAt": {
       "$date": "2025-02-10T16:41:38.587Z"
     },
@@ -20,11 +22,13 @@
     "_id": {
       "$oid": "6586e18ae0a5a8c66c00c649"
     },
-    "name": "Principal Robert Vance",
+    "firstName": "Robert",
+    "lastName": "Vance",
     "email": "r.vance@maplehs.edu",
-    "subject": "Enrolling Maplewood High School on EduDrop",
-    "message": "Good afternoon, we would like to register our school bursar on the EduDrop platform so our alumni network can sponsor classroom hydration stations.",
-    "isRead": false,
+    "message": "Enrolling Maplewood High School on EduDrop: Good afternoon, we would like to register our school bursar on the EduDrop platform so our alumni network can sponsor classroom hydration stations.",
+    "seen": false,
+    "status": "unread",
+    "isDeleted": false,
     "createdAt": {
       "$date": "2025-02-14T13:32:58.500Z"
     },

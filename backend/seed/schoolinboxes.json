@@ -3,15 +3,17 @@
     "_id": {
       "$oid": "6586e54b1963c1d18f61bd24"
     },
-    "schoolId": {
-      "$oid": "65da260d6a332fe6d3d550cc"
+    "bursar": {
+      "$oid": "65da260d6a332fe6d3d550cf"
     },
-    "fullName": "Maya Lin",
+    "firstName": "Maya",
+    "lastName": "Lin",
     "email": "donor@edudrop.org",
-    "phoneNumber": "+1 (512) 555-0199",
-    "subject": "Spring Semester Hydration Drive",
-    "message": "Hi Mr. Vance, our alumni class just set up a recurring monthly order of 1.5L spring water cases and paper towels for Oakridge Tech. Please let us know if the science wing needs additional dispensers!",
-    "isRead": true,
+    "phone": "+1 (512) 555-0199",
+    "message": "Spring Semester Hydration Drive: Hi Mr. Vance, our alumni class just set up a recurring monthly order of 1.5L spring water cases and paper towels for Oakridge Tech. Please let us know if the science wing needs additional dispensers!",
+    "seen": true,
+    "status": "read",
+    "isDeleted": false,
     "createdAt": {
       "$date": "2025-02-15T13:48:59.654Z"
     },
@@ -24,15 +26,17 @@
     "_id": {
       "$oid": "658aa9f0c05dbab9b1df88d6"
     },
-    "schoolId": {
-      "$oid": "65f173f686cfeccf777ccfd1"
+    "bursar": {
+      "$oid": "65f173f686cfeccf777ccfd4"
     },
-    "fullName": "Alex Rivera",
+    "firstName": "Alex",
+    "lastName": "Rivera",
     "email": "alex.rivera@example.com",
-    "phoneNumber": "+1 (303) 555-0145",
-    "subject": "Athletic Department Water Sponsorship",
-    "message": "Hello Ms. Rostova, we sponsored 10 cases of 500 mL EduDrop Spring Water for the St. Clara track and field team.",
-    "isRead": false,
+    "phone": "+1 (303) 555-0145",
+    "message": "Athletic Department Water Sponsorship: Hello Ms. Rostova, we sponsored 10 cases of 500 mL EduDrop Spring Water for the St. Clara track and field team.",
+    "seen": false,
+    "status": "unread",
+    "isDeleted": false,
     "createdAt": {
       "$date": "2025-02-20T10:24:48.867Z"
     },

@@ -8,14 +8,19 @@ import { Product } from "../product/product.model";
 import { Donar } from "../donar/donar.model";
 import { School } from "../school/school.model";
 import { Order } from "../order/order.model";
+import {
+  buildAllowListedSetPayload,
+  resolveAvatarUpdate,
+  safeUnlinkUserImage,
+} from "../../../helper/profileUpdateHelper";
 
 const getSingleAdmin = async (id: string): Promise<IAdmin | null> => {
-  const result = await Admin.findOne({ id }).populate("school");
+  const result = await Admin.findById(id);
   return result;
 };
 const deleteAdmin = async (id: string): Promise<IAdmin | null> => {
   // check if the admin is exist
-  const isExist = await Admin.findOne({ id });
+  const isExist = await Admin.findById(id);
 
   if (!isExist) {
     throw new ApiError(httpStatus.NOT_FOUND, "Admin not found !");
@@ -26,12 +31,12 @@ const deleteAdmin = async (id: string): Promise<IAdmin | null> => {
   try {
     session.startTransaction();
 
-    const admin = await Admin.findOneAndDelete({ id }, { session });
+    const admin = await Admin.findByIdAndDelete(id, { session });
     if (!admin) {
       throw new ApiError(404, "Failed to delete admin");
     }
 
-    await User.findOneAndDelete({ id }, { session });
+    await User.findOneAndDelete({ admin: id }, { session });
 
     await session.commitTransaction();
     await session.endSession();
@@ -39,42 +44,52 @@ const deleteAdmin = async (id: string): Promise<IAdmin | null> => {
     return admin;
   } catch (error) {
     await session.abortTransaction();
+    await session.endSession();
     throw error;
   }
 };
 const updateAdmin = async (
   id: string,
-  payload: Partial<IAdmin>
+  payload: Partial<IAdmin> & { removeProfileImage?: boolean | string },
+  newProfileImagePath?: string
 ): Promise<IAdmin | null> => {
-  const isExist = await Admin.findOne({ _id: id });
+  const isExist = await Admin.findById(id, { profileImage: 1 }).lean();
   if (!isExist) {
     throw new ApiError(httpStatus.NOT_FOUND, "Admin not found !");
   }
-  // const { name, guardian, localGuardian, ...adminData } = payload
-  // const updatedAdminData: Partial<IAdmin> = { ...adminData }
-  // if (name && Object.keys(name).length > 0) {
-  //   Object.keys(name).forEach(key => {
-  //     const nameKey = `name.${key}` as keyof Partial<IAdmin>
-  //     ;(updatedAdminData as any)[nameKey] = name[key as keyof typeof name]
-  //   })
-  // }
-  // if (guardian && Object.keys(guardian).length > 0) {
-  //   Object.keys(guardian).forEach(key => {
-  //     const guardianKey = `guardian.${key}` as keyof Partial<IAdmin> // `guardian.fisrtguardian`
-  //     ;(updatedAdminData as any)[guardianKey] =
-  //       guardian[key as keyof typeof guardian]
-  //   })
-  // }
-  // if (localGuardian && Object.keys(localGuardian).length > 0) {
-  //   Object.keys(localGuardian).forEach(key => {
-  //     const localGuradianKey = `localGuardian.${key}` as keyof Partial<IAdmin> // `localGuardian.fisrtName`
-  //     ;(updatedAdminData as any)[localGuradianKey] =
-  //       localGuardian[key as keyof typeof localGuardian]
-  //   })
-  // }
-  const result = await Admin.findOneAndUpdate({ _id: id }, payload, {
-    new: true,
-  });
+
+  const setPayload = buildAllowListedSetPayload(
+    payload as Record<string, any>,
+    ["contactNo", "presentAddress", "permanentAddress"],
+    { name: ["firstName", "lastName"] }
+  );
+
+  const { nextProfileImage, oldImageToDelete } = resolveAvatarUpdate(
+    isExist.profileImage,
+    newProfileImagePath,
+    payload.removeProfileImage
+  );
+
+  if (nextProfileImage !== undefined) {
+    setPayload.profileImage = nextProfileImage;
+  }
+
+  if (Object.keys(setPayload).length === 0) {
+    return Admin.findById(id);
+  }
+
+  const result = await Admin.findOneAndUpdate(
+    { _id: id },
+    { $set: setPayload },
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
+
+  if (oldImageToDelete) {
+    await safeUnlinkUserImage(oldImageToDelete);
+  }
 
   return result;
 };

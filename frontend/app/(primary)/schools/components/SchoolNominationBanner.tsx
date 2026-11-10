@@ -26,7 +26,7 @@ export const SchoolNominationBanner = () => {
             <div className="flex flex-wrap items-center gap-4 shrink-0">
               <ActionPillButton
                 variant="lime"
-                href="/#contact"
+                href="/contact?topic=school"
                 size="md"
                 className="whitespace-nowrap"
               >
@@ -34,7 +34,7 @@ export const SchoolNominationBanner = () => {
               </ActionPillButton>
               <ActionPillButton
                 variant="outline-glass"
-                href="/#contact"
+                href="/contact?topic=school"
                 size="md"
                 className="whitespace-nowrap"
               >

@@ -21,12 +21,17 @@ const nextConfig = {
     return [
       {
         source: "/dashboard/settings/:path*",
-        destination: "/dashboard",
+        destination: "/dashboard/profile",
         permanent: false,
       },
       {
         source: "/dashboard/settings",
-        destination: "/dashboard",
+        destination: "/dashboard/profile",
+        permanent: false,
+      },
+      {
+        source: "/dashboard/update-profile",
+        destination: "/dashboard/profile",
         permanent: false,
       },
     ];

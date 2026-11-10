@@ -9,7 +9,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { AlignRight, LogOut, X } from "lucide-react";
+import { AlignRight, LayoutDashboard, LogOut, Settings, User, X } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useAuthContext } from "@/app/context/AuthContext";
 import useAuth from "@/app/hooks/useAuth";
@@ -32,17 +32,13 @@ const DashNav = () => {
   useEffect(() => {
     let buildUrl = "/user-avatar.webp";
     if (data?.donar?.profileImage) {
-      buildUrl = `${SERVERURL}${data?.donar?.profileImage}`;
-      setProfileImageUrl(buildUrl);
+      buildUrl = `${SERVERURL}${data.donar.profileImage}`;
+    } else if (data?.bursar?.profileImage) {
+      buildUrl = `${SERVERURL}${data.bursar.profileImage}`;
+    } else if (data?.admin?.profileImage) {
+      buildUrl = `${SERVERURL}${data.admin.profileImage}`;
     }
-    if (data?.bursar?.profileImage) {
-      buildUrl = `${SERVERURL}${data?.bursar?.profileImage}`;
-      setProfileImageUrl(buildUrl);
-    }
-    if (data?.admin?.profileImage) {
-      buildUrl = `${SERVERURL}${data?.admin?.profileImage}`;
-      setProfileImageUrl(buildUrl);
-    }
+    setProfileImageUrl(buildUrl);
   }, [data]);
 
   const handleMenuIcon = () => {
@@ -69,6 +65,8 @@ const DashNav = () => {
   }, [isOpen]);
 
   const role = data?.role;
+  const dropdownNavLinkClass =
+    "flex cursor-pointer items-center gap-2.5 rounded-xl bg-white px-3 py-2 text-xs font-semibold text-text-ink transition-colors duration-150 ease-out hover:bg-surface-forest hover:text-white focus:bg-surface-forest focus:text-white data-[highlighted]:bg-surface-forest data-[highlighted]:text-white [&>svg]:text-surface-forest [&>svg]:transition-colors [&>svg]:duration-150 hover:[&>svg]:text-brand-lime focus:[&>svg]:text-brand-lime data-[highlighted]:[&>svg]:text-brand-lime";
   const firstName =
     role === "donar"
       ? data?.donar?.name?.firstName || "Donor"
@@ -179,17 +177,41 @@ const DashNav = () => {
                         : data?.role === "bursar"
                           ? "/bursar-dashboard"
                           : data?.role === "admin"
-                            ? "/dashboard"
+                            ? "/dashboard/profile"
                             : "/"
                     }
-                    className="group flex cursor-pointer items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-semibold text-text-ink hover:bg-surface-forest hover:text-white transition-colors"
+                    className={dropdownNavLinkClass}
                   >
-                    <span>My Profile & Portal</span>
+                    <User className="h-4 w-4" />
+                    <span>My Profile</span>
                   </Link>
                 </DropdownMenuItem>
+                {(data?.role === "donar" || data?.role === "bursar") && (
+                  <DropdownMenuItem asChild>
+                    <Link
+                      href={
+                        data?.role === "donar"
+                          ? "/donar-dashboard/update-profile"
+                          : "/bursar-dashboard/update-profile"
+                      }
+                      className={dropdownNavLinkClass}
+                    >
+                      <Settings className="h-4 w-4" />
+                      <span>Edit Profile &amp; Password</span>
+                    </Link>
+                  </DropdownMenuItem>
+                )}
+                {data?.role === "admin" && (
+                  <DropdownMenuItem asChild>
+                    <Link href="/dashboard" className={dropdownNavLinkClass}>
+                      <LayoutDashboard className="h-4 w-4" />
+                      <span>Dashboard Overview</span>
+                    </Link>
+                  </DropdownMenuItem>
+                )}
                 <DropdownMenuItem
                   onClick={signout}
-                  className="group flex cursor-pointer items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-semibold text-red-600 hover:bg-red-50 transition-colors"
+                  className="flex cursor-pointer items-center gap-2.5 rounded-xl bg-white px-3 py-2 text-xs font-semibold text-red-600 transition-colors duration-150 ease-out hover:bg-red-50 hover:text-red-700 focus:bg-red-50 focus:text-red-700 data-[highlighted]:bg-red-50 data-[highlighted]:text-red-700"
                 >
                   <LogOut className="h-4 w-4" />
                   <span>Log Out</span>

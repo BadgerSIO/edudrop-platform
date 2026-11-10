@@ -24,7 +24,7 @@ const createSchoolInbox: RequestHandler = catchAsync(
 
 const getAllSchoolInbox: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
-    const email = (req as any).user?.email;
+    const email = res.locals.email || res.locals.user?.email;
     const filters = pick(req.query, schoolInboxFilterableFields);
     const paginationOptions = pick(req.query, paginationFields);
 
@@ -48,7 +48,7 @@ const getAllSchoolInbox: RequestHandler = catchAsync(
 const getSingleSubmissionById: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
     const id = req.params.id;
-    const email = (req as any).user?.email;
+    const email = res.locals.email || res.locals.user?.email;
 
     const result = await SchoolInboxService.getSingleSubmissionById(id, email);
 
@@ -64,7 +64,7 @@ const getSingleSubmissionById: RequestHandler = catchAsync(
 const updateSubmissionById: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
     const id = req.params.id;
-    const email = (req as any).user?.email;
+    const email = res.locals.email || res.locals.user?.email;
     const schoolInbox = req.body;
 
     const result = await SchoolInboxService.updateSubmissionById(
@@ -85,7 +85,7 @@ const updateSubmissionById: RequestHandler = catchAsync(
 const deleteSubmissionById: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
     const id = req.params.id;
-    const email = (req as any).user?.email;
+    const email = res.locals.email || res.locals.user?.email;
 
     const result = await SchoolInboxService.deleteSubmissionById(id, email);
 
@@ -100,7 +100,7 @@ const deleteSubmissionById: RequestHandler = catchAsync(
 
 const getUnreadCount: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
-    const email = (req as any).user?.email;
+    const email = res.locals.email || res.locals.user?.email;
     const count = await SchoolInboxService.getUnreadCount(email);
 
     sendResponse(res, {

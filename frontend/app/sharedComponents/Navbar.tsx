@@ -1,6 +1,5 @@
 "use client";
 import React, { useEffect } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import NavLink from "./NavLink";
 import UserMenu from "./UserMenu";
@@ -11,12 +10,13 @@ import { useAuthContext } from "../context/AuthContext";
 import { useNavbarContext } from "../context/NavContext";
 import ActionPillButton from "./ui/ActionPillButton";
 import { cn } from "@/lib/utils";
+import BrandLogo from "./ui/BrandLogo";
 
 const navItems = [
   { href: "/", text: "Home" },
   { href: "/schools", text: "Schools" },
   { href: "/products", text: "Products" },
-  { href: "/#contact", text: "Contact" },
+  { href: "/contact", text: "Contact" },
 ];
 
 export const Navbar = () => {
@@ -65,7 +65,11 @@ export const Navbar = () => {
 
   useEffect(() => {
     setIsOpen(false);
-  }, [pathname, setIsOpen]);
+    const frameId = requestAnimationFrame(() => {
+      setIsScrolling(window.scrollY > 30);
+    });
+    return () => cancelAnimationFrame(frameId);
+  }, [pathname, setIsOpen, setIsScrolling]);
 
   return (
     <>
@@ -84,16 +88,7 @@ export const Navbar = () => {
             aria-label="EduDrop Foundation Home"
             className="flex items-center gap-3 transition-opacity hover:opacity-90"
           >
-            <div className="rounded-full bg-white px-3.5 py-1.5 shadow-sm">
-              <Image
-                width={86}
-                height={36}
-                src="/logo.webp"
-                alt="EduDrop Foundation logo"
-                priority
-                className="h-7 w-auto object-contain"
-              />
-            </div>
+            <BrandLogo variant="on-dark" size="sm" />
           </Link>
 
           {/* Desktop Primary Navigation Links */}
@@ -180,13 +175,13 @@ export const Navbar = () => {
           >
             {/* Drawer Header */}
             <div className="flex items-center justify-between border-b border-border-subtle pb-4">
-              <Image
-                width={80}
-                height={32}
-                src="/logo.webp"
-                alt="EduDrop Foundation"
-                className="h-6 w-auto object-contain"
-              />
+              <Link
+                href="/"
+                onClick={() => setIsOpen(false)}
+                aria-label="EduDrop Foundation Home"
+              >
+                <BrandLogo variant="on-light" size="sm" showTagline />
+              </Link>
               <button
                 type="button"
                 onClick={() => setIsOpen(false)}

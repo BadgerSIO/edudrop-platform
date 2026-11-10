@@ -90,8 +90,16 @@ const emailTemplate = (target: string, payload?: IEmailPayload) => {
     </div>
     <div class="info-item">
       <label>Phone:</label>
-      <p>${payload?.phone}</p>
+      <p>${payload?.phone || "--"}</p>
     </div>
+    ${
+      payload?.topic
+        ? `<div class="info-item">
+      <label>Topic:</label>
+      <p>${payload.topic}</p>
+    </div>`
+        : ""
+    }
     <div class="info-item">
       <label>Message:</label>
       <p>${payload?.message}</p>
