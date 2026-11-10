@@ -300,13 +300,13 @@ export const UserMenu: React.FC<UserMenuProps> = ({ mobile = false, onNavigate }
             <Link
               href={dashboardHref}
               onClick={handleLinkClick}
-              className="group/portal flex items-center justify-between rounded-xl bg-white px-3 py-2 text-xs font-semibold text-text-ink transition-colors duration-150 ease-out hover:bg-surface-forest hover:text-white focus-visible:bg-surface-forest focus-visible:text-white focus-visible:outline-none"
+              className="group/portal isolate transform-gpu flex items-center justify-between rounded-xl bg-white px-3 py-2 text-xs font-semibold text-text-ink transition-colors duration-150 ease-out hover:bg-surface-forest hover:text-white focus-visible:bg-surface-forest focus-visible:text-white focus-visible:outline-none"
             >
-              <span className="flex items-center gap-2.5">
+              <span className="flex pointer-events-none items-center gap-2.5">
                 <LayoutDashboard className="h-4 w-4 text-surface-forest transition-colors duration-150 ease-out group-hover/portal:text-brand-lime group-focus-visible/portal:text-brand-lime" />
                 Dashboard Portal
               </span>
-              <ArrowRight className="h-3.5 w-3.5 opacity-60 transition-[transform,opacity] duration-150 ease-out group-hover/portal:translate-x-0.5 group-hover/portal:opacity-100 group-focus-visible/portal:translate-x-0.5 group-focus-visible/portal:opacity-100 motion-reduce:transform-none" />
+              <ArrowRight className="pointer-events-none h-3.5 w-3.5 opacity-60 transition-[transform,opacity,color] duration-150 ease-out group-hover/portal:translate-x-0.5 group-hover/portal:opacity-100 group-focus-visible/portal:translate-x-0.5 group-focus-visible/portal:opacity-100 motion-reduce:transform-none" />
             </Link>
 
             {role === "donar" && (

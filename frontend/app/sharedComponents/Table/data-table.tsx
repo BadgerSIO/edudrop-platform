@@ -28,6 +28,7 @@ interface DataTableProps<TData, TValue> {
   data: TData[];
   searchPlaceholder?: string;
   enableExport?: boolean;
+  enablePrefetch?: boolean;
   variant?: "card" | "embedded";
 }
 
@@ -36,6 +37,7 @@ export function DataTable<TData extends { _id: string; slug?: string }, TValue>(
   data = [],
   searchPlaceholder = "Search records...",
   enableExport = true,
+  enablePrefetch = true,
   variant = "card",
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -57,15 +59,14 @@ export function DataTable<TData extends { _id: string; slug?: string }, TValue>(
   };
 
   useEffect(() => {
-    if (data?.length > 0) {
-      data.forEach((row) => {
-        const idOrSlug = row.slug || row._id;
-        if (idOrSlug) {
-          router.prefetch(`${pathname}/${idOrSlug}`);
-        }
-      });
-    }
-  }, [data, pathname, router]);
+    if (!enablePrefetch || !data?.length) return;
+    data.forEach((row) => {
+      const idOrSlug = row.slug || row._id;
+      if (idOrSlug) {
+        router.prefetch(`${pathname}/${idOrSlug}`);
+      }
+    });
+  }, [data, enablePrefetch, pathname, router]);
 
   const table = useReactTable({
     data: data || [],

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useRef } from "react";
 import Link from "next/link";
 import {
   ArrowLeft,
@@ -20,6 +20,8 @@ import { dateConverter } from "@/app/utility/dateConverter";
 import CustomAlertDialouge from "@/app/sharedComponents/CustomAlertDialouge";
 import useInbox from "@/app/hooks/useInbox";
 import toast from "react-hot-toast";
+import { emitInboxUpdated, markInboxDirty } from "@/app/utility/inboxSync";
+import { handleRevalidation } from "@/app/utility/handleRevalidation";
 
 interface InboxDetailHubProps {
   data: ISubmissions;
@@ -35,6 +37,25 @@ export default function InboxDetailHub({
   contextLabel,
 }: InboxDetailHubProps) {
   const { toggleSeen, markStatus, deleteMessage, loadingInbox } = useInbox(endpoint);
+  const syncedMessageIdRef = useRef<string | null>(null);
+
+  // Opening a message detail auto-marks it seen in the backend; sync sidebar & list cache immediately
+  useEffect(() => {
+    const messageId = data?._id ? String(data._id) : null;
+    if (!messageId || syncedMessageIdRef.current === messageId) return;
+    syncedMessageIdRef.current = messageId;
+
+    markInboxDirty(endpoint);
+    emitInboxUpdated(endpoint);
+    handleRevalidation(
+      endpoint === "submissions"
+        ? "SubmissionDataCollection"
+        : "bursarInboxCollection"
+    );
+    if (endpoint === "school-inbox") {
+      handleRevalidation("getInbox");
+    }
+  }, [data?._id, endpoint]);
 
   const firstName = data.firstName || "";
   const lastName = data.lastName || "";

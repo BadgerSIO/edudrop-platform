@@ -7,6 +7,7 @@ import BrandLogo from "@/app/sharedComponents/ui/BrandLogo";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
+import useUnreadInboxCount from "@/app/hooks/useUnreadInboxCount";
 
 const Sidebar = ({
   propdata = [],
@@ -15,7 +16,7 @@ const Sidebar = ({
   propdata?: ISubmissions[];
   unreadCount?: number;
 }) => {
-  const unseenCount =
+  const initialUnseenCount =
     typeof unreadCount === "number"
       ? unreadCount
       : Array.isArray(propdata)
@@ -26,6 +27,11 @@ const Sidebar = ({
   const pathname = usePathname();
 
   const isBursarActive = Boolean(data?.bursar?.active);
+  const unseenCount = useUnreadInboxCount(
+    "school-inbox",
+    initialUnseenCount,
+    isBursarActive
+  );
 
   return (
     <aside className="relative z-30 col-start-1 row-span-3 w-[72px] min-w-[72px] max-w-[72px] lg:w-[260px] lg:min-w-[260px] lg:max-w-[260px] shrink-0 border-r border-border-subtle bg-white">

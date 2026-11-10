@@ -5,23 +5,11 @@ import { IPaginationOptions } from "../../../interfaces/paginationOptions";
 import { productSearchableFields } from "./product.constants";
 import { IProduct, IProductFilters } from "./product.interface";
 import { Product } from "./product.model";
-import path from "path";
-import fs from "fs";
 import { slugify } from "../../../helper/slugify";
+import { safeUnlinkUpload } from "../../../helper/mediaCleanupHelper";
 
 const safeUnlink = async (relativePath: string) => {
-  try {
-    if (!relativePath || relativePath.startsWith("http")) return;
-    const cleanPath = relativePath.startsWith("/")
-      ? relativePath.slice(1)
-      : relativePath;
-    const fullPath = path.join(process.cwd(), cleanPath);
-    if (fs.existsSync(fullPath)) {
-      await fs.promises.unlink(fullPath);
-    }
-  } catch (err) {
-    console.error("Failed to delete product file:", relativePath, err);
-  }
+  await safeUnlinkUpload(relativePath, "products");
 };
 
 const generateUniqueSlug = async (
@@ -324,15 +312,6 @@ const updateProductById = async (
     payload.slug = await generateUniqueSlug(payload.title, id);
   }
 
-  // If a new image is provided, delete the old image asynchronously
-  if (
-    payload.productImage &&
-    payload.productImage !== existingProduct.productImage &&
-    existingProduct.productImage
-  ) {
-    await safeUnlink(existingProduct.productImage);
-  }
-
   const fieldsToUpdate: Record<string, any> = {};
   for (const [key, value] of Object.entries(payload)) {
     if (value !== undefined) {
@@ -348,6 +327,16 @@ const updateProductById = async (
       runValidators: true,
     }
   ).populate("category");
+
+  // Clean up old product image only after DB write succeeds
+  if (
+    result &&
+    payload.productImage &&
+    payload.productImage !== existingProduct.productImage &&
+    existingProduct.productImage
+  ) {
+    await safeUnlink(existingProduct.productImage);
+  }
 
   return result;
 };

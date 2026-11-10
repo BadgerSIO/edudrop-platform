@@ -33,6 +33,10 @@ import { ISchoolInfo, ICampusNeed } from "@/app/types/SchoolInfo";
 import { SERVERURL, SERVERURLAPI } from "@/lib/constants";
 import { getCookie } from "@/app/utility/handleCookie";
 import { handleRevalidation } from "@/app/utility/handleRevalidation";
+import {
+  IMAGE_ACCEPT_ATTR,
+  validateImageFile,
+} from "@/app/utility/validateImageFile";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import CustomAlertDialouge from "@/app/sharedComponents/CustomAlertDialouge";
 import useSchool from "@/app/hooks/useSchool";
@@ -102,11 +106,24 @@ export default function SchoolDetailHub({
   // Single Image Uploader Helper
   const handleUploadFile = async (
     file: File,
-    onSuccess: (url: string) => void
+    onSuccess: (url: string) => void,
+    options?: { type?: "logo" | "media"; previousTemporaryUrl?: string }
   ) => {
+    const validation = validateImageFile(file);
+    if (!validation.valid) {
+      toast.error(validation.error);
+      return;
+    }
+
     try {
       const jwt = await getCookie("jwt");
       const formData = new FormData();
+      if (options?.type) {
+        formData.append("type", options.type);
+      }
+      if (options?.previousTemporaryUrl) {
+        formData.append("previousTemporaryUrl", options.previousTemporaryUrl);
+      }
       formData.append("image", file);
 
       const res = await axios.post(`${SERVERURLAPI}/school/upload-image`, formData, {
@@ -224,10 +241,12 @@ export default function SchoolDetailHub({
     title,
     imageUrl,
     onChange,
+    uploadType = "media",
   }: {
     title: string;
     imageUrl: string;
     onChange: (url: string) => void;
+    uploadType?: "logo" | "media";
   }) => {
     const fileRef = React.useRef<HTMLInputElement>(null);
     let fullUrl = "";
@@ -243,11 +262,17 @@ export default function SchoolDetailHub({
         <input
           type="file"
           ref={fileRef}
-          accept="image/*"
+          accept={IMAGE_ACCEPT_ATTR}
           className="hidden"
           onChange={(e) => {
             const f = e.target.files?.[0];
-            if (f) handleUploadFile(f, onChange);
+            if (f) {
+              handleUploadFile(f, onChange, {
+                type: uploadType,
+                previousTemporaryUrl: imageUrl,
+              });
+            }
+            e.target.value = "";
           }}
         />
 
@@ -257,6 +282,7 @@ export default function SchoolDetailHub({
               src={fullUrl}
               alt={title}
               fill
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
               className="object-contain p-2"
             />
             <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
@@ -626,7 +652,7 @@ export default function SchoolDetailHub({
 
               {/* Media Upload Grid */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <ImageBox title="Campus Logo" imageUrl={schoolLogo} onChange={setSchoolLogo} />
+                <ImageBox title="Campus Logo" imageUrl={schoolLogo} onChange={setSchoolLogo} uploadType="logo" />
                 <ImageBox title="Featured Card Image" imageUrl={featuredImage} onChange={setFeaturedImage} />
                 <ImageBox title="Hero Background" imageUrl={heroBackgroundImage} onChange={setHeroBackgroundImage} />
                 <ImageBox title="Mission Section Image" imageUrl={sectionOneImage} onChange={setSectionOneImage} />
@@ -882,15 +908,16 @@ export default function SchoolDetailHub({
                     <span>Upload New Photo</span>
                     <input
                       type="file"
-                      accept="image/*"
+                      accept={IMAGE_ACCEPT_ATTR}
                       className="hidden"
                       onChange={(e) => {
                         const f = e.target.files?.[0];
                         if (f) {
                           handleUploadFile(f, (url) => {
-                            setGallery([...gallery, { imageUrl: url, title: "" }]);
+                            setGallery((prev) => [...prev, { imageUrl: url, title: "" }]);
                           });
                         }
+                        e.target.value = "";
                       }}
                     />
                   </label>
@@ -907,6 +934,7 @@ export default function SchoolDetailHub({
                           src={photo.imageUrl.startsWith("http") ? photo.imageUrl : `${SERVERURL}${photo.imageUrl}`}
                           alt="Campus photo"
                           fill
+                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                           className="object-cover"
                         />
                         <button
