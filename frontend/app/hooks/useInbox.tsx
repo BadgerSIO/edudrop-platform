@@ -7,13 +7,17 @@ import toast from "react-hot-toast";
 import { SERVERURLAPI } from "@/lib/constants";
 import { getCookie } from "../utility/handleCookie";
 import { handleRevalidation } from "../utility/handleRevalidation";
+import { emitInboxUpdated, markInboxDirty } from "../utility/inboxSync";
 
 export default function useInbox(endpoint: "school-inbox" | "submissions" = "submissions") {
   const router = useRouter();
   const [loadingInbox, setLoadingInbox] = useState(false);
 
   const revalidateTags = async () => {
+    markInboxDirty(endpoint);
+    emitInboxUpdated(endpoint);
     await handleRevalidation("schoolSingleInbox");
+    await handleRevalidation("singleSubmission");
     await handleRevalidation("SubmissionDataCollection");
     await handleRevalidation("bursarInboxCollection");
     await handleRevalidation("getInbox");

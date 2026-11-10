@@ -14,7 +14,7 @@ const useSchool = () => {
     event?: {
       stopPropagation: () => void;
     },
-  ) => {
+  ): Promise<boolean> => {
     if (event) {
       event.stopPropagation(); // Prevent event propagation
     }
@@ -37,7 +37,10 @@ const useSchool = () => {
         router.refresh();
         setLoadingSchool(false);
         toast.success("School status updated");
+        return true;
       }
+      setLoadingSchool(false);
+      return false;
     } catch (error: any) {
       setLoadingSchool(false);
       const message =
@@ -46,6 +49,7 @@ const useSchool = () => {
         error?.message ||
         "Failed to update status";
       toast.error(message);
+      return false;
     }
   };
 

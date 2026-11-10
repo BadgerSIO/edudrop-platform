@@ -1,4 +1,5 @@
 import { ErrorRequestHandler } from "express";
+import multer from "multer";
 import { ZodError } from "zod";
 import { IGenericErrorMessages } from "../../interfaces/error";
 import handleValidationError from "../../error/handleValidationError";
@@ -12,7 +13,17 @@ const globalErrorHandler: ErrorRequestHandler = (error, req, res, next) => {
   let message = "Something went wrong";
   let errorMessage: IGenericErrorMessages[] = [];
 
-  if (error instanceof ZodError) {
+  if (error instanceof multer.MulterError) {
+    statusCode = 400;
+    if (error.code === "LIMIT_FILE_SIZE") {
+      message = "Image file size exceeds the 5MB upload limit.";
+    } else if (error.code === "LIMIT_FILE_COUNT") {
+      message = "Too many image files uploaded in a single request.";
+    } else {
+      message = error.message || "Invalid file upload request.";
+    }
+    errorMessage = [{ path: error.field || "", message }];
+  } else if (error instanceof ZodError) {
     const simplifiedError = handleZodError(error);
     statusCode = simplifiedError.statusCode;
     message = simplifiedError.message;

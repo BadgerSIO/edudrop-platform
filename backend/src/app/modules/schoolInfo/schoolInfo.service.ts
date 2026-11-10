@@ -1,5 +1,3 @@
-import path from "path";
-import fs from "fs";
 import mongoose from "mongoose";
 import { ISchoolInfo } from "./schoolInfo.interface";
 import { SchoolInfo } from "./schoolInfo.model";
@@ -10,6 +8,10 @@ import { IGenericResponse } from "../../../interfaces/common";
 import { School } from "../school/school.model";
 import { INotification } from "../notification/notification.interface";
 import { Notification } from "../notification/notification.model";
+import {
+  computeRemovedUrls,
+  safeUnlinkUpload,
+} from "../../../helper/mediaCleanupHelper";
 
 const getAllSchool = async (): Promise<IGenericResponse<ISchoolInfo[]>> => {
   const activeSchools = await School.find({ active: true }, "_id").lean();
@@ -63,29 +65,7 @@ const updateSchoolInfoById = async (
     }
   }
 
-  // Safe gallery image deletion: only delete old image when specifically replaced
-  if (payload.gallery && Array.isArray(payload.gallery)) {
-    payload.gallery.forEach((newItem, idx) => {
-      const oldItem = existingSchoolInfo?.gallery?.[idx];
-      if (
-        oldItem?.imageUrl &&
-        newItem?.imageUrl &&
-        newItem.imageUrl !== oldItem.imageUrl &&
-        !newItem.imageUrl.startsWith("http")
-      ) {
-        const oldImagePath = path.join(process.cwd(), oldItem.imageUrl);
-        if (fs.existsSync(oldImagePath)) {
-          try {
-            fs.unlinkSync(oldImagePath);
-          } catch (e) {
-            console.error("Failed to delete replaced gallery image:", e);
-          }
-        }
-      }
-    });
-  }
-
-  // Safe single image replacements
+  // Collect existing image URLs before update for set-difference cleanup
   const singleImageFields: (keyof ISchoolInfo)[] = [
     "featuredImage",
     "schoolLogo",
@@ -93,20 +73,10 @@ const updateSchoolInfoById = async (
     "sectionOneImage",
   ];
 
-  for (const field of singleImageFields) {
-    const newPath = payload[field] as string | undefined;
-    const oldPath = existingSchoolInfo[field] as string | undefined;
-    if (newPath && newPath !== "/" && newPath !== oldPath && oldPath) {
-      const existingImagePath = path.join(process.cwd(), oldPath);
-      if (fs.existsSync(existingImagePath)) {
-        try {
-          fs.unlinkSync(existingImagePath);
-        } catch (e) {
-          console.error(`Failed to delete old ${field}:`, e);
-        }
-      }
-    }
-  }
+  const oldImageUrls: (string | undefined)[] = [
+    ...singleImageFields.map((field) => existingSchoolInfo[field] as string | undefined),
+    ...(existingSchoolInfo.gallery || []).map((item) => item?.imageUrl),
+  ];
 
   // Parse JSON fields if passed as serialized strings via multipart/form-data
   if (typeof payload.campusNeeds === "string") {
@@ -141,7 +111,7 @@ const updateSchoolInfoById = async (
     }
   }
 
-  // Preserve existing gallery image URLs if only title was edited
+  // Preserve existing gallery image URLs if only title was edited via multipart
   if (existingSchoolInfo.gallery?.length && payload.gallery?.length) {
     for (let i = 0; i < payload.gallery.length; i++) {
       const item = payload.gallery[i];
@@ -162,6 +132,25 @@ const updateSchoolInfoById = async (
   );
 
   if (result) {
+    const retainedGallery = Array.isArray(fieldsToUpdate.gallery)
+      ? fieldsToUpdate.gallery
+      : existingSchoolInfo.gallery || [];
+
+    const retainedImageUrls: (string | undefined)[] = [
+      ...singleImageFields.map((field) => {
+        const nextVal = fieldsToUpdate[field] as string | undefined;
+        return nextVal !== undefined
+          ? nextVal
+          : (existingSchoolInfo[field] as string | undefined);
+      }),
+      ...retainedGallery.map((item: { imageUrl?: string }) => item?.imageUrl),
+    ];
+
+    const removedUrls = computeRemovedUrls(oldImageUrls, retainedImageUrls);
+    await Promise.all(
+      removedUrls.map((url) => safeUnlinkUpload(url, "school"))
+    );
+
     // Notify admin asynchronously without blocking
     User.findOne({ role: "admin" }, { _id: 1 })
       .lean()

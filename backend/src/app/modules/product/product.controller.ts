@@ -7,6 +7,11 @@ import { IProduct } from "./product.interface";
 import pick from "../../../shared/pick";
 import { paginationFields } from "../../../constants/pagination";
 import { productFilterableFields } from "./product.constants";
+import { Product } from "./product.model";
+import {
+  cleanupUnsavedTemporaryUpload,
+  safeUnlinkMulterFile,
+} from "../../../helper/mediaCleanupHelper";
 
 const uploadImage: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
@@ -19,6 +24,18 @@ const uploadImage: RequestHandler = catchAsync(
       });
     }
     const imageUrl = `/uploads/products/${req.file.filename}`;
+    const previousTemporaryUrl = req.body?.previousTemporaryUrl;
+    if (previousTemporaryUrl && previousTemporaryUrl !== imageUrl) {
+      await cleanupUnsavedTemporaryUpload(
+        previousTemporaryUrl,
+        "products",
+        async (url) => {
+          const exists = await Product.exists({ productImage: url });
+          return Boolean(exists);
+        }
+      );
+    }
+
     sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,
@@ -35,18 +52,23 @@ const uploadImage: RequestHandler = catchAsync(
 
 const createProduct: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
-    let payload = req.body;
+    const payload = { ...req.body };
     if (req.file) {
       payload.productImage = `/uploads/products/${req.file.filename}`;
     }
-    const result = await ProductService.createProduct(payload);
+    try {
+      const result = await ProductService.createProduct(payload);
 
-    sendResponse(res, {
-      statusCode: httpStatus.OK,
-      success: true,
-      message: "Product created successfully",
-      data: result,
-    });
+      sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "Product created successfully",
+        data: result,
+      });
+    } catch (error) {
+      await safeUnlinkMulterFile(req.file, "products");
+      throw error;
+    }
   }
 );
 
@@ -128,17 +150,22 @@ const getSingleProductBySlug: RequestHandler = catchAsync(
 const updateProductById: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
     const id = req.params.id;
-    let payload = req.body;
+    const payload = { ...req.body };
     if (req.file) {
       payload.productImage = `/uploads/products/${req.file.filename}`;
     }
-    const result = await ProductService.updateProductById(id, payload);
-    sendResponse<IProduct>(res, {
-      statusCode: httpStatus.OK,
-      success: true,
-      message: "Product updated successfully",
-      data: result,
-    });
+    try {
+      const result = await ProductService.updateProductById(id, payload);
+      sendResponse<IProduct>(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "Product updated successfully",
+        data: result,
+      });
+    } catch (error) {
+      await safeUnlinkMulterFile(req.file, "products");
+      throw error;
+    }
   }
 );
 

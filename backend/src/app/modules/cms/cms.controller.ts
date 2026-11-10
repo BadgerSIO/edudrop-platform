@@ -3,6 +3,8 @@ import catchAsync from "../../../shared/catchAsync";
 import sendResponse from "../../../shared/sendResponse";
 import httpStatus from "http-status";
 import { CMSService } from "./cms.service";
+import { SiteContent } from "./cms.model";
+import { cleanupUnsavedTemporaryUpload } from "../../../helper/mediaCleanupHelper";
 
 const getSiteContent: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
@@ -38,11 +40,35 @@ const uploadMedia: RequestHandler = catchAsync(
         .json({ success: false, message: "No file uploaded" });
     }
     const fileUrl = `/uploads/cms/${file.filename}`;
+    const previousTemporaryUrl = req.body?.previousTemporaryUrl;
+    if (previousTemporaryUrl && previousTemporaryUrl !== fileUrl) {
+      await cleanupUnsavedTemporaryUpload(
+        previousTemporaryUrl,
+        "cms",
+        async (url) => {
+          const exists = await SiteContent.exists({
+            $or: [
+              { "whyEduDrop.image": url },
+              { "ourWorks.imageUrl": url },
+              { "testimonials.imageUrl": url },
+            ],
+          });
+          return Boolean(exists);
+        }
+      );
+    }
+
     sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,
       message: "File uploaded successfully",
-      data: { url: fileUrl },
+      data: {
+        url: fileUrl,
+        imageUrl: fileUrl,
+        filename: file.filename,
+        originalName: file.originalname,
+        size: file.size,
+      },
     });
   }
 );

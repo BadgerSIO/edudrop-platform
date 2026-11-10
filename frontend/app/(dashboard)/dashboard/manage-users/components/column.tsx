@@ -1,19 +1,19 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import {
   ArrowUpDown,
   MoreVertical,
-  User as UserIcon,
   Shield,
   GraduationCap,
   HeartHandshake,
   KeyRound,
-  ExternalLink,
-  Phone,
-  Mail,
   Building,
+  ShieldAlert,
+  CheckCircle2,
+  Ban,
+  Lock,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -21,6 +21,7 @@ import {
   DropdownMenuItem,
   DropdownMenuContent,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import {
   Dialog,
@@ -30,45 +31,31 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { IUser } from "@/app/types/User";
 import Link from "next/link";
 import Image from "next/image";
 import useUser from "@/app/hooks/useUser";
 import { dateConverter } from "@/app/utility/dateConverter";
-import CustomAlertDialouge from "@/app/sharedComponents/CustomAlertDialouge";
 import { SERVERURL } from "@/lib/constants";
 import { generatePassword } from "@/app/utility/passwordGenerator";
 import toast from "react-hot-toast";
-
-// 1-Click Interactive Status Pill
-const StatusCell = ({ user }: { user: IUser }) => {
-  const { handleUserStatus, loadingUser } = useUser();
-  const isActive = user.status === "active";
-
-  return (
-    <button
-      type="button"
-      onClick={(e) => {
-        e.stopPropagation();
-        handleUserStatus(user._id, user.status, e);
-      }}
-      disabled={loadingUser}
-      title="Click to toggle user status"
-      className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold transition-all hover:scale-105 active:scale-95 ${
-        isActive
-          ? "border border-surface-forest/20 bg-surface-forest/10 text-surface-forest hover:bg-surface-forest/20"
-          : "border border-red-200 bg-red-50 text-red-700 hover:bg-red-100"
-      }`}
-    >
-      <span
-        className={`h-1.5 w-1.5 rounded-full ${
-          isActive ? "bg-surface-forest" : "bg-red-500"
-        }`}
-      />
-      <span>{isActive ? "Active" : "Suspended"}</span>
-    </button>
-  );
-};
+import { AuthenticationContext } from "@/app/context/AuthContext";
+import StatusBadge from "@/app/sharedComponents/ui/StatusBadge";
+import StatusChangeDialog from "@/app/sharedComponents/ui/StatusChangeDialog";
+import {
+  getUserStatusDescriptor,
+  resolveAccountStatus,
+} from "@/app/utility/statusHelpers";
 
 // Role Badge Helper
 const RoleBadge = ({ role }: { role: string }) => {
@@ -96,13 +83,91 @@ const RoleBadge = ({ role }: { role: string }) => {
   );
 };
 
-// Actions Cell with Reset Password Modal
+// Account Cell (shows `(You)` indicator for currently signed-in admin)
+const UserAccountCell = ({ user }: { user: IUser }) => {
+  const { data: currentUser } = useContext(AuthenticationContext);
+  const isSelf = Boolean(
+    currentUser &&
+      (currentUser.email === user.email || currentUser._id === user._id)
+  );
+
+  const profile = user.profile;
+  const firstName = profile?.name?.firstName || "";
+  const lastName = profile?.name?.lastName || "";
+  const fullName = `${firstName} ${lastName}`.trim() || user.email.split("@")[0];
+  const image = profile?.profileImage;
+  const fullImageUrl = image
+    ? image.startsWith("http")
+      ? image
+      : `${SERVERURL}${image}`
+    : null;
+
+  const initials =
+    (firstName[0] || "") + (lastName[0] || "") ||
+    user.email.substring(0, 2).toUpperCase();
+
+  return (
+    <div className="flex items-center gap-3">
+      <div className="relative flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl border border-border-subtle bg-surface-bento/40 overflow-hidden font-bold text-xs text-surface-forest">
+        {fullImageUrl ? (
+          <Image
+            src={fullImageUrl}
+            alt={fullName}
+            fill
+            sizes="40px"
+            className="object-cover"
+          />
+        ) : (
+          <span>{initials}</span>
+        )}
+      </div>
+      <div className="min-w-0">
+        <div className="flex items-center gap-1.5">
+          <Link
+            href={`/dashboard/manage-users/${user._id}`}
+            onClick={(e) => e.stopPropagation()}
+            className="font-bold text-sm text-text-ink hover:text-surface-forest transition-colors truncate"
+          >
+            {fullName}
+          </Link>
+          {isSelf && (
+            <span className="shrink-0 rounded bg-surface-forest/10 px-1.5 py-0.5 text-[10px] font-semibold text-surface-forest">
+              You
+            </span>
+          )}
+        </div>
+        <span className="font-mono text-[11px] text-text-muted truncate block">
+          {user.email}
+        </span>
+      </div>
+    </div>
+  );
+};
+
+// Actions Cell with Lifted Modals for Explicit Status Change, Reset Password & Archive
 const ActionsCell = ({ user }: { user: IUser }) => {
+  const { data: currentUser } = useContext(AuthenticationContext);
   const { handleUserStatus, handleResetPassword, handleDeleteUser, loadingUser } =
     useUser();
+
+  const [statusModalOpen, setStatusModalOpen] = useState(false);
   const [resetModalOpen, setResetModalOpen] = useState(false);
+  const [archiveModalOpen, setArchiveModalOpen] = useState(false);
   const [newPassword, setNewPassword] = useState("");
   const [resetting, setResetting] = useState(false);
+
+  const isSelf = Boolean(
+    currentUser &&
+      (currentUser.email === user.email || currentUser._id === user._id)
+  );
+  const isProtectedAdmin = isSelf || user.role === "admin";
+  const resolvedStatus = resolveAccountStatus(user);
+  const isActive = resolvedStatus === "active";
+  const targetStatus: "active" | "suspended" = isActive ? "suspended" : "active";
+
+  const fullName =
+    `${user.profile?.name?.firstName || ""} ${user.profile?.name?.lastName || ""}`.trim() ||
+    user.email.split("@")[0];
 
   const handleGenerate = () => {
     const pass = generatePassword();
@@ -135,39 +200,91 @@ const ActionsCell = ({ user }: { user: IUser }) => {
         </DropdownMenuTrigger>
         <DropdownMenuContent
           align="end"
-          className="w-48 bg-white border border-border-subtle shadow-bento rounded-xl p-1.5 space-y-1"
+          className="w-52 bg-white border border-border-subtle shadow-bento rounded-xl p-1.5 space-y-1"
         >
-          <DropdownMenuItem asChild className="cursor-pointer rounded-lg text-xs font-medium text-text-ink hover:bg-surface-bento/50">
+          <DropdownMenuItem
+            asChild
+            className="cursor-pointer rounded-lg text-xs font-medium text-text-ink hover:bg-surface-bento/50"
+          >
             <Link href={`/dashboard/manage-users/${user._id}`}>
               View User Hub & History
             </Link>
           </DropdownMenuItem>
 
-          <DropdownMenuItem
-            className="cursor-pointer rounded-lg text-xs font-medium text-text-ink hover:bg-surface-bento/50"
-            onSelect={() => handleUserStatus(user._id, user.status)}
-          >
-            Mark as {user.status === "active" ? "Suspended" : "Active"}
-          </DropdownMenuItem>
+          {isProtectedAdmin ? (
+            <DropdownMenuItem
+              disabled
+              className="rounded-lg text-xs font-medium text-text-muted opacity-70"
+            >
+              <Lock className="mr-2 h-3.5 w-3.5" />
+              <span>Admin Access Protected</span>
+            </DropdownMenuItem>
+          ) : (
+            <>
+              <DropdownMenuItem
+                className={`cursor-pointer rounded-lg text-xs font-medium ${
+                  isActive
+                    ? "text-amber-700 hover:bg-amber-50 focus:bg-amber-50"
+                    : "text-surface-forest hover:bg-surface-forest/10 focus:bg-surface-forest/10"
+                }`}
+                onSelect={() => setStatusModalOpen(true)}
+              >
+                {isActive ? (
+                  <Ban className="mr-2 h-3.5 w-3.5" />
+                ) : (
+                  <CheckCircle2 className="mr-2 h-3.5 w-3.5" />
+                )}
+                <span>
+                  {isActive ? "Suspend Account..." : "Activate Account..."}
+                </span>
+              </DropdownMenuItem>
 
-          <DropdownMenuItem
-            className="cursor-pointer rounded-lg text-xs font-medium text-text-ink hover:bg-surface-bento/50"
-            onSelect={() => setResetModalOpen(true)}
-          >
-            Reset Password
-          </DropdownMenuItem>
+              <DropdownMenuItem
+                className="cursor-pointer rounded-lg text-xs font-medium text-text-ink hover:bg-surface-bento/50"
+                onSelect={() => setResetModalOpen(true)}
+              >
+                <KeyRound className="mr-2 h-3.5 w-3.5 text-surface-forest" />
+                <span>Reset Password...</span>
+              </DropdownMenuItem>
 
-          <div className="my-1 border-t border-border-subtle/80" />
+              <DropdownMenuSeparator className="my-1 bg-border-subtle/80" />
 
-          <div className="px-1 py-0.5">
-            <CustomAlertDialouge
-              triggerText="Archive Account"
-              onConfirm={() => handleDeleteUser(user._id)}
-              alertDescription={`This will archive the account for ${user.email} and revoke authentication access. Historic transactions and orders will remain safely preserved.`}
-            />
-          </div>
+              <DropdownMenuItem
+                className="cursor-pointer rounded-lg text-xs font-medium text-red-600 hover:bg-red-50 focus:bg-red-50 focus:text-red-700"
+                onSelect={() => setArchiveModalOpen(true)}
+              >
+                <ShieldAlert className="mr-2 h-3.5 w-3.5" />
+                <span>Archive Account...</span>
+              </DropdownMenuItem>
+            </>
+          )}
         </DropdownMenuContent>
       </DropdownMenu>
+
+      {/* Explicit Status Transition Confirmation Dialog */}
+      <StatusChangeDialog
+        open={statusModalOpen}
+        onOpenChange={setStatusModalOpen}
+        title="Confirm Account Status Change"
+        entityName={fullName}
+        entitySubtitle={user.email}
+        entityMetaBadge={user.role === "donar" ? "Donor" : user.role}
+        currentStatus={getUserStatusDescriptor(resolvedStatus)}
+        targetStatus={getUserStatusDescriptor(targetStatus)}
+        impactDescription={
+          targetStatus === "suspended"
+            ? "Suspending this account immediately revokes sign-in access across EduDrop. Past donations, receipts, and order histories remain preserved."
+            : "Activating this account immediately restores normal sign-in and portal permissions for this user."
+        }
+        confirmLabel={
+          targetStatus === "suspended"
+            ? "Confirm Suspension"
+            : "Restore Active Access"
+        }
+        confirmTone={targetStatus === "suspended" ? "amber" : "forest"}
+        loading={loadingUser}
+        onConfirm={() => handleUserStatus(user._id, targetStatus)}
+      />
 
       {/* Admin Reset Password Dialog */}
       <Dialog open={resetModalOpen} onOpenChange={setResetModalOpen}>
@@ -227,6 +344,30 @@ const ActionsCell = ({ user }: { user: IUser }) => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Archive Account Confirmation Dialog (lifted outside DropdownMenu) */}
+      <AlertDialog open={archiveModalOpen} onOpenChange={setArchiveModalOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Archive User Account?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will archive the account for{" "}
+              <span className="font-semibold text-text-ink">{user.email}</span>{" "}
+              and permanently revoke authentication access. Historic
+              transactions and orders will remain safely preserved.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-red-600 text-white hover:bg-red-700"
+              onClick={() => handleDeleteUser(user._id)}
+            >
+              Archive Account
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
@@ -246,51 +387,7 @@ export const columns: ColumnDef<IUser>[] = [
         </Button>
       );
     },
-    cell: ({ row }) => {
-      const user = row.original;
-      const profile = user.profile;
-      const firstName = profile?.name?.firstName || "";
-      const lastName = profile?.name?.lastName || "";
-      const fullName = `${firstName} ${lastName}`.trim() || user.email.split("@")[0];
-      const image = profile?.profileImage;
-      const fullImageUrl = image
-        ? image.startsWith("http")
-          ? image
-          : `${SERVERURL}${image}`
-        : null;
-
-      const initials =
-        (firstName[0] || "") + (lastName[0] || "") ||
-        user.email.substring(0, 2).toUpperCase();
-
-      return (
-        <div className="flex items-center gap-3">
-          <div className="relative flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl border border-border-subtle bg-surface-bento/40 overflow-hidden font-bold text-xs text-surface-forest">
-            {fullImageUrl ? (
-              <Image
-                src={fullImageUrl}
-                alt={fullName}
-                fill
-                className="object-cover"
-              />
-            ) : (
-              <span>{initials}</span>
-            )}
-          </div>
-          <div className="min-w-0">
-            <Link
-              href={`/dashboard/manage-users/${user._id}`}
-              className="font-bold text-sm text-text-ink hover:text-surface-forest transition-colors block truncate"
-            >
-              {fullName}
-            </Link>
-            <span className="font-mono text-[11px] text-text-muted truncate block">
-              {user.email}
-            </span>
-          </div>
-        </div>
-      );
-    },
+    cell: ({ row }) => <UserAccountCell user={row.original} />,
   },
   {
     accessorKey: "role",
@@ -318,6 +415,7 @@ export const columns: ColumnDef<IUser>[] = [
           return (
             <Link
               href={`/dashboard/schools-list/${school.slug}`}
+              onClick={(e) => e.stopPropagation()}
               className="inline-flex items-center gap-1.5 text-xs font-medium text-surface-forest hover:underline"
             >
               <Building className="h-3.5 w-3.5 text-surface-forest/70" />
@@ -325,7 +423,11 @@ export const columns: ColumnDef<IUser>[] = [
             </Link>
           );
         }
-        return <span className="text-xs text-text-muted italic">No school assigned</span>;
+        return (
+          <span className="text-xs text-text-muted italic">
+            No school assigned
+          </span>
+        );
       }
 
       if (user.role === "donar") {
@@ -335,7 +437,9 @@ export const columns: ColumnDef<IUser>[] = [
             <span className="font-bold text-text-ink">
               ${total.toLocaleString("en-US", { minimumFractionDigits: 2 })}
             </span>
-            <span className="text-[11px] text-text-muted block">lifetime donations</span>
+            <span className="text-[11px] text-text-muted block">
+              lifetime donations
+            </span>
           </div>
         );
       }
@@ -356,11 +460,7 @@ export const columns: ColumnDef<IUser>[] = [
     ),
     cell: ({ row }) => {
       const phone = row.original.profile?.contactNo;
-      return (
-        <span className="text-xs text-text-muted">
-          {phone || "—"}
-        </span>
-      );
+      return <span className="text-xs text-text-muted">{phone || "—"}</span>;
     },
   },
   {
@@ -393,9 +493,11 @@ export const columns: ColumnDef<IUser>[] = [
       </span>
     ),
     cell: ({ row }) => {
+      const status = resolveAccountStatus(row.original);
+      const descriptor = getUserStatusDescriptor(status);
       return (
         <div className="flex justify-center">
-          <StatusCell user={row.original} />
+          <StatusBadge label={descriptor.label} tone={descriptor.tone} />
         </div>
       );
     },

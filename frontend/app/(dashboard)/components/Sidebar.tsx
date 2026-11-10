@@ -17,10 +17,25 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { ISubmissions } from "@/app/types/submission";
+import useUnreadInboxCount from "@/app/hooks/useUnreadInboxCount";
 
-const Sidebar = ({ propdata: data = [] }: { propdata?: ISubmissions[] }) => {
+const Sidebar = ({
+  propdata: data = [],
+  unreadCount,
+}: {
+  propdata?: ISubmissions[];
+  unreadCount?: number;
+}) => {
   const { signout } = useAuth();
   const pathname = usePathname();
+
+  const initialUnseenCount =
+    typeof unreadCount === "number"
+      ? unreadCount
+      : Array.isArray(data)
+        ? data.filter((item: ISubmissions) => item.seen === false).length
+        : 0;
+  const liveUnseenCount = useUnreadInboxCount("submissions", initialUnseenCount);
 
   const isProductsActive =
     pathname.startsWith("/dashboard/manage-categories") ||
@@ -40,10 +55,6 @@ const Sidebar = ({ propdata: data = [] }: { propdata?: ISubmissions[] }) => {
   }, [pathname, isProductsActive, isSchoolsActive]);
 
   const isProfileActive = pathname.startsWith("/dashboard/profile");
-
-  const unseenData = Array.isArray(data)
-    ? data.filter((item: ISubmissions) => item.seen === false)
-    : [];
 
   return (
     <aside className="relative z-30 col-start-1 row-span-3 w-[72px] min-w-[72px] max-w-[72px] lg:w-[260px] lg:min-w-[260px] lg:max-w-[260px] shrink-0 border-r border-border-subtle bg-white">
@@ -277,9 +288,9 @@ const Sidebar = ({ propdata: data = [] }: { propdata?: ISubmissions[] }) => {
                 >
                   <Inbox className="h-5 w-5 shrink-0" />
                   <span className="hidden lg:inline truncate">Inbox</span>
-                  {unseenData.length > 0 && (
+                  {liveUnseenCount > 0 && (
                     <span className="lg:ml-auto inline-flex items-center justify-center rounded-full bg-brand-lime px-1.5 py-0.5 text-[11px] font-bold text-surface-forest">
-                      {unseenData.length}
+                      {liveUnseenCount}
                     </span>
                   )}
                 </Link>

@@ -3,8 +3,13 @@ import Sidebar from "./Sidebar";
 import { getSubmissionData } from "@/app/utility/getSubmissionData";
 
 const SideBarWrapper = async () => {
-  const { data } = await getSubmissionData();
-  return <Sidebar propdata={data} />;
+  const result = await getSubmissionData();
+  return (
+    <Sidebar
+      propdata={result?.data}
+      unreadCount={result?.additionalData?.unreadCount}
+    />
+  );
 };
 
 export default SideBarWrapper;

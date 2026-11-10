@@ -14,36 +14,38 @@ export default function useUser() {
 
   const handleUserStatus = async (
     userId: string,
-    currentStatus?: string,
-    event?: { stopPropagation: () => void }
-  ) => {
-    if (event) {
-      event.stopPropagation();
-    }
-    const nextStatus = currentStatus === "active" ? "suspended" : "active";
+    targetStatus: "active" | "suspended"
+  ): Promise<boolean> => {
     setLoadingUser(true);
     try {
       const jwt = await getCookie("jwt");
       const response = await axios.patch(
         `${SERVERURLAPI}/user/${userId}/status`,
-        { status: nextStatus },
+        { status: targetStatus },
         {
           headers: jwt ? { Authorization: `Bearer ${jwt}` } : {},
         }
       );
 
       if (response.status === 200) {
-        toast.success(`User status changed to ${nextStatus}`);
+        toast.success(
+          targetStatus === "active"
+            ? "Account restored to Active"
+            : "Account suspended"
+        );
         await handleRevalidation("manageUsersCollection");
         await handleRevalidation("userSingleCollection");
         router.refresh();
+        return true;
       }
+      return false;
     } catch (error: any) {
       const message =
         error?.response?.data?.message ||
         error?.message ||
         "Failed to update user status";
       toast.error(message);
+      return false;
     } finally {
       setLoadingUser(false);
     }

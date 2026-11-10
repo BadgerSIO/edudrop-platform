@@ -9,6 +9,8 @@
     "admin": {
       "$oid": "658c20f1821fab396bbd7e34"
     },
+    "status": "active",
+    "isDeleted": false,
     "createdAt": {
       "$date": "2025-01-10T10:00:00.000Z"
     },
@@ -27,6 +29,8 @@
     "donar": {
       "$oid": "659a7dde817e2b807c59da00"
     },
+    "status": "active",
+    "isDeleted": false,
     "createdAt": {
       "$date": "2025-01-20T10:33:02.570Z"
     },
@@ -45,6 +49,8 @@
     "donar": {
       "$oid": "659a7e41817e2b807c59da15"
     },
+    "status": "active",
+    "isDeleted": false,
     "createdAt": {
       "$date": "2025-01-21T10:34:41.770Z"
     },
@@ -63,6 +69,8 @@
     "donar": {
       "$oid": "659a8025817e2b807c59da6a"
     },
+    "status": "active",
+    "isDeleted": false,
     "createdAt": {
       "$date": "2025-01-22T10:42:45.349Z"
     },
@@ -81,6 +89,8 @@
     "donar": {
       "$oid": "65af76dab70d3df025dcff95"
     },
+    "status": "active",
+    "isDeleted": false,
     "createdAt": {
       "$date": "2025-01-23T08:20:42.898Z"
     },
@@ -99,6 +109,8 @@
     "bursar": {
       "$oid": "65da260d6a332fe6d3d550cf"
     },
+    "status": "active",
+    "isDeleted": false,
     "createdAt": {
       "$date": "2025-01-15T12:00:00.000Z"
     },
@@ -117,6 +129,8 @@
     "donar": {
       "$oid": "65e691b586cfeccf777cced5"
     },
+    "status": "active",
+    "isDeleted": false,
     "createdAt": {
       "$date": "2025-03-05T03:29:57.740Z"
     },
@@ -135,6 +149,8 @@
     "bursar": {
       "$oid": "65f173f686cfeccf777ccfd4"
     },
+    "status": "active",
+    "isDeleted": false,
     "createdAt": {
       "$date": "2025-01-16T12:00:00.000Z"
     },
@@ -153,6 +169,8 @@
     "bursar": {
       "$oid": "65f32bfb86cfeccf777cdbea"
     },
+    "status": "active",
+    "isDeleted": false,
     "createdAt": {
       "$date": "2025-01-17T12:00:00.000Z"
     },
@@ -171,6 +189,8 @@
     "bursar": {
       "$oid": "65f32e7786cfeccf777cdc25"
     },
+    "status": "active",
+    "isDeleted": false,
     "createdAt": {
       "$date": "2025-01-18T12:00:00.000Z"
     },

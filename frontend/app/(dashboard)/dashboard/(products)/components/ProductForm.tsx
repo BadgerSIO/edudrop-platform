@@ -28,6 +28,10 @@ import { SERVERURL, SERVERURLAPI } from "@/lib/constants";
 import { slugify } from "@/app/utility/slugify";
 import { getCookie } from "@/app/utility/handleCookie";
 import { handleRevalidation } from "@/app/utility/handleRevalidation";
+import {
+  IMAGE_ACCEPT_ATTR,
+  validateImageFile,
+} from "@/app/utility/validateImageFile";
 
 interface ProductFormProps {
   categories: ICategory[];
@@ -165,20 +169,10 @@ export default function ProductForm({
     const file = e.target.files?.[0];
     if (!file) return;
 
-    const allowedTypes = [
-      "image/jpeg",
-      "image/png",
-      "image/webp",
-      "image/avif",
-      "image/svg+xml",
-    ];
-    if (!allowedTypes.includes(file.type)) {
-      toast.error("Please upload a valid image (JPEG, PNG, WebP, AVIF, or SVG)");
-      return;
-    }
-
-    if (file.size > 5 * 1024 * 1024) {
-      toast.error("Image file size must be less than 5MB");
+    const validation = validateImageFile(file);
+    if (!validation.valid) {
+      toast.error(validation.error);
+      e.target.value = "";
       return;
     }
 
@@ -808,7 +802,7 @@ export default function ProductForm({
               type="file"
               ref={fileInputRef}
               onChange={handleFileChange}
-              accept="image/jpeg,image/png,image/webp,image/avif,image/svg+xml"
+              accept={IMAGE_ACCEPT_ATTR}
               className="hidden"
             />
 
@@ -819,7 +813,9 @@ export default function ProductForm({
                     src={imagePreview}
                     alt="Product preview"
                     fill
+                    sizes="(max-width: 1024px) 100vw, 33vw"
                     className="object-contain p-2"
+                    unoptimized={Boolean(selectedFile)}
                   />
                 </div>
                 <div className="mt-3 flex items-center justify-between gap-2 px-1">

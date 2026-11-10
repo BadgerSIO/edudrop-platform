@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { ColumnDef } from "@tanstack/react-table";
 import {
   Inbox,
@@ -27,6 +28,7 @@ import useInbox from "@/app/hooks/useInbox";
 import { dateConverter } from "@/app/utility/dateConverter";
 import CustomAlertDialouge from "@/app/sharedComponents/CustomAlertDialouge";
 import { DataTable } from "@/app/sharedComponents/Table/data-table";
+import { consumeInboxDirty, emitInboxUpdated } from "@/app/utility/inboxSync";
 
 interface InboxDirectoryProps {
   initialData: ISubmissions[];
@@ -49,8 +51,25 @@ export default function InboxDirectory({
   title,
   description,
 }: InboxDirectoryProps) {
+  const router = useRouter();
   const [selectedFilter, setSelectedFilter] = useState<string>("all");
   const { toggleSeen, markStatus, deleteMessage, loadingInbox } = useInbox(endpoint);
+
+  // Refresh list & sidebar when returning from an opened message (via ArrowLeft or browser Back)
+  useEffect(() => {
+    const syncIfDirty = () => {
+      if (consumeInboxDirty(endpoint)) {
+        emitInboxUpdated(endpoint);
+        router.refresh();
+      }
+    };
+
+    syncIfDirty();
+    window.addEventListener("popstate", syncIfDirty);
+    return () => {
+      window.removeEventListener("popstate", syncIfDirty);
+    };
+  }, [endpoint, router]);
 
   const total = kpis?.total ?? initialData.length;
   const unreadCount =
@@ -110,6 +129,7 @@ export default function InboxDirectory({
             <div className="min-w-0">
               <Link
                 href={`${basePath}/${item._id}`}
+                prefetch={false}
                 className={`text-sm hover:text-surface-forest transition-colors block truncate ${
                   isUnread ? "font-bold text-text-ink" : "font-medium text-text-body"
                 }`}
@@ -259,7 +279,7 @@ export default function InboxDirectory({
                 className="w-48 bg-white border border-border-subtle shadow-bento rounded-xl p-1.5 space-y-1"
               >
                 <DropdownMenuItem asChild className="cursor-pointer rounded-lg text-xs font-medium text-text-ink hover:bg-surface-bento/50">
-                  <Link href={`${basePath}/${item._id}`}>
+                  <Link href={`${basePath}/${item._id}`} prefetch={false}>
                     Read Full Inquiry
                   </Link>
                 </DropdownMenuItem>
@@ -451,6 +471,7 @@ export default function InboxDirectory({
         <DataTable
           columns={columns}
           data={filteredData as any}
+          enablePrefetch={false}
           searchPlaceholder="Search inquiries by sender, email, phone, message content..."
         />
       </div>
