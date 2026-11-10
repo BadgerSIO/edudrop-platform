@@ -92,6 +92,7 @@ const Sidebar = ({ propdata: data = [] }: { propdata?: ISubmissions[] }) => {
                 <button
                   type="button"
                   onClick={() => setProductDropdown((prev) => !prev)}
+                  aria-expanded={productDropdown}
                   className={`group flex w-full items-center justify-center gap-3 rounded-xl px-2.5 py-2.5 text-sm font-medium transition-all lg:justify-between lg:px-3.5 ${
                     isProductsActive
                       ? "bg-surface-forest/10 font-semibold text-surface-forest"
@@ -104,7 +105,7 @@ const Sidebar = ({ propdata: data = [] }: { propdata?: ISubmissions[] }) => {
                     <span className="hidden lg:inline truncate">Products</span>
                   </div>
                   <ChevronDown
-                    className={`hidden h-4 w-4 shrink-0 transition-transform duration-200 lg:block ${
+                    className={`hidden h-4 w-4 shrink-0 transition-transform duration-200 motion-reduce:transition-none lg:block ${
                       productDropdown ? "rotate-180" : ""
                     }`}
                   />
@@ -112,11 +113,13 @@ const Sidebar = ({ propdata: data = [] }: { propdata?: ISubmissions[] }) => {
 
                 {/* Products Submenu (Desktop only to prevent mobile sidebar distortion) */}
                 <div
-                  className={`hidden lg:block overflow-hidden transition-all duration-200 ${
-                    productDropdown ? "mt-1 max-h-48 opacity-100" : "max-h-0 opacity-0"
+                  className={`hidden lg:grid transition-[grid-template-rows,opacity] duration-200 ease-out motion-reduce:transition-none ${
+                    productDropdown
+                      ? "mt-1 grid-rows-[1fr] opacity-100"
+                      : "grid-rows-[0fr] opacity-0 pointer-events-none"
                   }`}
                 >
-                  <ul className="space-y-1 pl-4">
+                  <ul className="overflow-hidden space-y-1 pl-4">
                     <li>
                       <Link
                         href="/dashboard/manage-categories"
@@ -165,6 +168,7 @@ const Sidebar = ({ propdata: data = [] }: { propdata?: ISubmissions[] }) => {
                 <button
                   type="button"
                   onClick={() => setSchoolsDropdown((prev) => !prev)}
+                  aria-expanded={schoolsDropdown}
                   className={`group flex w-full items-center justify-center gap-3 rounded-xl px-2.5 py-2.5 text-sm font-medium transition-all lg:justify-between lg:px-3.5 ${
                     isSchoolsActive
                       ? "bg-surface-forest/10 font-semibold text-surface-forest"
@@ -177,7 +181,7 @@ const Sidebar = ({ propdata: data = [] }: { propdata?: ISubmissions[] }) => {
                     <span className="hidden lg:inline truncate">Schools</span>
                   </div>
                   <ChevronDown
-                    className={`hidden h-4 w-4 shrink-0 transition-transform duration-200 lg:block ${
+                    className={`hidden h-4 w-4 shrink-0 transition-transform duration-200 motion-reduce:transition-none lg:block ${
                       schoolsDropdown ? "rotate-180" : ""
                     }`}
                   />
@@ -185,11 +189,13 @@ const Sidebar = ({ propdata: data = [] }: { propdata?: ISubmissions[] }) => {
 
                 {/* Schools Submenu */}
                 <div
-                  className={`hidden lg:block overflow-hidden transition-all duration-200 ${
-                    schoolsDropdown ? "mt-1 max-h-40 opacity-100" : "max-h-0 opacity-0"
+                  className={`hidden lg:grid transition-[grid-template-rows,opacity] duration-200 ease-out motion-reduce:transition-none ${
+                    schoolsDropdown
+                      ? "mt-1 grid-rows-[1fr] opacity-100"
+                      : "grid-rows-[0fr] opacity-0 pointer-events-none"
                   }`}
                 >
-                  <ul className="space-y-1 pl-4">
+                  <ul className="overflow-hidden space-y-1 pl-4">
                     <li>
                       <Link
                         href="/dashboard/schools-list"

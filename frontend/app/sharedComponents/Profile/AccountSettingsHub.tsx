@@ -300,7 +300,7 @@ export const AccountSettingsHub: React.FC<AccountSettingsHubProps> = ({
 
         {hasChanges && (
           <div className="inline-flex items-center gap-2 self-start sm:self-center rounded-full border border-amber-200 bg-amber-50 px-3.5 py-1.5 text-xs font-semibold text-amber-800">
-            <span className="h-2 w-2 rounded-full bg-amber-500 animate-pulse" />
+            <span className="h-2 w-2 rounded-full bg-amber-500" />
             Unsaved changes
           </div>
         )}

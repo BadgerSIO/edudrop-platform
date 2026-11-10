@@ -1,7 +1,6 @@
 "use client";
 import { useAuthContext } from "@/app/context/AuthContext";
 import useAuth from "@/app/hooks/useAuth";
-import SideBarLoading from "@/app/sharedComponents/Loders/SideBarLoading";
 import { ISubmissions } from "@/app/types/submission";
 import { User, ShoppingBag, Inbox, LogOut, Lock, School } from "lucide-react";
 import Image from "next/image";
@@ -16,10 +15,6 @@ const Sidebar = ({ propdata = [] }: { propdata?: ISubmissions[] }) => {
   const { data, loading } = useAuthContext();
   const { signout } = useAuth();
   const pathname = usePathname();
-
-  if (loading) {
-    return <SideBarLoading />;
-  }
 
   const isBursarActive = Boolean(data?.bursar?.active);
 
@@ -91,7 +86,12 @@ const Sidebar = ({ propdata = [] }: { propdata?: ISubmissions[] }) => {
 
               {/* Orders */}
               <li>
-                {isBursarActive ? (
+                {loading ? (
+                  <div
+                    aria-hidden="true"
+                    className="edudrop-shimmer h-10 w-full rounded-xl"
+                  />
+                ) : isBursarActive ? (
                   <Link
                     href="/bursar-dashboard/my-orders"
                     className={`group flex items-center justify-center gap-3 rounded-xl px-2.5 py-2.5 text-sm font-medium transition-all lg:justify-start lg:px-3.5 ${
@@ -121,7 +121,12 @@ const Sidebar = ({ propdata = [] }: { propdata?: ISubmissions[] }) => {
 
               {/* Inbox */}
               <li>
-                {isBursarActive ? (
+                {loading ? (
+                  <div
+                    aria-hidden="true"
+                    className="edudrop-shimmer h-10 w-full rounded-xl"
+                  />
+                ) : isBursarActive ? (
                   <Link
                     href="/bursar-dashboard/inbox"
                     className={`group relative flex items-center justify-center gap-3 rounded-xl px-2.5 py-2.5 text-sm font-medium transition-all lg:justify-start lg:px-3.5 ${

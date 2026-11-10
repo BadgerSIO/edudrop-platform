@@ -101,7 +101,7 @@ export default function InboxDetailHub({
                         isReplied
                           ? "bg-blue-600"
                           : isUnread
-                          ? "bg-amber-500 animate-pulse"
+                          ? "bg-amber-500"
                           : "bg-surface-forest"
                       }`}
                     />

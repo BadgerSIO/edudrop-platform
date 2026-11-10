@@ -63,7 +63,13 @@ export function extractSchoolMeta(school?: ISchoolInfo): {
   return { location, students };
 }
 
-export const SchoolCard = ({ school }: { school: ISchoolInfo }) => {
+export const SchoolCard = ({
+  school,
+  style,
+}: {
+  school: ISchoolInfo;
+  style?: React.CSSProperties;
+}) => {
   const router = useRouter();
 
   if (!school) return null;
@@ -75,6 +81,7 @@ export const SchoolCard = ({ school }: { school: ISchoolInfo }) => {
 
   return (
     <div
+      style={style}
       onClick={() => router.push(`/schools/${slug}`)}
       className="group flex flex-col justify-between overflow-hidden rounded-3xl border border-border-subtle bg-white shadow-bento transition-all duration-300 hover:-translate-y-1 hover:border-surface-forest/30 hover:shadow-bento-hover cursor-pointer"
     >

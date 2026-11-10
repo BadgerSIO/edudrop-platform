@@ -334,7 +334,7 @@ export default function SchoolDetailHub({
                   >
                     <span
                       className={`h-1.5 w-1.5 rounded-full ${
-                        isActive ? "bg-surface-forest animate-pulse" : "bg-amber-500"
+                        isActive ? "bg-surface-forest" : "bg-amber-500"
                       }`}
                     />
                     {isActive ? "Verified Active" : "Pending Verification"}

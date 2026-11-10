@@ -5,8 +5,9 @@ import ProductCardCheckout from "@/app/(primary)/checkout/components/ProductCard
 import makePayment from "@/app/utility/makePayment";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-import { Check, CreditCard, ShieldCheck } from "lucide-react";
+import { CreditCard, ShieldCheck } from "lucide-react";
 import { ActionPillButton } from "@/app/sharedComponents/ui/ActionPillButton";
+import OrderTimeline from "@/app/sharedComponents/OrderTimeline";
 
 const OrderDetails = ({ order }: { order: IOrder }) => {
   const router = useRouter();
@@ -20,8 +21,6 @@ const OrderDetails = ({ order }: { order: IOrder }) => {
   }
 
   const { orderStatus } = order;
-  const orderSteps = ["pending", "processing", "on the way", "received"];
-  const stepIndex = orderSteps.indexOf(orderStatus?.toLowerCase() || "pending");
 
   const handlePayment = async () => {
     try {
@@ -73,73 +72,12 @@ const OrderDetails = ({ order }: { order: IOrder }) => {
       </div>
 
       {/* Progress Timeline Card */}
-      <div className="rounded-2xl border border-border-subtle bg-white p-6 shadow-bento">
+      <div className="dash-card-enter rounded-2xl border border-border-subtle bg-white p-6 shadow-bento">
         <h3 className="text-xs font-semibold uppercase tracking-wider text-text-muted mb-6">
           Sponsorship Fulfillment Timeline
         </h3>
 
-        {/* Desktop / Tablet Timeline */}
-        <div className="hidden sm:block px-2">
-          <div className="flex items-start w-full">
-            {orderSteps.map((step, idx) => {
-              const isPassed = idx <= stepIndex;
-              const isCurrent = idx === stepIndex;
-              const isLast = idx === orderSteps.length - 1;
-
-              return (
-                <React.Fragment key={step}>
-                  <div className="flex flex-col items-center flex-shrink-0 min-w-[72px]">
-                    <div
-                      className={`flex h-9 w-9 items-center justify-center rounded-full border-2 transition-all duration-300 ${
-                        isCurrent
-                          ? "border-surface-forest bg-surface-forest text-white ring-4 ring-surface-forest/15 shadow-sm"
-                          : isPassed
-                          ? "border-surface-forest bg-surface-forest text-white shadow-sm"
-                          : "border-border-subtle bg-white text-text-muted"
-                      }`}
-                    >
-                      {isPassed ? (
-                        <Check className="h-4 w-4 stroke-[2.5]" />
-                      ) : (
-                        <span className="text-xs font-semibold">{idx + 1}</span>
-                      )}
-                    </div>
-                    <span
-                      className={`mt-2.5 text-xs font-semibold capitalize whitespace-nowrap transition-colors duration-200 ${
-                        isCurrent
-                          ? "text-surface-forest font-bold"
-                          : isPassed
-                          ? "text-text-ink"
-                          : "text-text-muted"
-                      }`}
-                    >
-                      {step}
-                    </span>
-                  </div>
-
-                  {!isLast && (
-                    <div className="flex-1 h-1 bg-surface-bento mt-4 mx-2 sm:mx-3 rounded-full overflow-hidden self-start">
-                      <div
-                        className={`h-full bg-surface-forest transition-all duration-500 rounded-full ${
-                          idx < stepIndex ? "w-full" : "w-0"
-                        }`}
-                      />
-                    </div>
-                  )}
-                </React.Fragment>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Mobile Status Badge */}
-        <div className="sm:hidden flex items-center justify-between py-1">
-          <span className="text-sm font-medium text-text-body">Current State:</span>
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-surface-forest/20 bg-surface-forest/10 px-3 py-1 text-xs font-semibold text-surface-forest capitalize">
-            <span className="h-1.5 w-1.5 rounded-full bg-surface-forest animate-pulse" />
-            {orderStatus}
-          </span>
-        </div>
+        <OrderTimeline currentStatus={orderStatus} />
       </div>
 
       {/* Items & Beneficiary Summary Card */}

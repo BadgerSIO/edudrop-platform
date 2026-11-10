@@ -60,7 +60,7 @@ const SchoolsList = async () => {
       {/* KPI Stats Bar */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {/* KPI 1 */}
-        <div className="rounded-2xl border border-border-subtle bg-white p-5 shadow-bento">
+        <div className="dash-card-enter rounded-2xl border border-border-subtle bg-white p-5 shadow-bento">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold uppercase tracking-wider text-text-muted">
               Total Enrolled Campuses
@@ -78,7 +78,10 @@ const SchoolsList = async () => {
         </div>
 
         {/* KPI 2 */}
-        <div className="rounded-2xl border border-border-subtle bg-white p-5 shadow-bento">
+        <div
+          style={{ "--dash-delay": "50ms" } as React.CSSProperties}
+          className="dash-card-enter rounded-2xl border border-border-subtle bg-white p-5 shadow-bento"
+        >
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold uppercase tracking-wider text-text-muted">
               Verified & Active
@@ -100,7 +103,10 @@ const SchoolsList = async () => {
         </div>
 
         {/* KPI 3 */}
-        <div className="rounded-2xl border border-border-subtle bg-white p-5 shadow-bento">
+        <div
+          style={{ "--dash-delay": "100ms" } as React.CSSProperties}
+          className="dash-card-enter rounded-2xl border border-border-subtle bg-white p-5 shadow-bento"
+        >
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold uppercase tracking-wider text-text-muted">
               Pending / Inactive

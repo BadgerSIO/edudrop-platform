@@ -20,6 +20,7 @@ import { SERVERURLAPI } from "@/lib/constants";
 import axios from "axios";
 import ActionPillButton from "@/app/sharedComponents/ui/ActionPillButton";
 import BentoCard from "@/app/sharedComponents/ui/BentoCard";
+import EduDropLoader from "@/app/sharedComponents/Loders/EduDropLoader";
 import { CheckCircle2, Lock, ArrowRight, Loader2 } from "lucide-react";
 
 interface IFormInput {
@@ -176,12 +177,11 @@ export const CheckoutForm = ({ schools }: CheckoutProps) => {
 
   if (loading) {
     return (
-      <div className="flex min-h-[50vh] items-center justify-center">
-        <div className="flex flex-col items-center gap-3 text-surface-forest">
-          <Loader2 className="h-8 w-8 animate-spin" />
-          <p className="text-sm font-semibold">Loading checkout details...</p>
-        </div>
-      </div>
+      <EduDropLoader
+        size="md"
+        label="Loading checkout details..."
+        sublabel="Verifying donor profile and campus delivery details"
+      />
     );
   }
 

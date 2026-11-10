@@ -6,11 +6,11 @@ const SideBarLoading = () => {
       <div className="sticky top-0 flex min-h-screen flex-col justify-between p-3 lg:p-4">
         <div className="space-y-6">
           <div className="flex flex-col items-center lg:items-start px-1 pt-2">
-            <div className="h-8 w-20 rounded bg-surface-bento animate-pulse" />
+            <div className="edudrop-shimmer h-8 w-24 rounded-lg" />
           </div>
-          <div className="space-y-2">
+          <div className="space-y-2.5">
             {[1, 2, 3, 4, 5].map((i) => (
-              <div key={i} className="h-10 w-full rounded-xl bg-surface-bento animate-pulse" />
+              <div key={i} className="edudrop-shimmer h-10 w-full rounded-xl" />
             ))}
           </div>
         </div>
