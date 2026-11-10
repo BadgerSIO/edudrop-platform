@@ -11,7 +11,8 @@ import { handleRevalidation } from "@/app/utility/handleRevalidation";
 import { getCookie } from "@/app/utility/handleCookie";
 import CustomAlertDialouge from "../../../../../sharedComponents/CustomAlertDialouge";
 import OrderTimeline from "@/app/sharedComponents/OrderTimeline";
-import { Loader2 } from "lucide-react";
+import { Download, Loader2 } from "lucide-react";
+import { generateOrderInvoice } from "@/app/utility/generateOrderInvoice";
 
 const OrderDetails = ({ order }: { order: IOrder }) => {
   const router = useRouter();
@@ -87,9 +88,21 @@ const OrderDetails = ({ order }: { order: IOrder }) => {
     <div className="space-y-6">
       {/* Progress Timeline Card */}
       <div className="dash-card-enter rounded-2xl border border-border-subtle bg-white p-6 shadow-bento">
-        <h3 className="text-xs font-semibold uppercase tracking-wider text-text-muted mb-6">
-          Order Tracking Status
-        </h3>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+          <h3 className="text-xs font-semibold uppercase tracking-wider text-text-muted">
+            Order Tracking Status
+          </h3>
+          {order?.paymentStatus && (
+            <button
+              type="button"
+              onClick={() => generateOrderInvoice(order, { audience: "admin" })}
+              className="inline-flex items-center gap-1.5 self-start sm:self-auto rounded-xl border border-border-subtle bg-white px-3.5 py-2 text-xs font-semibold text-text-ink shadow-sm transition-all hover:bg-surface-bento hover:border-surface-forest/30 active:scale-[0.98]"
+            >
+              <Download className="h-3.5 w-3.5 text-surface-forest" />
+              Download Invoice
+            </button>
+          )}
+        </div>
 
         <OrderTimeline currentStatus={currentStatus} />
 

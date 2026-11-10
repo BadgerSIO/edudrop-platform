@@ -5,6 +5,7 @@ export const submissionsFilterableFields = [
   "firstName",
   "lastName",
   "phone",
+  "topic",
   "seen",
   "status",
   "isDeleted",
@@ -15,5 +16,6 @@ export const submissionsSearchableFields = [
   "firstName",
   "lastName",
   "phone",
+  "topic",
   "message",
 ];

@@ -2,7 +2,6 @@
 import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import useScrollToId from "../hooks/useScrollToId";
 import { cn } from "@/lib/utils";
 
 export interface NavLinkProps {
@@ -19,7 +18,6 @@ export const NavLink = ({
   onNavigate,
 }: NavLinkProps) => {
   const pathname = usePathname();
-  const { scrollToId } = useScrollToId();
 
   const isActive =
     href === "/"
@@ -40,23 +38,6 @@ export const NavLink = ({
   const handleClick = () => {
     if (onNavigate) onNavigate();
   };
-
-  if (text === "Contact" && pathname !== "/") {
-    return (
-      <li>
-        <button
-          type="button"
-          onClick={() => {
-            if (onNavigate) onNavigate();
-            scrollToId("contact", "/");
-          }}
-          className={linkClasses}
-        >
-          {text}
-        </button>
-      </li>
-    );
-  }
 
   return (
     <li>

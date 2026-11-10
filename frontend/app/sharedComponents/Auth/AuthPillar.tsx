@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import BrandLogo from "@/app/sharedComponents/ui/BrandLogo";
 import SectionEyebrow from "@/app/sharedComponents/ui/SectionEyebrow";
 import { CheckCircle2, Lock, Sparkles, ShieldCheck } from "lucide-react";
 
@@ -38,6 +39,8 @@ export const AuthPillar: React.FC<AuthPillarProps> = ({
 
       {/* Main Content */}
       <div className="relative z-10 space-y-4 sm:space-y-5">
+        <BrandLogo variant="on-dark" size="sm" showTagline />
+
         <div>
           <SectionEyebrow variant="dark">{eyebrow}</SectionEyebrow>
         </div>

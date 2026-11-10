@@ -10,7 +10,7 @@ import { Mail, MapPin, Phone, ShieldCheck } from "lucide-react";
 
 const Contact = ({ data }: { data: IContactInfo }) => {
   return (
-    <section id="contact" className="bg-surface-canvas pb-20 pt-10 sm:pb-28">
+    <section id="contact" className="scroll-mt-24 bg-surface-canvas pb-20 pt-10 sm:pb-28">
       <div className="mx-auto max-w-[1320px] px-5 sm:px-8 space-y-16 sm:space-y-20">
         {/* High-Impact Forest Emerald Conversion Banner */}
         <Reveal>

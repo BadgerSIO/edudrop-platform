@@ -18,6 +18,7 @@ import {
   ShieldCheck,
   Heart,
   ArrowRight,
+  User as UserIcon,
 } from "lucide-react";
 import toast from "react-hot-toast";
 
@@ -146,6 +147,9 @@ export const UserMenu: React.FC<UserMenuProps> = ({ mobile = false, onNavigate }
     if (onNavigate) onNavigate();
   };
 
+  const secondaryMenuLinkClass =
+    "flex items-center gap-2.5 rounded-xl bg-white px-3 py-2 text-xs font-medium text-text-body transition-colors duration-150 ease-out hover:bg-surface-bento hover:text-text-ink focus-visible:bg-surface-bento focus-visible:text-text-ink focus-visible:outline-none";
+
   // Mobile drawer presentation
   if (mobile) {
     const RoleIcon = roleBadge.icon;
@@ -216,6 +220,17 @@ export const UserMenu: React.FC<UserMenuProps> = ({ mobile = false, onNavigate }
             </Link>
           )}
 
+          {role === "admin" && (
+            <Link
+              href="/dashboard/profile"
+              onClick={handleLinkClick}
+              className="flex items-center gap-2 rounded-xl px-3.5 py-2 text-xs font-medium text-text-body transition-colors hover:bg-white hover:text-text-ink"
+            >
+              <UserIcon className="h-4 w-4 text-surface-forest" />
+              My Profile
+            </Link>
+          )}
+
           <button
             type="button"
             onClick={handleSignout}
@@ -256,7 +271,7 @@ export const UserMenu: React.FC<UserMenuProps> = ({ mobile = false, onNavigate }
 
       {/* Dropdown Menu */}
       {isOpen && (
-        <div className="absolute right-0 top-full mt-2.5 w-64 rounded-2xl border border-border-subtle bg-white p-2 shadow-2xl z-[150] text-text-ink animate-in fade-in-0 zoom-in-95 duration-150">
+        <div className="dropdown-menu-panel isolate absolute right-0 top-full mt-2.5 w-64 rounded-2xl border border-border-subtle bg-white p-2 shadow-2xl z-[150] text-text-ink">
           {/* Header Profile Box */}
           <div className="rounded-xl bg-surface-bento/60 p-3">
             <div className="flex items-center gap-2.5">
@@ -285,13 +300,13 @@ export const UserMenu: React.FC<UserMenuProps> = ({ mobile = false, onNavigate }
             <Link
               href={dashboardHref}
               onClick={handleLinkClick}
-              className="group flex items-center justify-between rounded-xl px-3 py-2 text-xs font-semibold text-text-ink transition-colors hover:bg-surface-forest hover:text-white"
+              className="group/portal flex items-center justify-between rounded-xl bg-white px-3 py-2 text-xs font-semibold text-text-ink transition-colors duration-150 ease-out hover:bg-surface-forest hover:text-white focus-visible:bg-surface-forest focus-visible:text-white focus-visible:outline-none"
             >
               <span className="flex items-center gap-2.5">
-                <LayoutDashboard className="h-4 w-4 text-surface-forest group-hover:text-brand-lime" />
+                <LayoutDashboard className="h-4 w-4 text-surface-forest transition-colors duration-150 ease-out group-hover/portal:text-brand-lime group-focus-visible/portal:text-brand-lime" />
                 Dashboard Portal
               </span>
-              <ArrowRight className="h-3.5 w-3.5 opacity-60 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all" />
+              <ArrowRight className="h-3.5 w-3.5 opacity-60 transition-[transform,opacity] duration-150 ease-out group-hover/portal:translate-x-0.5 group-hover/portal:opacity-100 group-focus-visible/portal:translate-x-0.5 group-focus-visible/portal:opacity-100 motion-reduce:transform-none" />
             </Link>
 
             {role === "donar" && (
@@ -299,7 +314,7 @@ export const UserMenu: React.FC<UserMenuProps> = ({ mobile = false, onNavigate }
                 <Link
                   href="/donar-dashboard/my-orders"
                   onClick={handleLinkClick}
-                  className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-text-body transition-colors hover:bg-surface-bento hover:text-text-ink"
+                  className={secondaryMenuLinkClass}
                 >
                   <PackageCheck className="h-4 w-4 text-text-body" />
                   My Sponsorships
@@ -307,7 +322,7 @@ export const UserMenu: React.FC<UserMenuProps> = ({ mobile = false, onNavigate }
                 <Link
                   href="/donar-dashboard/track-your-order"
                   onClick={handleLinkClick}
-                  className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-text-body transition-colors hover:bg-surface-bento hover:text-text-ink"
+                  className={secondaryMenuLinkClass}
                 >
                   <Truck className="h-4 w-4 text-text-body" />
                   Track Live Deliveries
@@ -315,7 +330,7 @@ export const UserMenu: React.FC<UserMenuProps> = ({ mobile = false, onNavigate }
                 <Link
                   href="/donar-dashboard/update-profile"
                   onClick={handleLinkClick}
-                  className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-text-body transition-colors hover:bg-surface-bento hover:text-text-ink"
+                  className={secondaryMenuLinkClass}
                 >
                   <Settings className="h-4 w-4 text-text-body" />
                   Profile Settings
@@ -328,7 +343,7 @@ export const UserMenu: React.FC<UserMenuProps> = ({ mobile = false, onNavigate }
                 <Link
                   href="/bursar-dashboard/my-orders"
                   onClick={handleLinkClick}
-                  className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-text-body transition-colors hover:bg-surface-bento hover:text-text-ink"
+                  className={secondaryMenuLinkClass}
                 >
                   <PackageCheck className="h-4 w-4 text-text-body" />
                   Campus Shipments
@@ -336,7 +351,7 @@ export const UserMenu: React.FC<UserMenuProps> = ({ mobile = false, onNavigate }
                 <Link
                   href="/bursar-dashboard/inbox"
                   onClick={handleLinkClick}
-                  className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-text-body transition-colors hover:bg-surface-bento hover:text-text-ink"
+                  className={secondaryMenuLinkClass}
                 >
                   <Mail className="h-4 w-4 text-text-body" />
                   Campus Inquiries
@@ -344,7 +359,7 @@ export const UserMenu: React.FC<UserMenuProps> = ({ mobile = false, onNavigate }
                 <Link
                   href="/bursar-dashboard/update-profile"
                   onClick={handleLinkClick}
-                  className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-text-body transition-colors hover:bg-surface-bento hover:text-text-ink"
+                  className={secondaryMenuLinkClass}
                 >
                   <Settings className="h-4 w-4 text-text-body" />
                   Profile Settings
@@ -357,7 +372,7 @@ export const UserMenu: React.FC<UserMenuProps> = ({ mobile = false, onNavigate }
                 <Link
                   href="/dashboard/orders"
                   onClick={handleLinkClick}
-                  className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-text-body transition-colors hover:bg-surface-bento hover:text-text-ink"
+                  className={secondaryMenuLinkClass}
                 >
                   <PackageCheck className="h-4 w-4 text-text-body" />
                   All Orders
@@ -365,7 +380,7 @@ export const UserMenu: React.FC<UserMenuProps> = ({ mobile = false, onNavigate }
                 <Link
                   href="/dashboard/schools-list"
                   onClick={handleLinkClick}
-                  className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-text-body transition-colors hover:bg-surface-bento hover:text-text-ink"
+                  className={secondaryMenuLinkClass}
                 >
                   <School className="h-4 w-4 text-text-body" />
                   Partner Schools
@@ -373,10 +388,18 @@ export const UserMenu: React.FC<UserMenuProps> = ({ mobile = false, onNavigate }
                 <Link
                   href="/dashboard/manage-users"
                   onClick={handleLinkClick}
-                  className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-text-body transition-colors hover:bg-surface-bento hover:text-text-ink"
+                  className={secondaryMenuLinkClass}
                 >
                   <Users className="h-4 w-4 text-text-body" />
                   User Directory
+                </Link>
+                <Link
+                  href="/dashboard/profile"
+                  onClick={handleLinkClick}
+                  className={secondaryMenuLinkClass}
+                >
+                  <UserIcon className="h-4 w-4 text-text-body" />
+                  My Profile
                 </Link>
               </>
             )}
@@ -387,7 +410,7 @@ export const UserMenu: React.FC<UserMenuProps> = ({ mobile = false, onNavigate }
             <button
               type="button"
               onClick={handleSignout}
-              className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-semibold text-red-600 transition-colors hover:bg-red-50 w-full cursor-pointer"
+              className="flex w-full cursor-pointer items-center gap-2.5 rounded-xl bg-white px-3 py-2 text-xs font-semibold text-red-600 transition-colors duration-150 ease-out hover:bg-red-50 focus-visible:bg-red-50 focus-visible:outline-none"
             >
               <LogOut className="h-4 w-4" />
               Sign Out

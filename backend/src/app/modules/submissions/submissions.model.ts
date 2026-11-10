@@ -7,6 +7,7 @@ const SubmissionsSchema = new Schema<ISubmissions>(
     lastName: { type: String, required: true },
     email: { type: String, required: true },
     phone: { type: String },
+    topic: { type: String, trim: true },
     message: { type: String, required: true },
     messageId: { type: String },
     seen: { type: Boolean, default: false },

@@ -157,9 +157,17 @@ export default function InboxDirectory({
       ),
       cell: ({ row }) => {
         const message = row.original.message || "";
+        const topic = row.original.topic;
         return (
-          <div className="max-w-[280px] lg:max-w-[360px] truncate text-xs text-text-muted font-normal">
-            {message}
+          <div className="max-w-[280px] lg:max-w-[360px] space-y-1">
+            {topic && (
+              <span className="inline-flex items-center rounded-full border border-surface-forest/20 bg-surface-forest/5 px-2 py-0.5 text-[10px] font-semibold text-surface-forest">
+                {topic}
+              </span>
+            )}
+            <div className="truncate text-xs text-text-muted font-normal">
+              {message}
+            </div>
           </div>
         );
       },

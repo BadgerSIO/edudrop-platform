@@ -1,46 +1,43 @@
 import { z } from "zod";
-import { bloodGroup, gender } from "../../../constants/common";
 
 const updateAdminZodSchema = z.object({
   body: z.object({
     name: z
       .object({
-        firstName: z.string().optional(),
-        lastName: z.string().optional(),
-        middleName: z.string().optional(),
+        firstName: z
+          .string()
+          .trim()
+          .min(1, "First name cannot be empty")
+          .max(60, "First name must be under 60 characters")
+          .optional(),
+        lastName: z
+          .string()
+          .trim()
+          .min(1, "Last name cannot be empty")
+          .max(60, "Last name must be under 60 characters")
+          .optional(),
       })
       .optional(),
-    gender: z.enum([...gender] as [string, ...string[]]).optional(),
-    dateOfBirth: z.string().optional(),
-    email: z.string().email().optional(),
-    contactNo: z.string().optional(),
-    emergencyContactNo: z.string().optional(),
-    bloodGroup: z.enum([...bloodGroup] as [string, ...string[]]).optional(),
-    presentAddress: z.string().optional(),
-    permanentAddress: z.string().optional(),
-    academicSemester: z.string().optional(),
-    academicDepartment: z.string().optional(),
-    academicFaculty: z.string().optional(),
-    guardian: z
-      .object({
-        fatherName: z.string().optional(),
-        fatherOccupation: z.string().optional(),
-        fatherContactNo: z.string().optional(),
-        motherName: z.string().optional(),
-        motherOccupation: z.string().optional(),
-        motherContactNo: z.string().optional(),
-        address: z.string().optional(),
-      })
+    contactNo: z
+      .string()
+      .trim()
+      .min(6, "Contact number must be at least 6 characters")
+      .max(30, "Contact number must be under 30 characters")
+      .regex(/^[+\d\s\-().]+$/, "Please enter a valid phone number")
       .optional(),
-    localGuardian: z
-      .object({
-        name: z.string().optional(),
-        occupation: z.string().optional(),
-        contactNo: z.string().optional(),
-        address: z.string().optional(),
-      })
+    presentAddress: z
+      .string()
+      .trim()
+      .max(300, "Present address must be under 300 characters")
       .optional(),
-    profileImage: z.string().optional(),
+    permanentAddress: z
+      .string()
+      .trim()
+      .max(300, "Permanent address must be under 300 characters")
+      .optional(),
+    removeProfileImage: z
+      .union([z.boolean(), z.enum(["true", "false"])])
+      .optional(),
   }),
 });
 

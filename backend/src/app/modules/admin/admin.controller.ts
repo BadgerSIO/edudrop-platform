@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import httpStatus from "http-status";
+import ApiError from "../../../error/ApiError";
 import catchAsync from "../../../shared/catchAsync";
 import sendResponse from "../../../shared/sendResponse";
 import { IAdmin } from "./admin.interface";
@@ -14,6 +15,22 @@ const getCounts = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+
+const getMyProfile = catchAsync(async (req: Request, res: Response) => {
+  const adminId = res.locals.user?.admin;
+  if (!adminId) {
+    throw new ApiError(httpStatus.NOT_FOUND, "Admin profile not linked to user");
+  }
+
+  const result = await AdminService.getSingleAdmin(String(adminId));
+  sendResponse<IAdmin>(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Admin profile fetched successfully !",
+    data: result,
+  });
+});
+
 const getSingleAdmin = catchAsync(async (req: Request, res: Response) => {
   const id = req.params.id;
 
@@ -39,23 +56,10 @@ const deleteAdmin = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
-const updateAdmin = catchAsync(async (req: Request, res: Response) => {
-  const id = req.params.id;
-  const updatedData = req.body;
-
-  const result = await AdminService.updateAdmin(id, updatedData);
-
-  sendResponse<IAdmin>(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: "Admin updated successfully !",
-    data: result,
-  });
-});
 
 export const AdminController = {
+  getMyProfile,
   getSingleAdmin,
   deleteAdmin,
-  updateAdmin,
   getCounts,
 };

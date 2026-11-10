@@ -167,7 +167,12 @@ const createOrder = async (payload: IOrder): Promise<IOrder | null> => {
     const result = await Order.create([payload], { session });
     await session.commitTransaction();
     session.endSession();
-    const orderDoc: Record<string, any> = result[0].toObject();
+
+    const populated = await Order.findById(result[0]._id).populate(
+      "schoolId",
+      "name contactNo address"
+    );
+    const orderDoc: Record<string, any> = (populated || result[0]).toObject();
     if (newAccountCredentials) {
       orderDoc.newAccountCredentials = newAccountCredentials;
     }
@@ -180,7 +185,10 @@ const createOrder = async (payload: IOrder): Promise<IOrder | null> => {
     if (payload.orderId) {
       for (let attempt = 0; attempt < 5; attempt++) {
         await new Promise((resolve) => setTimeout(resolve, 300));
-        const existingOrder = await Order.findOne({ orderId: payload.orderId });
+        const existingOrder = await Order.findOne({ orderId: payload.orderId }).populate(
+          "schoolId",
+          "name contactNo address"
+        );
         if (existingOrder) {
           return existingOrder;
         }
@@ -531,7 +539,7 @@ const updateOrderPaymentById = async (
   const result = await Order.findOneAndUpdate({ _id: id }, payload, {
     new: true,
     runValidators: true,
-  });
+  }).populate("schoolId", "name contactNo address");
   if (result) {
     const findAdmin = await User.findOne(
       { role: "admin" },

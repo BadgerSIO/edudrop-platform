@@ -1,9 +1,9 @@
 "use client";
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
 import ActionPillButton from "./ui/ActionPillButton";
+import BrandLogo from "./ui/BrandLogo";
 
 const Footer = () => {
   const pathname = usePathname();
@@ -19,16 +19,12 @@ const Footer = () => {
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-16">
           {/* Brand & Mission Column */}
           <div className="space-y-6 lg:col-span-5">
-            <Link href="/" className="inline-block">
-              <div className="rounded-full bg-white px-3.5 py-1.5 shadow-sm">
-                <Image
-                  src="/logo.webp"
-                  width={96}
-                  height={40}
-                  alt="EduDrop Foundation"
-                  className="h-8 w-auto object-contain"
-                />
-              </div>
+            <Link
+              href="/"
+              aria-label="EduDrop Foundation Home"
+              className="inline-flex items-center transition-opacity hover:opacity-90"
+            >
+              <BrandLogo variant="on-dark" size="md" showTagline />
             </Link>
             <p className="max-w-md text-sm leading-relaxed text-on-forest-muted sm:text-base">
               EduDrop is a community-driven sponsorship platform. We connect
@@ -77,7 +73,7 @@ const Footer = () => {
                 </li>
                 <li>
                   <Link
-                    href="/#contact"
+                    href="/contact"
                     className="text-on-forest-muted transition-colors hover:text-white"
                   >
                     Get in Touch
@@ -135,7 +131,7 @@ const Footer = () => {
               <ul className="space-y-2.5 text-sm">
                 <li>
                   <Link
-                    href="/#contact"
+                    href="/contact#faq"
                     className="text-on-forest-muted transition-colors hover:text-white"
                   >
                     Terms & Delivery Policy
@@ -143,7 +139,7 @@ const Footer = () => {
                 </li>
                 <li>
                   <Link
-                    href="/#contact"
+                    href="/contact#faq"
                     className="text-on-forest-muted transition-colors hover:text-white"
                   >
                     Privacy Commitment
@@ -151,7 +147,7 @@ const Footer = () => {
                 </li>
                 <li>
                   <Link
-                    href="/#contact"
+                    href="/contact?topic=school"
                     className="text-on-forest-muted transition-colors hover:text-white"
                   >
                     Bursar Portal Verification
