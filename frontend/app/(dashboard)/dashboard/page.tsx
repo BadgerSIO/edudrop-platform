@@ -32,11 +32,9 @@ const Dashboard = async () => {
             All Orders
           </ActionPillButton>
         </div>
-        <div className="p-2 sm:p-4">
-          <Suspense fallback={<DataTableLoading />}>
-            <RecentOrderTable />
-          </Suspense>
-        </div>
+        <Suspense fallback={<DataTableLoading />}>
+          <RecentOrderTable />
+        </Suspense>
       </div>
     </div>
   );

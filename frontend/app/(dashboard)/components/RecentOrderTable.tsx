@@ -51,7 +51,14 @@ const RecentOrderTable = async () => {
     undefined,
     3,
   ); // Pass dynamic filter parameters
-  return <DataTable columns={columns} data={data?.data} />;
+  return (
+    <DataTable
+      columns={columns}
+      data={data?.data}
+      searchPlaceholder="Search recent orders..."
+      variant="embedded"
+    />
+  );
 };
 
 export default RecentOrderTable;

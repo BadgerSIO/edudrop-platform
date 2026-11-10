@@ -213,13 +213,11 @@ export default function UserDirectoryHub({
       </div>
 
       {/* Modern Data Table Bento Box */}
-      <div className="rounded-2xl border border-border-subtle bg-white shadow-bento overflow-hidden">
-        <DataTable
-          columns={columns}
-          data={filteredUsers}
-          searchPlaceholder="Search accounts by name, email, role, phone..."
-        />
-      </div>
+      <DataTable
+        columns={columns}
+        data={filteredUsers}
+        searchPlaceholder="Search accounts by name, email, role, phone..."
+      />
     </div>
   );
 }
