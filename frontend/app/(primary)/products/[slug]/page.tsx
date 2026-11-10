@@ -1,0 +1,55 @@
+import React from "react";
+import { Metadata } from "next";
+import Hero from "./components/Hero";
+import ProductInfo from "./components/ProductInfo";
+import { SERVERURLAPI } from "@/lib/constants";
+import { IProduct } from "@/app/types/Product";
+
+async function getProductOptimized(slug: string) {
+  const res = await fetch(`${SERVERURLAPI}/product/optimized/${slug}`, {
+    next: { tags: ["productsCollection"] },
+    cache: "no-store",
+  });
+  if (!res.ok) {
+    throw new Error("Failed to fetch data");
+  }
+  return res.json();
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  try {
+    const { slug } = await params;
+    const data = await getProductOptimized(slug);
+    const product: IProduct = data?.data;
+    return {
+      title: `${product?.title || "Classroom Essential"} | EduDrop Foundation`,
+      description:
+        product?.description ||
+        `Sponsor ${product?.title} for verified partner classrooms with direct gate delivery.`,
+    };
+  } catch {
+    return {
+      title: "Classroom Supply | EduDrop Foundation",
+      description: "Sponsor essential hydration and classroom supplies.",
+    };
+  }
+}
+
+const ProductSingle = async ({ params }: { params: Promise<{ slug: string }> }) => {
+  const { slug } = await params;
+  const data = await getProductOptimized(slug);
+  const product: IProduct = data?.data;
+
+  return (
+    <main className="min-h-screen bg-surface-canvas">
+      <Hero product={product} />
+      <ProductInfo product={product} />
+    </main>
+  );
+};
+
+export default ProductSingle;

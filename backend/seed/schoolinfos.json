@@ -1,0 +1,402 @@
+[
+  {
+    "_id": {
+      "$oid": "65da260e6a332fe6d3d550d2"
+    },
+    "school": {
+      "$oid": "65da260d6a332fe6d3d550cc"
+    },
+    "bursar": {
+      "$oid": "65da260d6a332fe6d3d550cf"
+    },
+    "schoolName": "Oakridge Technical High School",
+    "slug": "oakridge-technical-high-school",
+    "schoolLogo": "/uploads/school/oakridge-logo.webp",
+    "featuredImage": "/uploads/school/oakridge-campus.webp",
+    "heroBackgroundImage": "/uploads/school/oakridge-campus.webp",
+    "heroTitle": "Oakridge Technical High School",
+    "shortDescription": "Oakridge Technical High School is a public magnet and career-technical secondary school in Austin, Texas, serving over 1,400 students across engineering, environmental science, and health technology pathways.",
+    "principal": "Dr. Arthur Pendelton",
+    "vicePrincipal": "Sarah Jenkins",
+    "schoolWebsiteLink": "https://edudrop.org",
+    "sectionOneTitle": "Oakridge Technical High School",
+    "sectionOneDescription": "Excellence in Innovation and Service.<br>Serving Austin high school students with hands-on STEM education.",
+    "sectionOneImage": "/uploads/school/1703747906336-626435444-w1.webp",
+    "sectionOneImageAlt": "Oakridge Technical High School Campus",
+    "sectionTwoTitle": "Principal's Welcome",
+    "sectionTwoDescription": "Welcome to Oakridge Technical High School. Our mission is to empower students through real-world learning and environmental stewardship, supported by clean hydration stations throughout our campus.",
+    "gallery": [
+      {
+        "imageUrl": "/uploads/school/1703747906336-626435444-w1.webp",
+        "title": "Science Wing",
+        "_id": {
+          "$oid": "65f322fb86cfeccf777cd3a9"
+        }
+      },
+      {
+        "imageUrl": "/uploads/school/1703747906336-717736582-w3.webp",
+        "title": "Engineering Lab",
+        "_id": {
+          "$oid": "65f322fb86cfeccf777cd3aa"
+        }
+      },
+      {
+        "imageUrl": "/uploads/school/1703747906336-45367266-w5.webp",
+        "title": "Hydration Station",
+        "_id": {
+          "$oid": "65f322fb86cfeccf777cd3ab"
+        }
+      }
+    ],
+    "schoolStats": [
+      {
+        "title": "Austin, Texas",
+        "_id": {
+          "$oid": "65dcd8cfae7bfd9f0ae7a849"
+        }
+      },
+      {
+        "title": "Established in 1985",
+        "_id": {
+          "$oid": "65dcd8cfae7bfd9f0ae7a84a"
+        }
+      },
+      {
+        "title": "1400+ Students",
+        "_id": {
+          "$oid": "65dcd8cfae7bfd9f0ae7a84b"
+        }
+      }
+    ],
+    "achievements": [
+      {
+        "title": "State Robotics Championship 2024",
+        "_id": {
+          "$oid": "65dcd8cfae7bfd9f0ae7a84c"
+        }
+      },
+      {
+        "title": "Clean Campus Excellence Award",
+        "_id": {
+          "$oid": "65dcd8cfae7bfd9f0ae7a84d"
+        }
+      },
+      {
+        "title": "Top 10 Technical Academy in Texas",
+        "_id": {
+          "$oid": "65dcd8cfae7bfd9f0ae7a84e"
+        }
+      }
+    ],
+    "schoolOther": "Oakridge Tech offers four career pathways: Mechanical Engineering, Environmental Science, Health Technology, and Information Technology.",
+    "active": true,
+    "enabled": true,
+    "createdAt": {
+      "$date": "2025-01-15T12:00:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2025-03-01T12:00:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "65f173f686cfeccf777ccfd0"
+    },
+    "school": {
+      "$oid": "65f173f686cfeccf777ccfd1"
+    },
+    "bursar": {
+      "$oid": "65f173f686cfeccf777ccfd4"
+    },
+    "schoolName": "St. Clara Academy",
+    "slug": "st-clara-academy",
+    "schoolLogo": "/uploads/school/st-clara-logo.webp",
+    "featuredImage": "/uploads/school/st-clara-campus.webp",
+    "heroBackgroundImage": "/uploads/school/st-clara-campus.webp",
+    "heroTitle": "St. Clara Academy",
+    "shortDescription": "St. Clara Academy is an accredited secondary preparatory school in Denver, Colorado, fostering academic rigor, arts education, and active community wellness.",
+    "principal": "Sister Margaret Sullivan",
+    "vicePrincipal": "Thomas Miller",
+    "schoolWebsiteLink": "https://edudrop.org",
+    "sectionOneTitle": "St. Clara Academy",
+    "sectionOneDescription": "Faith, Knowledge, and Service.<br>Fostering student wellness across our Denver campus.",
+    "sectionOneImage": "/uploads/school/1703747906336-626435444-w1.webp",
+    "sectionOneImageAlt": "St. Clara Academy Campus",
+    "sectionTwoTitle": "Head of School Message",
+    "sectionTwoDescription": "At St. Clara Academy, student health and education go hand in hand. Pure water sponsorship through EduDrop ensures our classrooms remain energized every day.",
+    "gallery": [
+      {
+        "imageUrl": "/uploads/school/1703747906336-626435444-w1.webp",
+        "title": "Academic Hall",
+        "_id": {
+          "$oid": "65f322fb86cfeccf777cd3ba"
+        }
+      },
+      {
+        "imageUrl": "/uploads/school/1703747906336-717736582-w3.webp",
+        "title": "Athletics Pavilion",
+        "_id": {
+          "$oid": "65f322fb86cfeccf777cd3bb"
+        }
+      },
+      {
+        "imageUrl": "/uploads/school/1703747906336-45367266-w5.webp",
+        "title": "Student Lounge",
+        "_id": {
+          "$oid": "65f322fb86cfeccf777cd3bc"
+        }
+      }
+    ],
+    "schoolStats": [
+      {
+        "title": "Denver, Colorado",
+        "_id": {
+          "$oid": "65f322fb86cfeccf777cd3c1"
+        }
+      },
+      {
+        "title": "Established in 1962",
+        "_id": {
+          "$oid": "65f322fb86cfeccf777cd3c2"
+        }
+      },
+      {
+        "title": "950+ Students",
+        "_id": {
+          "$oid": "65f322fb86cfeccf777cd3c3"
+        }
+      }
+    ],
+    "achievements": [
+      {
+        "title": "Colorado Blue Ribbon School of Excellence",
+        "_id": {
+          "$oid": "65f322fb86cfeccf777cd3c4"
+        }
+      },
+      {
+        "title": "Regional Track & Field Champions 2024",
+        "_id": {
+          "$oid": "65f322fb86cfeccf777cd3c5"
+        }
+      },
+      {
+        "title": "National Merit Scholarship Finalists",
+        "_id": {
+          "$oid": "65f322fb86cfeccf777cd3c6"
+        }
+      }
+    ],
+    "schoolOther": "Comprehensive secondary education with strong community outreach and athletic programs.",
+    "active": true,
+    "enabled": true,
+    "createdAt": {
+      "$date": "2025-01-16T12:00:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2025-03-01T12:00:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "65f32bfb86cfeccf777cdbe6"
+    },
+    "school": {
+      "$oid": "65f32bfb86cfeccf777cdbe7"
+    },
+    "bursar": {
+      "$oid": "65f32bfb86cfeccf777cdbea"
+    },
+    "schoolName": "Westfield Collegiate Institute",
+    "slug": "westfield-collegiate-institute",
+    "schoolLogo": "/uploads/school/westfield-logo.webp",
+    "featuredImage": "/uploads/school/westfield-campus.webp",
+    "heroBackgroundImage": "/uploads/school/westfield-campus.webp",
+    "heroTitle": "Westfield Collegiate Institute",
+    "shortDescription": "Westfield Collegiate Institute provides comprehensive high school and university prep education in Seattle, Washington, emphasizing STEM, humanities, and athletics.",
+    "principal": "Dr. Gregory Vance",
+    "vicePrincipal": "Laura Bailey",
+    "schoolWebsiteLink": "https://edudrop.org",
+    "sectionOneTitle": "Westfield Collegiate Institute",
+    "sectionOneDescription": "Inspiring Leaders for Tomorrow.<br>Equipping Seattle students with top-tier classroom facilities.",
+    "sectionOneImage": "/uploads/school/1703747906336-717736582-w3.webp",
+    "sectionOneImageAlt": "Westfield Collegiate Institute Campus",
+    "sectionTwoTitle": "Our Vision",
+    "sectionTwoDescription": "Westfield provides an environment where students thrive intellectually and physically. Hydration support from alumni and parents keeps our teams hydrated.",
+    "gallery": [
+      {
+        "imageUrl": "/uploads/school/1703747906336-626435444-w1.webp",
+        "title": "Quad & Library",
+        "_id": {
+          "$oid": "65f32bfb86cfeccf777cdbfa"
+        }
+      },
+      {
+        "imageUrl": "/uploads/school/1703747906336-717736582-w3.webp",
+        "title": "Innovation Center",
+        "_id": {
+          "$oid": "65f32bfb86cfeccf777cdbfb"
+        }
+      },
+      {
+        "imageUrl": "/uploads/school/1703747906336-45367266-w5.webp",
+        "title": "Cafeteria & Dispenser",
+        "_id": {
+          "$oid": "65f32bfb86cfeccf777cdbfc"
+        }
+      }
+    ],
+    "schoolStats": [
+      {
+        "title": "Seattle, Washington",
+        "_id": {
+          "$oid": "65f32bfb86cfeccf777cdc01"
+        }
+      },
+      {
+        "title": "Established in 1978",
+        "_id": {
+          "$oid": "65f32bfb86cfeccf777cdc02"
+        }
+      },
+      {
+        "title": "1200+ Students",
+        "_id": {
+          "$oid": "65f32bfb86cfeccf777cdc03"
+        }
+      }
+    ],
+    "achievements": [
+      {
+        "title": "Washington Green Ribbon School Award",
+        "_id": {
+          "$oid": "65f32bfb86cfeccf777cdc04"
+        }
+      },
+      {
+        "title": "Pacific Northwest Debate Champions",
+        "_id": {
+          "$oid": "65f32bfb86cfeccf777cdc05"
+        }
+      },
+      {
+        "title": "Top Ranked Public High School in King County",
+        "_id": {
+          "$oid": "65f32bfb86cfeccf777cdc06"
+        }
+      }
+    ],
+    "schoolOther": "College preparatory curriculum with Advanced Placement courses and varsity athletics.",
+    "active": true,
+    "enabled": true,
+    "createdAt": {
+      "$date": "2025-01-17T12:00:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2025-03-01T12:00:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "65f32e7786cfeccf777cdc28"
+    },
+    "school": {
+      "$oid": "65f32e7786cfeccf777cdc22"
+    },
+    "bursar": {
+      "$oid": "65f32e7786cfeccf777cdc25"
+    },
+    "schoolName": "Crestview Preparatory School",
+    "slug": "crestview-preparatory-school",
+    "schoolLogo": "/uploads/school/crestview-logo.webp",
+    "featuredImage": "/uploads/school/crestview-campus.webp",
+    "heroBackgroundImage": "/uploads/school/crestview-campus.webp",
+    "heroTitle": "Crestview Preparatory School",
+    "shortDescription": "Crestview Preparatory School is a historic coeducational secondary academy in Boston, Massachusetts, dedicated to scholarship, leadership, and athletic excellence.",
+    "principal": "Dr. Edward Hastings",
+    "vicePrincipal": "Rachel Morgan",
+    "schoolWebsiteLink": "https://edudrop.org",
+    "sectionOneTitle": "Crestview Preparatory School",
+    "sectionOneDescription": "Tradition and Academic Excellence.<br>One of Boston's premier high school communities.",
+    "sectionOneImage": "/uploads/school/1703747906336-45367266-w5.webp",
+    "sectionOneImageAlt": "Crestview Preparatory School Campus",
+    "sectionTwoTitle": "Our Mission",
+    "sectionTwoDescription": "To cultivate well-rounded students committed to positive community impact. Through EduDrop Foundation, our athletic and academic centers are consistently supported.",
+    "gallery": [
+      {
+        "imageUrl": "/uploads/school/1703747906336-626435444-w1.webp",
+        "title": "Historic Campus Main Hall",
+        "_id": {
+          "$oid": "65f33a1986cfeccf777cdf39"
+        }
+      },
+      {
+        "imageUrl": "/uploads/school/1703747906336-717736582-w3.webp",
+        "title": "Science Laboratories",
+        "_id": {
+          "$oid": "65f33a1986cfeccf777cdf3a"
+        }
+      },
+      {
+        "imageUrl": "/uploads/school/1703747906336-45367266-w5.webp",
+        "title": "Gymnasium & Hydration Hub",
+        "_id": {
+          "$oid": "65f33a1986cfeccf777cdf3b"
+        }
+      }
+    ],
+    "schoolStats": [
+      {
+        "title": "Boston, Massachusetts",
+        "_id": {
+          "$oid": "65f33a1986cfeccf777cdf33"
+        }
+      },
+      {
+        "title": "Established in 1954",
+        "_id": {
+          "$oid": "65f33a1986cfeccf777cdf34"
+        }
+      },
+      {
+        "title": "1100+ Students",
+        "_id": {
+          "$oid": "65f33a1986cfeccf777cdf35"
+        }
+      }
+    ],
+    "achievements": [
+      {
+        "title": "Massachusetts STEM Leadership Award",
+        "_id": {
+          "$oid": "65f33a1986cfeccf777cdf36"
+        }
+      },
+      {
+        "title": "State Lacrosse Champions 2024",
+        "_id": {
+          "$oid": "65f33a1986cfeccf777cdf37"
+        }
+      },
+      {
+        "title": "New England Academic Decathlon Winners",
+        "_id": {
+          "$oid": "65f33a1986cfeccf777cdf38"
+        }
+      }
+    ],
+    "schoolOther": "Comprehensive secondary academy focusing on collegiate preparation and athletic development.",
+    "active": true,
+    "enabled": true,
+    "createdAt": {
+      "$date": "2025-01-18T12:00:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2025-03-01T12:00:00.000Z"
+    },
+    "__v": 0
+  }
+]

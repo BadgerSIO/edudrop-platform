@@ -1,0 +1,300 @@
+[
+  {
+    "_id": {
+      "$oid": "65b20af66968672d939051ab"
+    },
+    "card": "(VISA) ... 4242",
+    "transactionId": "EDUDROP-TX-ORDER-5f809549-20250201",
+    "orderId": "ORDER-5f809549",
+    "user": {
+      "$oid": "65af76dab70d3df025dcff95"
+    },
+    "email": "donor@edudrop.org",
+    "name": {
+      "firstName": "Maya",
+      "lastName": "Lin"
+    },
+    "presentAddress": "500 Congress Ave",
+    "country": "🇺🇸 United States",
+    "city": "Austin",
+    "zipCode": "78701",
+    "contactNo": "+1 (512) 555-0199",
+    "schoolId": {
+      "$oid": "65da260d6a332fe6d3d550cc"
+    },
+    "products": [
+      {
+        "_id": "65db53746a332fe6d3d554e9",
+        "active": true,
+        "title": "1.5 Liter Spring Water (Case of 12)",
+        "slug": "15-liter-spring-water",
+        "description": "Ideal for classrooms, faculty lounges, and athletics programs. Sold in cases of 12 bottles.",
+        "category": "658e93899f8aa2dbaf23021d",
+        "price": 22,
+        "productImage": "/uploads/products/edudrop-bottle.webp",
+        "packagingType": "Case",
+        "quantityPerCase": 12,
+        "benefits": [
+          "Convenient 1.5 L classroom size"
+        ],
+        "productDetails": [
+          "12 x 1.5 L bottles per case"
+        ],
+        "createdAt": "2025-01-10T14:49:24.710Z",
+        "updatedAt": "2025-01-15T14:52:15.551Z",
+        "__v": 0,
+        "id": "65db53746a332fe6d3d554e9",
+        "quantity": 5
+      }
+    ],
+    "totalAmount": 110,
+    "payMonthly": "yes",
+    "nextRecurringDate": {
+      "$date": "2026-12-01T10:00:00.000Z"
+    },
+    "orderStatus": "delivered",
+    "paymentStatus": true,
+    "createdAt": {
+      "$date": "2025-02-01T07:17:10.593Z"
+    },
+    "updatedAt": {
+      "$date": "2025-02-05T07:17:10.593Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "65b20d3a7b6cc8bb360e7652"
+    },
+    "card": "(VISA) ... 4242",
+    "transactionId": "EDUDROP-TX-ORDER-2fd32337-20250205",
+    "orderId": "ORDER-2fd32337",
+    "user": {
+      "$oid": "659a7e41817e2b807c59da15"
+    },
+    "email": "alex.rivera@example.com",
+    "name": {
+      "firstName": "Alex",
+      "lastName": "Rivera"
+    },
+    "presentAddress": "742 Evergreen Terrace",
+    "country": "🇺🇸 United States",
+    "city": "Denver",
+    "zipCode": "80202",
+    "contactNo": "+1 (303) 555-0145",
+    "schoolId": {
+      "$oid": "65f173f686cfeccf777ccfd1"
+    },
+    "products": [
+      {
+        "_id": "65db5fcb6a332fe6d3d555f9",
+        "active": true,
+        "title": "Floral Scented Classroom Sanitizer",
+        "slug": "floral-scented-sanitizer",
+        "description": "Commercial-grade floral scented disinfectant and sanitizer for school restrooms and common areas.",
+        "category": "658e915b25d97ac11f92b141",
+        "price": 12,
+        "productImage": "/uploads/products/1704079194538-40491392-Floral-Scented-Sanitiser.webp",
+        "packagingType": "Single",
+        "benefits": [],
+        "productDetails": [],
+        "createdAt": "2025-01-10T15:42:03.690Z",
+        "updatedAt": "2025-01-10T15:42:03.690Z",
+        "__v": 0,
+        "id": "65db5fcb6a332fe6d3d555f9",
+        "quantity": 10
+      }
+    ],
+    "totalAmount": 120,
+    "payMonthly": "yes",
+    "nextRecurringDate": {
+      "$date": "2026-12-05T10:00:00.000Z"
+    },
+    "orderStatus": "delivered",
+    "paymentStatus": true,
+    "createdAt": {
+      "$date": "2025-02-05T07:26:50.921Z"
+    },
+    "updatedAt": {
+      "$date": "2025-02-10T07:26:50.921Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "65b213944344abf7cea3c697"
+    },
+    "card": "(MASTERCARD) ... 5100",
+    "transactionId": "EDUDROP-TX-ORDER-53e99cd0-20250212",
+    "orderId": "ORDER-53e99cd0",
+    "user": {
+      "$oid": "659a8025817e2b807c59da6a"
+    },
+    "email": "jordan.taylor@example.com",
+    "name": {
+      "firstName": "Jordan",
+      "lastName": "Taylor"
+    },
+    "presentAddress": "900 Pine Street",
+    "country": "🇺🇸 United States",
+    "city": "Seattle",
+    "zipCode": "98101",
+    "contactNo": "+1 (206) 555-0177",
+    "schoolId": {
+      "$oid": "65f32bfb86cfeccf777cdbe7"
+    },
+    "products": [
+      {
+        "_id": "65db5d786a332fe6d3d555ae",
+        "active": true,
+        "title": "Manual Pump Water Dispenser",
+        "slug": "bowl-cleaner",
+        "description": "Portable hand-pump water dispenser that fits standard classroom water jugs with zero electricity required.",
+        "category": "658e69a87d9ac5bf07e236d3",
+        "price": 15,
+        "productImage": "/uploads/products/1704076558432-979857899-manual-pump.webp",
+        "packagingType": "Single",
+        "benefits": [
+          "No power outlet needed"
+        ],
+        "productDetails": [],
+        "createdAt": "2025-01-10T15:32:08.143Z",
+        "updatedAt": "2025-01-10T15:32:08.143Z",
+        "__v": 0,
+        "id": "65db5d786a332fe6d3d555ae",
+        "quantity": 6
+      }
+    ],
+    "totalAmount": 90,
+    "payMonthly": "no",
+    "nextRecurringDate": {
+      "$date": "2026-12-12T10:00:00.000Z"
+    },
+    "orderStatus": "on the way",
+    "paymentStatus": true,
+    "createdAt": {
+      "$date": "2025-02-12T07:53:56.363Z"
+    },
+    "updatedAt": {
+      "$date": "2025-02-14T07:53:56.363Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "65e6910886cfeccf777ccea2"
+    },
+    "card": "(VISA) ... 4242",
+    "transactionId": "EDUDROP-TX-ORDER-269a03c1-20250304",
+    "orderId": "ORDER-269a03c1",
+    "user": {
+      "$oid": "65af76dab70d3df025dcff95"
+    },
+    "email": "donor@edudrop.org",
+    "name": {
+      "firstName": "Maya",
+      "lastName": "Lin"
+    },
+    "presentAddress": "500 Congress Ave",
+    "country": "🇺🇸 United States",
+    "city": "Austin",
+    "zipCode": "78701",
+    "contactNo": "+1 (512) 555-0199",
+    "schoolId": {
+      "$oid": "65da260d6a332fe6d3d550cc"
+    },
+    "products": [
+      {
+        "_id": "65db61d46a332fe6d3d55622",
+        "active": true,
+        "title": "Multi-Fold Classroom Paper Towels (Case)",
+        "slug": "paper-towel",
+        "description": "High-absorbency recycled paper hand towels for school washrooms, science labs, and art rooms.",
+        "category": "658e93c99f8aa2dbaf23022b",
+        "price": 38,
+        "productImage": "/uploads/products/paper-towel.webp",
+        "packagingType": "Single",
+        "benefits": [],
+        "productDetails": [],
+        "createdAt": "2025-01-10T15:50:44.864Z",
+        "updatedAt": "2025-01-10T15:50:44.864Z",
+        "__v": 0,
+        "id": "65db61d46a332fe6d3d55622",
+        "quantity": 3
+      }
+    ],
+    "totalAmount": 114,
+    "payMonthly": "yes",
+    "nextRecurringDate": {
+      "$date": "2026-12-05T03:27:04.398Z"
+    },
+    "orderStatus": "processing",
+    "paymentStatus": true,
+    "createdAt": {
+      "$date": "2025-03-05T03:27:04.584Z"
+    },
+    "updatedAt": {
+      "$date": "2025-03-05T03:27:04.584Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "65e691b686cfeccf777ccedb"
+    },
+    "card": "(VISA) ... 4242",
+    "transactionId": "EDUDROP-TX-ORDER-0e05a435-20250305",
+    "orderId": "ORDER-0e05a435",
+    "user": {
+      "$oid": "65e691b586cfeccf777cced5"
+    },
+    "email": "noah.bennett@example.com",
+    "name": {
+      "firstName": "Noah",
+      "lastName": "Bennett"
+    },
+    "presentAddress": "140 Newbury Street",
+    "country": "🇺🇸 United States",
+    "city": "Boston",
+    "zipCode": "02116",
+    "contactNo": "+1 (617) 555-0123",
+    "schoolId": {
+      "$oid": "65f32e7786cfeccf777cdc22"
+    },
+    "products": [
+      {
+        "_id": "65da3af56a332fe6d3d553f8",
+        "active": true,
+        "title": "500 mL Spring Water (Case of 24)",
+        "slug": "500-ml-spring-water",
+        "description": "Pure, refreshing EduDrop spring water for students and school events. Sold in cases of 24 bottles.",
+        "category": "658e93899f8aa2dbaf23021d",
+        "price": 18,
+        "productImage": "/uploads/products/edudrop-bottle.webp",
+        "packagingType": "Case",
+        "benefits": [],
+        "productDetails": [],
+        "createdAt": "2025-01-10T18:52:37.392Z",
+        "updatedAt": "2025-01-15T14:52:36.017Z",
+        "__v": 0,
+        "quantityPerCase": 24,
+        "id": "65da3af56a332fe6d3d553f8",
+        "quantity": 5
+      }
+    ],
+    "totalAmount": 90,
+    "payMonthly": "yes",
+    "nextRecurringDate": {
+      "$date": "2026-12-05T03:29:57.557Z"
+    },
+    "orderStatus": "processing",
+    "paymentStatus": true,
+    "createdAt": {
+      "$date": "2025-03-05T03:29:58.624Z"
+    },
+    "updatedAt": {
+      "$date": "2025-03-05T03:29:58.624Z"
+    },
+    "__v": 0
+  }
+]

@@ -1,0 +1,62 @@
+[
+  {
+    "_id": {
+      "$oid": "65da26d06a332fe6d3d55113"
+    },
+    "message": "Oakridge Technical High School updated its classroom needs list",
+    "link": "/dashboard/schools-list/oakridge-technical-high-school",
+    "isRead": false,
+    "createdAt": {
+      "$date": "2025-02-24T17:26:40.664Z"
+    },
+    "updatedAt": {
+      "$date": "2025-02-24T17:26:40.664Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "65f320aa86cfeccf777cd150"
+    },
+    "message": "St. Clara Academy updated its school profile and needs",
+    "link": "/dashboard/schools-list/st-clara-academy",
+    "isRead": false,
+    "createdAt": {
+      "$date": "2025-03-01T16:07:06.103Z"
+    },
+    "updatedAt": {
+      "$date": "2025-03-01T16:07:06.103Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "65f322fb86cfeccf777cd3b2"
+    },
+    "message": "Westfield Collegiate Institute updated its gallery and needs",
+    "link": "/dashboard/schools-list/westfield-collegiate-institute",
+    "isRead": true,
+    "createdAt": {
+      "$date": "2025-03-02T16:16:59.546Z"
+    },
+    "updatedAt": {
+      "$date": "2025-03-02T16:29:47.177Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "65f5407986cfeccf777ce736"
+    },
+    "message": "Crestview Preparatory School updated its school profile",
+    "link": "/dashboard/schools-list/crestview-preparatory-school",
+    "isRead": false,
+    "createdAt": {
+      "$date": "2025-03-04T06:47:21.588Z"
+    },
+    "updatedAt": {
+      "$date": "2025-03-04T06:47:21.588Z"
+    },
+    "__v": 0
+  }
+]

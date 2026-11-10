@@ -1,0 +1,354 @@
+[
+  {
+    "_id": {
+      "$oid": "65da3af56a332fe6d3d553f8"
+    },
+    "active": true,
+    "title": "500 mL Spring Water (Case of 24)",
+    "slug": "500-ml-spring-water",
+    "description": "Pure, refreshing EduDrop spring water for students and school events. Sold in cases of 24 bottles.",
+    "category": {
+      "$oid": "658e93899f8aa2dbaf23021d"
+    },
+    "price": 18,
+    "productImage": "/uploads/products/edudrop-bottle.webp",
+    "packagingType": "Case",
+    "benefits": [
+      "100% BPA-free recyclable bottles",
+      "Natural spring source filtration"
+    ],
+    "productDetails": [
+      "24 x 500 mL bottles per case"
+    ],
+    "createdAt": {
+      "$date": "2025-01-10T18:52:37.392Z"
+    },
+    "updatedAt": {
+      "$date": "2025-01-15T14:52:36.017Z"
+    },
+    "__v": 0,
+    "quantityPerCase": 24
+  },
+  {
+    "_id": {
+      "$oid": "65db53746a332fe6d3d554e9"
+    },
+    "active": true,
+    "title": "1.5 Liter Spring Water (Case of 12)",
+    "slug": "15-liter-spring-water",
+    "description": "Ideal for classrooms, faculty lounges, and athletics programs. Sold in cases of 12 bottles.",
+    "category": {
+      "$oid": "658e93899f8aa2dbaf23021d"
+    },
+    "price": 22,
+    "productImage": "/uploads/products/edudrop-bottle.webp",
+    "packagingType": "Case",
+    "refillPrice": 18,
+    "benefits": [
+      "Convenient 1.5 L classroom size",
+      "Supports daily student hydration"
+    ],
+    "productDetails": [
+      "12 x 1.5 L bottles per case"
+    ],
+    "createdAt": {
+      "$date": "2025-01-10T14:49:24.710Z"
+    },
+    "updatedAt": {
+      "$date": "2025-01-15T14:52:15.551Z"
+    },
+    "__v": 0,
+    "quantityPerCase": 12
+  },
+  {
+    "_id": {
+      "$oid": "65db53fe6a332fe6d3d554fc"
+    },
+    "active": true,
+    "title": "5 Liter Classroom Jugs (Case of 3)",
+    "slug": "5-liter-spring-water",
+    "description": "Large-capacity 5-liter spring water jugs for classroom hydration stations. Sold in cases of 3.",
+    "category": {
+      "$oid": "658e93899f8aa2dbaf23021d"
+    },
+    "price": 16,
+    "productImage": "/uploads/products/edudrop-bottle.webp",
+    "packagingType": "Case",
+    "quantityPerCase": 3,
+    "benefits": [
+      "Easy-pour classroom jugs",
+      "Reduces single-use packaging waste"
+    ],
+    "productDetails": [
+      "3 x 5 L jugs per case"
+    ],
+    "createdAt": {
+      "$date": "2025-01-10T14:51:42.083Z"
+    },
+    "updatedAt": {
+      "$date": "2025-01-10T14:51:42.083Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "65db5ae26a332fe6d3d5553b"
+    },
+    "active": true,
+    "title": "Gentle Classroom Surface Sanitizer",
+    "slug": "baby-powder-sanitizer",
+    "description": "Non-toxic, fresh-scented surface sanitizer formulated for school desks and shared learning spaces.",
+    "category": {
+      "$oid": "658e915b25d97ac11f92b141"
+    },
+    "price": 14,
+    "productImage": "/uploads/products/1704079194538-40491392-Floral-Scented-Sanitiser.webp",
+    "packagingType": "Single",
+    "benefits": [
+      "Safe for daily classroom desk cleaning",
+      "Eliminates 99.9% of common germs"
+    ],
+    "productDetails": [
+      "1 Gallon commercial bottle"
+    ],
+    "createdAt": {
+      "$date": "2025-01-10T15:21:06.724Z"
+    },
+    "updatedAt": {
+      "$date": "2025-01-10T15:30:29.341Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "65db5d036a332fe6d3d55586"
+    },
+    "active": true,
+    "title": "Hot & Cold Classroom Water Dispenser",
+    "slug": "bleach",
+    "description": "Freestanding hot and cold spring water dispenser for school hallways, libraries, and cafeterias.",
+    "category": {
+      "$oid": "658e69a87d9ac5bf07e236d3"
+    },
+    "price": 95,
+    "productImage": "/uploads/products/hot-and-cold-dispenser.webp",
+    "packagingType": "Single",
+    "benefits": [
+      "Child-safety hot water lock",
+      "Energy-efficient cooling compressor"
+    ],
+    "productDetails": [
+      "Compatible with 3-gallon and 5-gallon jugs"
+    ],
+    "createdAt": {
+      "$date": "2025-01-10T15:30:11.430Z"
+    },
+    "updatedAt": {
+      "$date": "2025-01-10T15:32:37.562Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "65db5d786a332fe6d3d555ae"
+    },
+    "active": true,
+    "title": "Manual Pump Water Dispenser",
+    "slug": "bowl-cleaner",
+    "description": "Portable hand-pump water dispenser that fits standard classroom water jugs with zero electricity required.",
+    "category": {
+      "$oid": "658e69a87d9ac5bf07e236d3"
+    },
+    "price": 15,
+    "productImage": "/uploads/products/1704076558432-979857899-manual-pump.webp",
+    "packagingType": "Single",
+    "benefits": [
+      "No power outlet needed",
+      "Easy for students to operate"
+    ],
+    "productDetails": [
+      "Includes universal bottle adapter"
+    ],
+    "createdAt": {
+      "$date": "2025-01-10T15:32:08.143Z"
+    },
+    "updatedAt": {
+      "$date": "2025-01-10T15:32:08.143Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "65db5e966a332fe6d3d555d1"
+    },
+    "active": true,
+    "title": "Heavy-Duty Water Bottle Stand",
+    "slug": "car-wash-wax",
+    "description": "Sturdy steel cradle stand with dispensing valve for 5-gallon classroom water bottles.",
+    "category": {
+      "$oid": "658e69a87d9ac5bf07e236d3"
+    },
+    "price": 24,
+    "productImage": "/uploads/products/bottle-stands.webp",
+    "packagingType": "Single",
+    "benefits": [
+      "Compact footprint for classrooms",
+      "Includes fast-flow spigot"
+    ],
+    "productDetails": [
+      "Powder-coated steel frame"
+    ],
+    "createdAt": {
+      "$date": "2025-01-10T15:36:54.605Z"
+    },
+    "updatedAt": {
+      "$date": "2025-01-10T15:36:54.605Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "65db5f3a6a332fe6d3d555e5"
+    },
+    "active": true,
+    "title": "Countertop Ceramic Pump Dispenser",
+    "slug": "carpet-cleaner",
+    "description": "Countertop water crock with lever faucet and manual pump for classroom hydration stations.",
+    "category": {
+      "$oid": "658e69a87d9ac5bf07e236d3"
+    },
+    "price": 28,
+    "productImage": "/uploads/products/pump-dispenser.webp",
+    "packagingType": "Single",
+    "benefits": [
+      "Drip-free stainless steel tap",
+      "Easy to sanitize"
+    ],
+    "productDetails": [
+      "Fits standard 3 and 5 gallon bottles"
+    ],
+    "createdAt": {
+      "$date": "2025-01-10T15:39:38.261Z"
+    },
+    "updatedAt": {
+      "$date": "2025-01-10T15:39:38.261Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "65db5fcb6a332fe6d3d555f9"
+    },
+    "active": true,
+    "title": "Floral Scented Classroom Sanitizer",
+    "slug": "floral-scented-sanitizer",
+    "description": "Commercial-grade floral scented disinfectant and sanitizer for school restrooms and common areas.",
+    "category": {
+      "$oid": "658e915b25d97ac11f92b141"
+    },
+    "price": 12,
+    "productImage": "/uploads/products/1704079194538-40491392-Floral-Scented-Sanitiser.webp",
+    "packagingType": "Single",
+    "benefits": [
+      "Hospital-grade disinfection",
+      "Pleasant botanical scent"
+    ],
+    "productDetails": [
+      "1 Gallon concentrated bottle"
+    ],
+    "createdAt": {
+      "$date": "2025-01-10T15:42:03.690Z"
+    },
+    "updatedAt": {
+      "$date": "2025-01-10T15:42:03.690Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "65db61036a332fe6d3d5560a"
+    },
+    "active": true,
+    "title": "Compostable Paper Cone Cups (Case of 1,000)",
+    "slug": "industrial-toilet-tissue",
+    "description": "Biodegradable 4.5 oz paper cone water cups for school water coolers and athletic fields.",
+    "category": {
+      "$oid": "658e93e09f8aa2dbaf230232"
+    },
+    "price": 32,
+    "productImage": "/uploads/products/cone-cups.webp",
+    "packagingType": "Single",
+    "benefits": [
+      "100% compostable paper",
+      "Fits standard cooler cup dispensers"
+    ],
+    "productDetails": [
+      "1,000 cups per box (5 sleeves of 200)"
+    ],
+    "createdAt": {
+      "$date": "2025-01-10T15:47:15.565Z"
+    },
+    "updatedAt": {
+      "$date": "2025-01-10T15:47:15.565Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "65db61d46a332fe6d3d55622"
+    },
+    "active": true,
+    "title": "Multi-Fold Classroom Paper Towels (Case)",
+    "slug": "paper-towel",
+    "description": "High-absorbency recycled paper hand towels for school washrooms, science labs, and art rooms.",
+    "category": {
+      "$oid": "658e93c99f8aa2dbaf23022b"
+    },
+    "price": 38,
+    "productImage": "/uploads/products/paper-towel.webp",
+    "packagingType": "Single",
+    "benefits": [
+      "EPA-compliant recycled fiber",
+      "Fits standard wall dispensers"
+    ],
+    "productDetails": [
+      "16 packs of 250 sheets (4,000 sheets total)"
+    ],
+    "createdAt": {
+      "$date": "2025-01-10T15:50:44.864Z"
+    },
+    "updatedAt": {
+      "$date": "2025-01-10T15:50:44.864Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "65db63866a332fe6d3d5564e"
+    },
+    "active": true,
+    "title": "Recycled Classroom Copy & Printing Paper (Case)",
+    "slug": "printing-paper",
+    "description": "Bright white 8.5x11 multipurpose printing paper for student worksheets, exams, and library printers.",
+    "category": {
+      "$oid": "658e93c99f8aa2dbaf23022b"
+    },
+    "price": 42,
+    "productImage": "/uploads/products/paper-towel.webp",
+    "packagingType": "Single",
+    "benefits": [
+      "Acid-free archival quality",
+      "Jam-free guarantee for school copiers"
+    ],
+    "productDetails": [
+      "10 reams (5,000 sheets) per case"
+    ],
+    "createdAt": {
+      "$date": "2025-01-10T15:57:58.550Z"
+    },
+    "updatedAt": {
+      "$date": "2025-01-10T15:57:58.550Z"
+    },
+    "__v": 0
+  }
+]

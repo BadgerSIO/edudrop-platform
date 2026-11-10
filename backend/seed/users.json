@@ -1,0 +1,182 @@
+[
+  {
+    "_id": {
+      "$oid": "658c20f1821fab396bbd7e36"
+    },
+    "email": "admin@edudrop.org",
+    "role": "admin",
+    "password": "$2b$10$Xo1jA8O1nxows2CuXYQT7ORXRlcnMP8hkj8t79Z/t1NLz9wTEA6iC",
+    "admin": {
+      "$oid": "658c20f1821fab396bbd7e34"
+    },
+    "createdAt": {
+      "$date": "2025-01-10T10:00:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2025-01-10T10:00:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "659a7dde817e2b807c59da04"
+    },
+    "email": "liam.carter@example.com",
+    "role": "donar",
+    "password": "$2b$10$Xo1jA8O1nxows2CuXYQT7ORXRlcnMP8hkj8t79Z/t1NLz9wTEA6iC",
+    "donar": {
+      "$oid": "659a7dde817e2b807c59da00"
+    },
+    "createdAt": {
+      "$date": "2025-01-20T10:33:02.570Z"
+    },
+    "updatedAt": {
+      "$date": "2025-01-20T10:33:02.570Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "659a7e41817e2b807c59da19"
+    },
+    "email": "alex.rivera@example.com",
+    "role": "donar",
+    "password": "$2b$10$Xo1jA8O1nxows2CuXYQT7ORXRlcnMP8hkj8t79Z/t1NLz9wTEA6iC",
+    "donar": {
+      "$oid": "659a7e41817e2b807c59da15"
+    },
+    "createdAt": {
+      "$date": "2025-01-21T10:34:41.770Z"
+    },
+    "updatedAt": {
+      "$date": "2025-01-21T10:34:41.770Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "659a8025817e2b807c59da6e"
+    },
+    "email": "jordan.taylor@example.com",
+    "role": "donar",
+    "password": "$2b$10$Xo1jA8O1nxows2CuXYQT7ORXRlcnMP8hkj8t79Z/t1NLz9wTEA6iC",
+    "donar": {
+      "$oid": "659a8025817e2b807c59da6a"
+    },
+    "createdAt": {
+      "$date": "2025-01-22T10:42:45.349Z"
+    },
+    "updatedAt": {
+      "$date": "2025-01-22T10:42:45.349Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "65af76dab70d3df025dcff98"
+    },
+    "email": "donor@edudrop.org",
+    "role": "donar",
+    "password": "$2b$10$Xo1jA8O1nxows2CuXYQT7ORXRlcnMP8hkj8t79Z/t1NLz9wTEA6iC",
+    "donar": {
+      "$oid": "65af76dab70d3df025dcff95"
+    },
+    "createdAt": {
+      "$date": "2025-01-23T08:20:42.898Z"
+    },
+    "updatedAt": {
+      "$date": "2025-01-23T08:20:42.898Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "65da260e6a332fe6d3d550d4"
+    },
+    "email": "bursar@oakridge.edu",
+    "role": "bursar",
+    "password": "$2b$10$Xo1jA8O1nxows2CuXYQT7ORXRlcnMP8hkj8t79Z/t1NLz9wTEA6iC",
+    "bursar": {
+      "$oid": "65da260d6a332fe6d3d550cf"
+    },
+    "createdAt": {
+      "$date": "2025-01-15T12:00:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2025-01-15T12:00:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "65e691b586cfeccf777cced9"
+    },
+    "email": "noah.bennett@example.com",
+    "role": "donar",
+    "password": "$2b$10$Xo1jA8O1nxows2CuXYQT7ORXRlcnMP8hkj8t79Z/t1NLz9wTEA6iC",
+    "donar": {
+      "$oid": "65e691b586cfeccf777cced5"
+    },
+    "createdAt": {
+      "$date": "2025-03-05T03:29:57.740Z"
+    },
+    "updatedAt": {
+      "$date": "2025-03-05T03:29:57.740Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "65f173f686cfeccf777ccfd9"
+    },
+    "email": "bursar@stclara.edu",
+    "role": "bursar",
+    "password": "$2b$10$Xo1jA8O1nxows2CuXYQT7ORXRlcnMP8hkj8t79Z/t1NLz9wTEA6iC",
+    "bursar": {
+      "$oid": "65f173f686cfeccf777ccfd4"
+    },
+    "createdAt": {
+      "$date": "2025-01-16T12:00:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2025-01-16T12:00:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "65f32bfb86cfeccf777cdbef"
+    },
+    "email": "bursar@westfield.edu",
+    "role": "bursar",
+    "password": "$2b$10$Xo1jA8O1nxows2CuXYQT7ORXRlcnMP8hkj8t79Z/t1NLz9wTEA6iC",
+    "bursar": {
+      "$oid": "65f32bfb86cfeccf777cdbea"
+    },
+    "createdAt": {
+      "$date": "2025-01-17T12:00:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2025-01-17T12:00:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "65f32e7786cfeccf777cdc2a"
+    },
+    "email": "bursar@crestview.edu",
+    "role": "bursar",
+    "password": "$2b$10$Xo1jA8O1nxows2CuXYQT7ORXRlcnMP8hkj8t79Z/t1NLz9wTEA6iC",
+    "bursar": {
+      "$oid": "65f32e7786cfeccf777cdc25"
+    },
+    "createdAt": {
+      "$date": "2025-01-18T12:00:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2025-01-18T12:00:00.000Z"
+    },
+    "__v": 0
+  }
+]

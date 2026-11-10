@@ -1,0 +1,2 @@
+export const SERVERURL = process.env.NEXT_PUBLIC_EDUDROP_SERVER_URL;
+export const SERVERURLAPI = process.env.NEXT_PUBLIC_EDUDROP_API_URL;
