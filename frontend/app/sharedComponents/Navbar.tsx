@@ -9,7 +9,6 @@ import Cart from "./Cart";
 import { Menu, ShoppingBag, X, LogIn } from "lucide-react";
 import { useAuthContext } from "../context/AuthContext";
 import { useNavbarContext } from "../context/NavContext";
-import DashNavLoading from "./Loders/DashNavLoading";
 import ActionPillButton from "./ui/ActionPillButton";
 import { cn } from "@/lib/utils";
 
@@ -68,10 +67,6 @@ export const Navbar = () => {
     setIsOpen(false);
   }, [pathname, setIsOpen]);
 
-  if (loading) {
-    return <DashNavLoading />;
-  }
-
   return (
     <>
       <header
@@ -128,7 +123,12 @@ export const Navbar = () => {
             </button>
 
             {/* User Account / Profile Menu or Sign In */}
-            {data ? (
+            {loading ? (
+              <div
+                aria-hidden="true"
+                className="hidden sm:block h-9 w-24 rounded-full bg-white/15 animate-pulse motion-reduce:animate-none"
+              />
+            ) : data ? (
               <UserMenu />
             ) : (
               <Link
@@ -171,11 +171,11 @@ export const Navbar = () => {
       {/* Mobile Slide-over Drawer */}
       {isOpen && (
         <div
-          className="fixed inset-0 z-[1000] bg-black/60 backdrop-blur-sm transition-opacity lg:hidden"
+          className="drawer-backdrop fixed inset-0 z-[1000] bg-black/60 backdrop-blur-sm lg:hidden"
           onClick={() => setIsOpen(false)}
         >
           <div
-            className="absolute right-0 top-0 flex h-full w-full max-w-xs flex-col bg-white p-6 shadow-2xl transition-transform"
+            className="mobile-drawer-panel absolute right-0 top-0 flex h-full w-full max-w-xs flex-col bg-white p-6 shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Drawer Header */}

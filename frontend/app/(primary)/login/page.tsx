@@ -2,7 +2,7 @@ import Link from "next/link";
 import React, { Suspense } from "react";
 import LoginForm from "./components/LoginForm";
 import AuthPillar from "@/app/sharedComponents/Auth/AuthPillar";
-import { Loader2 } from "lucide-react";
+import EduDropLoader from "@/app/sharedComponents/Loders/EduDropLoader";
 
 const Login = () => {
   return (
@@ -49,10 +49,12 @@ const Login = () => {
                 {/* Form Body */}
                 <Suspense
                   fallback={
-                    <div className="flex items-center justify-center py-16 text-text-body gap-2">
-                      <Loader2 className="h-5 w-5 animate-spin text-surface-forest" />
-                      <span className="text-sm font-medium">Loading sign-in form...</span>
-                    </div>
+                    <EduDropLoader
+                      size="sm"
+                      compact
+                      label="Loading sign-in form..."
+                      className="py-12"
+                    />
                   }
                 >
                   <LoginForm />

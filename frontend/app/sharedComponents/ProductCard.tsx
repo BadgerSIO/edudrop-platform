@@ -10,7 +10,13 @@ import ActionPillButton from "./ui/ActionPillButton";
 import { Check, CheckCircle2, Droplets } from "lucide-react";
 import toast from "react-hot-toast";
 
-export const ProductCard = ({ product }: { product: IProduct }) => {
+export const ProductCard = ({
+  product,
+  style,
+}: {
+  product: IProduct;
+  style?: React.CSSProperties;
+}) => {
   const {
     setIsCartOpen,
     setDistinctProductCount,
@@ -78,7 +84,10 @@ export const ProductCard = ({ product }: { product: IProduct }) => {
   const productHref = `/products/${product?.slug}`;
 
   return (
-    <article className="group/card relative flex flex-col justify-between overflow-hidden rounded-3xl border border-border-subtle/80 bg-white p-5 sm:p-6 shadow-bento transition-all duration-300 hover:-translate-y-1 hover:border-surface-forest/30 hover:shadow-bento-hover focus-within:ring-2 focus-within:ring-brand-lime">
+    <article
+      style={style}
+      className="group/card relative flex flex-col justify-between overflow-hidden rounded-3xl border border-border-subtle/80 bg-white p-5 sm:p-6 shadow-bento transition-all duration-300 hover:-translate-y-1 hover:border-surface-forest/30 hover:shadow-bento-hover focus-within:ring-2 focus-within:ring-brand-lime"
+    >
       <div>
         {/* Product Image Container */}
         <div className="relative flex aspect-[4/3] w-full items-center justify-center overflow-hidden rounded-2xl bg-surface-bento/60 p-6">

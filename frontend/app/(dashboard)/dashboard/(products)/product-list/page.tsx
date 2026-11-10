@@ -60,7 +60,7 @@ const ProductList = async () => {
 
       {/* KPI Stats Bar */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="rounded-2xl border border-border-subtle bg-white p-4 shadow-bento flex items-center gap-3.5">
+        <div className="dash-card-enter rounded-2xl border border-border-subtle bg-white p-4 shadow-bento flex items-center gap-3.5">
           <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-surface-forest/10 text-surface-forest">
             <Package className="h-5 w-5" />
           </div>
@@ -74,7 +74,10 @@ const ProductList = async () => {
           </div>
         </div>
 
-        <div className="rounded-2xl border border-border-subtle bg-white p-4 shadow-bento flex items-center gap-3.5">
+        <div
+          style={{ "--dash-delay": "50ms" } as React.CSSProperties}
+          className="dash-card-enter rounded-2xl border border-border-subtle bg-white p-4 shadow-bento flex items-center gap-3.5"
+        >
           <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-lime/20 text-surface-forest">
             <CheckCircle2 className="h-5 w-5" />
           </div>
@@ -88,7 +91,10 @@ const ProductList = async () => {
           </div>
         </div>
 
-        <div className="rounded-2xl border border-border-subtle bg-white p-4 shadow-bento flex items-center gap-3.5">
+        <div
+          style={{ "--dash-delay": "100ms" } as React.CSSProperties}
+          className="dash-card-enter rounded-2xl border border-border-subtle bg-white p-4 shadow-bento flex items-center gap-3.5"
+        >
           <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-surface-bento text-text-body">
             <Layers className="h-5 w-5" />
           </div>
