@@ -433,13 +433,11 @@ export default function InboxDirectory({
       </div>
 
       {/* Data Table */}
-      <div className="rounded-2xl border border-border-subtle bg-white shadow-bento overflow-hidden">
-        <DataTable
-          columns={columns}
-          data={filteredData as any}
-          searchPlaceholder="Search inquiries by sender, email, phone, message content..."
-        />
-      </div>
+      <DataTable
+        columns={columns}
+        data={filteredData as any}
+        searchPlaceholder="Search inquiries by sender, email, phone, message content..."
+      />
     </div>
   );
 }
