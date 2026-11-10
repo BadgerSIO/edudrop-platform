@@ -218,7 +218,7 @@ export default function InboxDirectory({
                   isReplied
                     ? "bg-blue-600"
                     : isUnread
-                    ? "bg-amber-500 animate-pulse"
+                    ? "bg-amber-500"
                     : "bg-surface-forest"
                 }`}
               />
@@ -310,7 +310,7 @@ export default function InboxDirectory({
       {/* KPI Stats Bar */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {/* KPI 1: Total Inquiries */}
-        <div className="rounded-2xl border border-border-subtle bg-white p-5 shadow-bento">
+        <div className="dash-card-enter rounded-2xl border border-border-subtle bg-white p-5 shadow-bento">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold uppercase tracking-wider text-text-muted">
               Total Inquiries
@@ -328,7 +328,10 @@ export default function InboxDirectory({
         </div>
 
         {/* KPI 2: Unread Messages */}
-        <div className="rounded-2xl border border-border-subtle bg-white p-5 shadow-bento">
+        <div
+          style={{ "--dash-delay": "50ms" } as React.CSSProperties}
+          className="dash-card-enter rounded-2xl border border-border-subtle bg-white p-5 shadow-bento"
+        >
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold uppercase tracking-wider text-text-muted">
               Pending / Unread
@@ -346,7 +349,10 @@ export default function InboxDirectory({
         </div>
 
         {/* KPI 3: Replied Messages */}
-        <div className="rounded-2xl border border-border-subtle bg-white p-5 shadow-bento">
+        <div
+          style={{ "--dash-delay": "100ms" } as React.CSSProperties}
+          className="dash-card-enter rounded-2xl border border-border-subtle bg-white p-5 shadow-bento"
+        >
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold uppercase tracking-wider text-text-muted">
               Replied & Resolved
@@ -369,7 +375,7 @@ export default function InboxDirectory({
         <button
           type="button"
           onClick={() => setSelectedFilter("all")}
-          className={`inline-flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold transition-all shadow-sm ${
+          className={`inline-flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold transition-all active:scale-[0.98] motion-reduce:active:scale-100 shadow-sm ${
             selectedFilter === "all"
               ? "bg-surface-forest text-white"
               : "bg-white border border-border-subtle text-text-muted hover:text-text-ink hover:bg-surface-bento/40"
@@ -390,7 +396,7 @@ export default function InboxDirectory({
         <button
           type="button"
           onClick={() => setSelectedFilter("unread")}
-          className={`inline-flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold transition-all shadow-sm ${
+          className={`inline-flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold transition-all active:scale-[0.98] motion-reduce:active:scale-100 shadow-sm ${
             selectedFilter === "unread"
               ? "bg-surface-forest text-white"
               : "bg-white border border-border-subtle text-text-muted hover:text-text-ink hover:bg-surface-bento/40"
@@ -412,7 +418,7 @@ export default function InboxDirectory({
         <button
           type="button"
           onClick={() => setSelectedFilter("replied")}
-          className={`inline-flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold transition-all shadow-sm ${
+          className={`inline-flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold transition-all active:scale-[0.98] motion-reduce:active:scale-100 shadow-sm ${
             selectedFilter === "replied"
               ? "bg-surface-forest text-white"
               : "bg-white border border-border-subtle text-text-muted hover:text-text-ink hover:bg-surface-bento/40"
@@ -433,11 +439,13 @@ export default function InboxDirectory({
       </div>
 
       {/* Data Table */}
-      <DataTable
-        columns={columns}
-        data={filteredData as any}
-        searchPlaceholder="Search inquiries by sender, email, phone, message content..."
-      />
+      <div key={selectedFilter} className="tab-panel-enter">
+        <DataTable
+          columns={columns}
+          data={filteredData as any}
+          searchPlaceholder="Search inquiries by sender, email, phone, message content..."
+        />
+      </div>
     </div>
   );
 }

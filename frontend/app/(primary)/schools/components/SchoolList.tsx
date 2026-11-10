@@ -1,10 +1,12 @@
 "use client";
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import { ISchoolInfo } from "@/app/types/SchoolInfo";
 import SchoolCard, { extractSchoolMeta } from "./SchoolCard";
 import SchoolSearchFilter from "./SchoolSearchFilter";
 import BentoCard from "@/app/sharedComponents/ui/BentoCard";
 import SectionHeader from "@/app/sharedComponents/ui/SectionHeader";
+import Reveal from "@/app/sharedComponents/ui/Reveal";
+import { runViewTransition, toViewTransitionName } from "@/app/utility/viewTransition";
 import { School, Droplets, PackageCheck, SearchX } from "lucide-react";
 
 interface SchoolListProps {
@@ -38,6 +40,25 @@ const steps = [
 export const SchoolList: React.FC<SchoolListProps> = ({ schools }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCity, setSelectedCity] = useState("all");
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const handleSelectCity = (city: string) => {
+    runViewTransition(() => {
+      setSelectedCity(city);
+    });
+  };
+
+  const handleResetFromEmpty = () => {
+    runViewTransition(
+      () => {
+        setSearchQuery("");
+        setSelectedCity("all");
+      },
+      () => {
+        containerRef.current?.focus();
+      }
+    );
+  };
 
   // Extract unique cities reliably from schoolStats or shortDescription
   const cities = useMemo(() => {
@@ -72,13 +93,17 @@ export const SchoolList: React.FC<SchoolListProps> = ({ schools }) => {
 
   return (
     <section className="bg-surface-canvas py-10 sm:py-14 lg:py-16">
-      <div className="mx-auto max-w-[1320px] px-5 sm:px-8">
+      <div
+        ref={containerRef}
+        tabIndex={-1}
+        className="mx-auto max-w-[1320px] px-5 sm:px-8 focus:outline-none"
+      >
         {/* Unified Bento Search & Location Filter Toolbar */}
         <SchoolSearchFilter
           searchQuery={searchQuery}
           onSearchChange={setSearchQuery}
           selectedCity={selectedCity}
-          onSelectCity={setSelectedCity}
+          onSelectCity={handleSelectCity}
           cities={cities}
           totalCount={schools.length}
           filteredCount={filteredSchools.length}
@@ -87,8 +112,17 @@ export const SchoolList: React.FC<SchoolListProps> = ({ schools }) => {
         {/* Schools Grid */}
         {filteredSchools.length > 0 ? (
           <div className="mt-8 grid grid-cols-1 gap-7 sm:grid-cols-2 lg:grid-cols-3">
-            {filteredSchools.map((school) => (
-              <SchoolCard key={school._id || school.slug} school={school} />
+            {filteredSchools.map((school, idx) => (
+              <SchoolCard
+                key={school._id || school.slug}
+                school={school}
+                style={{
+                  viewTransitionName: toViewTransitionName(
+                    "school-card",
+                    school._id || school.slug || String(idx)
+                  ),
+                }}
+              />
             ))}
           </div>
         ) : (
@@ -103,10 +137,7 @@ export const SchoolList: React.FC<SchoolListProps> = ({ schools }) => {
             </p>
             <button
               type="button"
-              onClick={() => {
-                setSearchQuery("");
-                setSelectedCity("all");
-              }}
+              onClick={handleResetFromEmpty}
               className="mt-6 inline-flex rounded-full bg-surface-forest px-6 py-2.5 text-sm font-semibold text-white transition-all hover:bg-surface-forest-light"
             >
               Reset Filters
@@ -116,39 +147,42 @@ export const SchoolList: React.FC<SchoolListProps> = ({ schools }) => {
 
         {/* How It Works Reassurance Bar */}
         <div className="mt-20 border-t border-border-subtle pt-16 sm:mt-24 sm:pt-20">
-          <SectionHeader
-            eyebrow="Direct Distribution"
-            title="How Campus Sponsorship Works"
-            subtitle="A transparent, 3-step pipeline ensuring zero donation diversion."
-            align="center"
-          />
+          <Reveal>
+            <SectionHeader
+              eyebrow="Direct Distribution"
+              title="How Campus Sponsorship Works"
+              subtitle="A transparent, 3-step pipeline ensuring zero donation diversion."
+              align="center"
+            />
+          </Reveal>
 
           <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-3">
             {steps.map((st, idx) => {
               const Icon = st.icon;
               return (
-                <BentoCard
-                  key={idx}
-                  variant="bento"
-                  className="flex flex-col justify-between p-7 sm:p-8"
-                >
-                  <div>
-                    <div className="flex items-center justify-between">
-                      <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-surface-forest shadow-sm border border-border-subtle">
-                        <Icon className="h-6 w-6" />
+                <Reveal key={idx} delayMs={idx * 70} className="h-full">
+                  <BentoCard
+                    variant="bento"
+                    className="flex h-full flex-col justify-between p-7 sm:p-8"
+                  >
+                    <div>
+                      <div className="flex items-center justify-between">
+                        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-surface-forest shadow-sm border border-border-subtle">
+                          <Icon className="h-6 w-6" />
+                        </div>
+                        <span className="font-mono text-sm font-bold text-text-body/60">
+                          {st.step}
+                        </span>
                       </div>
-                      <span className="font-mono text-sm font-bold text-text-body/60">
-                        {st.step}
-                      </span>
+                      <h4 className="mt-6 text-lg font-bold text-text-ink">
+                        {st.title}
+                      </h4>
+                      <p className="mt-2.5 text-sm leading-relaxed text-text-body">
+                        {st.description}
+                      </p>
                     </div>
-                    <h4 className="mt-6 text-lg font-bold text-text-ink">
-                      {st.title}
-                    </h4>
-                    <p className="mt-2.5 text-sm leading-relaxed text-text-body">
-                      {st.description}
-                    </p>
-                  </div>
-                </BentoCard>
+                  </BentoCard>
+                </Reveal>
               );
             })}
           </div>

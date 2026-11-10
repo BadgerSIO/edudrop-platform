@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import Image from "next/image";
 import { getCookie } from "@/app/utility/handleCookie";
 import { SERVERURL, SERVERURLAPI } from "@/lib/constants";
+import EduDropLoader from "@/app/sharedComponents/Loders/EduDropLoader";
 import {
   Globe,
   Sparkles,
@@ -100,9 +101,11 @@ export default function SiteContentCMSPage() {
 
   if (loading) {
     return (
-      <div className="flex h-96 items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-surface-forest" />
-      </div>
+      <EduDropLoader
+        size="md"
+        label="Loading site content..."
+        sublabel="Preparing CMS sections and media assets"
+      />
     );
   }
 
@@ -149,7 +152,7 @@ export default function SiteContentCMSPage() {
             <button
               key={tab.key}
               onClick={() => setActiveTab(tab.key as any)}
-              className={`flex items-center gap-2 whitespace-nowrap rounded-xl px-4 py-2.5 text-xs font-semibold transition-all ${
+              className={`flex items-center gap-2 whitespace-nowrap rounded-xl px-4 py-2.5 text-xs font-semibold transition-all active:scale-[0.98] motion-reduce:active:scale-100 ${
                 isActive
                   ? "bg-surface-forest text-white shadow-sm"
                   : "bg-surface-bento/60 text-text-body hover:bg-surface-bento hover:text-text-ink"
@@ -163,7 +166,10 @@ export default function SiteContentCMSPage() {
       </div>
 
       {/* Tab Panels */}
-      <div className="rounded-2xl border border-border-subtle bg-white p-6 shadow-sm">
+      <div
+        key={activeTab}
+        className="tab-panel-enter rounded-2xl border border-border-subtle bg-white p-6 shadow-sm"
+      >
         {/* 1. HERO TAB */}
         {activeTab === "hero" && (
           <div className="space-y-6">

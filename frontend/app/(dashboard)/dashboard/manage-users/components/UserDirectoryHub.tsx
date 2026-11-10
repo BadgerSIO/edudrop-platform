@@ -50,7 +50,7 @@ export default function UserDirectoryHub({
       {/* KPI Stats Bar */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* KPI 1: Total Users */}
-        <div className="rounded-2xl border border-border-subtle bg-white p-5 shadow-bento">
+        <div className="dash-card-enter rounded-2xl border border-border-subtle bg-white p-5 shadow-bento">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold uppercase tracking-wider text-text-muted">
               Total Enrolled Accounts
@@ -68,7 +68,10 @@ export default function UserDirectoryHub({
         </div>
 
         {/* KPI 2: Community Donors */}
-        <div className="rounded-2xl border border-border-subtle bg-white p-5 shadow-bento">
+        <div
+          style={{ "--dash-delay": "50ms" } as React.CSSProperties}
+          className="dash-card-enter rounded-2xl border border-border-subtle bg-white p-5 shadow-bento"
+        >
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold uppercase tracking-wider text-text-muted">
               Community Donors
@@ -86,7 +89,10 @@ export default function UserDirectoryHub({
         </div>
 
         {/* KPI 3: School Bursars */}
-        <div className="rounded-2xl border border-border-subtle bg-white p-5 shadow-bento">
+        <div
+          style={{ "--dash-delay": "100ms" } as React.CSSProperties}
+          className="dash-card-enter rounded-2xl border border-border-subtle bg-white p-5 shadow-bento"
+        >
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold uppercase tracking-wider text-text-muted">
               Campus Bursars
@@ -104,7 +110,10 @@ export default function UserDirectoryHub({
         </div>
 
         {/* KPI 4: Admins */}
-        <div className="rounded-2xl border border-border-subtle bg-white p-5 shadow-bento">
+        <div
+          style={{ "--dash-delay": "150ms" } as React.CSSProperties}
+          className="dash-card-enter rounded-2xl border border-border-subtle bg-white p-5 shadow-bento"
+        >
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold uppercase tracking-wider text-text-muted">
               Platform Admins
@@ -127,7 +136,7 @@ export default function UserDirectoryHub({
         <button
           type="button"
           onClick={() => setSelectedRole("all")}
-          className={`inline-flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold transition-all shadow-sm ${
+          className={`inline-flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold transition-all active:scale-[0.98] motion-reduce:active:scale-100 shadow-sm ${
             selectedRole === "all"
               ? "bg-surface-forest text-white"
               : "bg-white border border-border-subtle text-text-muted hover:text-text-ink hover:bg-surface-bento/40"
@@ -148,7 +157,7 @@ export default function UserDirectoryHub({
         <button
           type="button"
           onClick={() => setSelectedRole("donar")}
-          className={`inline-flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold transition-all shadow-sm ${
+          className={`inline-flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold transition-all active:scale-[0.98] motion-reduce:active:scale-100 shadow-sm ${
             selectedRole === "donar"
               ? "bg-surface-forest text-white"
               : "bg-white border border-border-subtle text-text-muted hover:text-text-ink hover:bg-surface-bento/40"
@@ -170,7 +179,7 @@ export default function UserDirectoryHub({
         <button
           type="button"
           onClick={() => setSelectedRole("bursar")}
-          className={`inline-flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold transition-all shadow-sm ${
+          className={`inline-flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold transition-all active:scale-[0.98] motion-reduce:active:scale-100 shadow-sm ${
             selectedRole === "bursar"
               ? "bg-surface-forest text-white"
               : "bg-white border border-border-subtle text-text-muted hover:text-text-ink hover:bg-surface-bento/40"
@@ -192,7 +201,7 @@ export default function UserDirectoryHub({
         <button
           type="button"
           onClick={() => setSelectedRole("admin")}
-          className={`inline-flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold transition-all shadow-sm ${
+          className={`inline-flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold transition-all active:scale-[0.98] motion-reduce:active:scale-100 shadow-sm ${
             selectedRole === "admin"
               ? "bg-surface-forest text-white"
               : "bg-white border border-border-subtle text-text-muted hover:text-text-ink hover:bg-surface-bento/40"
@@ -213,11 +222,13 @@ export default function UserDirectoryHub({
       </div>
 
       {/* Modern Data Table Bento Box */}
-      <DataTable
-        columns={columns}
-        data={filteredUsers}
-        searchPlaceholder="Search accounts by name, email, role, phone..."
-      />
+      <div key={selectedRole} className="tab-panel-enter">
+        <DataTable
+          columns={columns}
+          data={filteredUsers}
+          searchPlaceholder="Search accounts by name, email, role, phone..."
+        />
+      </div>
     </div>
   );
 }

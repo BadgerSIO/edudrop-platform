@@ -50,7 +50,7 @@ const ProfileCard = () => {
   return (
     <div className="space-y-6">
       {/* Hero Bento Identity Card */}
-      <div className="overflow-hidden rounded-2xl border border-border-subtle bg-white p-6 sm:p-8 shadow-bento">
+      <div className="dash-card-enter overflow-hidden rounded-2xl border border-border-subtle bg-white p-6 sm:p-8 shadow-bento">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 pb-6 border-b border-border-subtle/70">
           <div className="flex items-center gap-5">
             <div className="relative flex h-20 w-20 sm:h-24 sm:w-24 shrink-0 items-center justify-center overflow-hidden rounded-2xl border-2 border-border-subtle bg-surface-bento shadow-sm">

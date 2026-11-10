@@ -87,6 +87,12 @@
     scroll-behavior: smooth;
   }
 
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+
   body {
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
@@ -111,4 +117,281 @@ p {
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+
+/* ==========================================================================
+   EduDrop Motion & Loader Primitives (Zero-Bloat Native Web APIs)
+   ========================================================================== */
+
+/* 1. Registered properties for semantic indeterminate <progress> spinner */
+@property --arc-start {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@property --arc-end {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@property --progress-dash-animation {
+  syntax: "*";
+  inherits: false;
+  initial-value: , progress-dash 2.4s ease-in-out infinite;
+}
+
+@keyframes progress-spin {
+  to {
+    rotate: 1turn;
+  }
+}
+
+@keyframes progress-dash {
+  from {
+    --arc-start: 0deg;
+    --arc-end: 3deg;
+  }
+  50% {
+    --arc-start: 100deg;
+    --arc-end: 358deg;
+  }
+  to {
+    --arc-start: 360deg;
+    --arc-end: 363deg;
+  }
+}
+
+/* Hide native browser progress bars when styled as circular spinner (separate rules so browsers don't invalidate unrecognized vendor pseudo-elements) */
+progress.loading-spinner:indeterminate::-webkit-progress-bar {
+  display: none;
+  background: none;
+}
+
+progress.loading-spinner:indeterminate::-webkit-progress-value {
+  display: none;
+  background: none;
+}
+
+progress.loading-spinner:indeterminate::-moz-progress-bar {
+  display: none;
+  background: none;
+}
+
+progress.loading-spinner:indeterminate {
+  --_from: calc(90deg + var(--arc-start, 0deg));
+  --_to: calc(90deg + var(--arc-end, 158deg));
+  --size: 38px;
+  --thickness: 3px;
+  --spinner-color: rgb(var(--surface-forest));
+  --track-color: rgb(var(--border-subtle));
+  --spinner-duration: 1.25s;
+  --_used-spinner-duration: var(--spinner-duration);
+
+  position: relative;
+  display: block;
+  width: var(--size);
+  height: var(--size);
+  border-radius: 50%;
+  appearance: none;
+  background: conic-gradient(
+      from var(--_from),
+      var(--spinner-color) calc(var(--_to) - var(--_from)),
+      transparent 0
+    )
+    var(--track-color);
+
+  @supports (background-clip: border-area) {
+    background-clip: border-area;
+    border: var(--thickness) solid transparent;
+    background-origin: border-box;
+  }
+
+  @supports not (background-clip: border-area) {
+    --clip-boundary: calc(100% - var(--thickness));
+    mask-image: radial-gradient(
+      farthest-side,
+      transparent var(--clip-boundary),
+      black var(--clip-boundary)
+    );
+    border: 0;
+  }
+
+  @media (forced-colors: active) {
+    forced-color-adjust: none;
+    --spinner-color: CanvasText;
+    --track-color: Canvas;
+  }
+
+  animation:
+    progress-spin var(--_used-spinner-duration) linear infinite
+    var(--progress-dash-animation, );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  progress.loading-spinner:indeterminate {
+    --_used-spinner-duration: 6s;
+    --progress-dash-animation: ;
+    --arc-end: 158deg;
+  }
+}
+
+/* 2. Calm Skeleton Shimmer (Compositor-only transform sweep) */
+.edudrop-shimmer {
+  position: relative;
+  overflow: hidden;
+  background-color: rgb(var(--surface-bento));
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .edudrop-shimmer::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.65) 50%,
+      transparent 100%
+    );
+    animation: edudrop-shimmer-sweep 1.6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    pointer-events: none;
+  }
+}
+
+@keyframes edudrop-shimmer-sweep {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* 3. Route Page Entry Transition (No persistent containing block at rest) */
+@keyframes edudrop-page-enter {
+  from {
+    opacity: 0;
+    translate: 0 6px;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .page-enter {
+    animation: edudrop-page-enter 280ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+}
+
+/* 4. Play-Once Section & Card Scroll Reveal */
+.reveal-item {
+  opacity: 1;
+  translate: 0 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .reveal-item {
+    opacity: 0;
+    translate: 0 12px;
+    transition:
+      opacity 420ms cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0ms),
+      translate 420ms cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0ms);
+  }
+
+  .reveal-item.reveal-visible {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+/* 5. Hero Entrance & Live Progress Fill (Compositor-only) */
+@keyframes edudrop-hero-enter {
+  from {
+    opacity: 0;
+    translate: 0 10px;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+@keyframes edudrop-progress-fill {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.progress-fill {
+  transform-origin: left center;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero-enter {
+    animation: edudrop-hero-enter 440ms cubic-bezier(0.22, 1, 0.36, 1)
+      var(--enter-delay, 0ms) backwards;
+  }
+
+  .progress-fill {
+    animation: edudrop-progress-fill 700ms cubic-bezier(0.22, 1, 0.36, 1)
+      240ms backwards;
+  }
+}
+
+/* 6. View Transitions API (Same-document filter & layout transitions) */
+::view-transition-group(*) {
+  animation-duration: 240ms;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 180ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}
+
+/* 7. Dashboard Scoped Tab / Filter Settle & KPI Card Entrance */
+@keyframes edudrop-tab-enter {
+  from {
+    opacity: 0;
+    translate: 0 4px;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+@keyframes edudrop-dash-card {
+  from {
+    opacity: 0;
+    translate: 0 8px;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .tab-panel-enter {
+    animation: edudrop-tab-enter 200ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .dash-card-enter {
+    animation: edudrop-dash-card 320ms cubic-bezier(0.22, 1, 0.36, 1)
+      var(--dash-delay, 0ms) backwards;
+  }
 }

@@ -6,6 +6,7 @@ import BentoCard from "@/app/sharedComponents/ui/BentoCard";
 import SectionEyebrow from "@/app/sharedComponents/ui/SectionEyebrow";
 import FloatingPillTags from "@/app/sharedComponents/ui/FloatingPillTags";
 import ActionPillButton from "@/app/sharedComponents/ui/ActionPillButton";
+import Reveal from "@/app/sharedComponents/ui/Reveal";
 import { whyEduDropData as defaultWhyEduDrop, IWhyEduDrop } from "../data/staticHomeData";
 import { ArrowRight } from "lucide-react";
 
@@ -20,7 +21,7 @@ const WeSupport = ({ data }: WeSupportProps) => {
       <div className="mx-auto max-w-[1320px] px-5 sm:px-8">
         <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-12 lg:gap-14">
           {/* Left Column: Soft Bento Card with Eyebrow, Heading & Tagged Photo */}
-          <div className="lg:col-span-6">
+          <Reveal className="lg:col-span-6">
             <BentoCard variant="bento" className="p-6 sm:p-8 lg:p-10">
               <SectionEyebrow variant="light">
                 {content.eyebrow}
@@ -47,10 +48,13 @@ const WeSupport = ({ data }: WeSupportProps) => {
                 </div>
               </div>
             </BentoCard>
-          </div>
+          </Reveal>
 
           {/* Right Column: High-Conviction Editorial Copy & Actions */}
-          <div className="flex flex-col items-start gap-6 lg:col-span-6 lg:pl-6">
+          <Reveal
+            delayMs={90}
+            className="flex flex-col items-start gap-6 lg:col-span-6 lg:pl-6"
+          >
             <p className="text-lead font-medium text-text-ink">
               {content.leadStatement}
             </p>
@@ -91,7 +95,7 @@ const WeSupport = ({ data }: WeSupportProps) => {
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Link>
             </div>
-          </div>
+          </Reveal>
         </div>
       </div>
     </section>

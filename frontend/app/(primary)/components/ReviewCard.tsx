@@ -11,7 +11,7 @@ const ReviewCard = ({ review }: { review: ITestimonials }) => {
   return (
     <BentoCard
       variant="bento"
-      className="flex flex-col justify-between p-6 sm:p-8 hover:shadow-bento-hover transition-all duration-300"
+      className="flex h-full flex-col justify-between p-6 sm:p-8 hover:shadow-bento-hover transition-all duration-300"
     >
       <div>
         <div className="flex items-center justify-between">

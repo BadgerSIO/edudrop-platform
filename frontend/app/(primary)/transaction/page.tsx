@@ -13,6 +13,7 @@ import Link from "next/link";
 import Image from "next/image";
 import ActionPillButton from "@/app/sharedComponents/ui/ActionPillButton";
 import BentoCard from "@/app/sharedComponents/ui/BentoCard";
+import EduDropLoader from "@/app/sharedComponents/Loders/EduDropLoader";
 import {
   Check,
   Copy,
@@ -22,7 +23,6 @@ import {
   PackageCheck,
   Truck,
   ShieldCheck,
-  Loader2,
   Calendar,
   CreditCard,
   Hash,
@@ -123,17 +123,12 @@ const TransactionContent = () => {
 
   if (orderLoading) {
     return (
-      <div className="flex min-h-[60vh] items-center justify-center bg-surface-canvas">
-        <div className="flex flex-col items-center gap-3 text-surface-forest">
-          <Loader2 className="h-10 w-10 animate-spin" />
-          <p className="text-base font-bold">
-            Recording your sponsorship requisition...
-          </p>
-          <p className="text-xs text-text-body">
-            Routing physical supplies to the campus delivery queue.
-          </p>
-        </div>
-      </div>
+      <EduDropLoader
+        size="lg"
+        label="Recording your sponsorship requisition..."
+        sublabel="Routing physical supplies to the campus delivery queue."
+        className="min-h-[60vh] bg-surface-canvas"
+      />
     );
   }
 
@@ -452,12 +447,11 @@ const Transaction = () => {
   return (
     <Suspense
       fallback={
-        <div className="flex min-h-[50vh] items-center justify-center bg-surface-canvas">
-          <div className="flex flex-col items-center gap-2.5 text-surface-forest">
-            <Loader2 className="h-8 w-8 animate-spin" />
-            <p className="text-sm font-semibold">Loading receipt details...</p>
-          </div>
-        </div>
+        <EduDropLoader
+          size="md"
+          label="Loading receipt details..."
+          className="min-h-[50vh] bg-surface-canvas"
+        />
       }
     >
       <TransactionContent />

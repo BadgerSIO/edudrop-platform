@@ -4,7 +4,8 @@ import axios from "axios";
 import { SERVERURLAPI } from "@/lib/constants";
 import { getCookie } from "@/app/utility/handleCookie";
 import SchoolDetailHub from "@/app/(dashboard)/dashboard/(schools)/schools-list/[slug]/components/SchoolDetailHub";
-import { Loader2, AlertCircle } from "lucide-react";
+import EduDropLoader from "@/app/sharedComponents/Loders/EduDropLoader";
+import { AlertCircle } from "lucide-react";
 
 export default function BursarSchoolProfilePage() {
   const [loading, setLoading] = useState(true);
@@ -47,9 +48,11 @@ export default function BursarSchoolProfilePage() {
 
   if (loading) {
     return (
-      <div className="flex h-96 items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-surface-forest" />
-      </div>
+      <EduDropLoader
+        size="md"
+        label="Loading school profile..."
+        sublabel="Fetching campus profile and active supply requests"
+      />
     );
   }
 

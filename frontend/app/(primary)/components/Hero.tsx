@@ -30,7 +30,7 @@ const Hero = ({ metricData, trustStrip }: HeroProps) => {
           {/* Asymmetric Split Header matching reference proportions */}
           <div className="grid grid-cols-1 items-end gap-8 lg:grid-cols-12 lg:gap-12">
             {/* Left: Large 2-Line Display Headline */}
-            <div className="lg:col-span-7">
+            <div className="hero-enter lg:col-span-7">
               <h1 className="text-display font-medium tracking-tight text-on-forest">
                 Pure Hydration for
                 <br className="hidden sm:block" /> Every Classroom
@@ -38,7 +38,10 @@ const Hero = ({ metricData, trustStrip }: HeroProps) => {
             </div>
 
             {/* Right: Concise Persuasive Copy + Electric Lime Pill CTA */}
-            <div className="flex flex-col items-start gap-6 lg:col-span-5 lg:pb-1">
+            <div
+              className="hero-enter flex flex-col items-start gap-6 lg:col-span-5 lg:pb-1"
+              style={{ "--enter-delay": "70ms" } as React.CSSProperties}
+            >
               <p className="max-w-md text-base sm:text-lg leading-relaxed text-on-forest-muted">
                 Every case of pure spring water and hygiene supplies you sponsor
                 is consolidated and delivered straight to verified school bursars.
@@ -53,7 +56,10 @@ const Hero = ({ metricData, trustStrip }: HeroProps) => {
 
       {/* Wide Rounded Hero Photograph Overlapping the Forest/White Boundary */}
       <div className="relative z-10 mx-auto -mt-28 max-w-[1320px] px-5 sm:-mt-40 sm:px-8 lg:-mt-52">
-        <div className="relative aspect-[4/3] w-full max-h-[540px] overflow-hidden rounded-3xl sm:aspect-[16/9] lg:aspect-[21/9] shadow-2xl ring-1 ring-black/5">
+        <div
+          className="hero-enter relative aspect-[4/3] w-full max-h-[540px] overflow-hidden rounded-3xl sm:aspect-[16/9] lg:aspect-[21/9] shadow-2xl ring-1 ring-black/5"
+          style={{ "--enter-delay": "120ms" } as React.CSSProperties}
+        >
           <Image
             src="/home/w2.webp"
             alt="Student drinking pure spring water on campus"
@@ -71,7 +77,10 @@ const Hero = ({ metricData, trustStrip }: HeroProps) => {
           />
 
           {/* Frosted-Glass Live Impact Card (Bottom-Left) */}
-          <div className="absolute bottom-4 left-4 right-4 sm:bottom-7 sm:left-7 sm:right-auto sm:w-[360px]">
+          <div
+            className="hero-enter absolute bottom-4 left-4 right-4 sm:bottom-7 sm:left-7 sm:right-auto sm:w-[360px]"
+            style={{ "--enter-delay": "190ms" } as React.CSSProperties}
+          >
             <div className="rounded-2xl border border-white/20 bg-black/55 p-5 sm:p-6 text-white backdrop-blur-md shadow-glass">
               <span className="text-xs font-medium text-white/80">
                 Total school supplies sponsored
@@ -92,7 +101,7 @@ const Hero = ({ metricData, trustStrip }: HeroProps) => {
                 aria-label="Semester sponsorship goal progress"
               >
                 <div
-                  className="h-full rounded-full bg-brand-amber"
+                  className="progress-fill h-full rounded-full bg-brand-amber"
                   style={{ width: `${metrics.progressPercent}%` }}
                 />
               </div>
@@ -110,7 +119,10 @@ const Hero = ({ metricData, trustStrip }: HeroProps) => {
         </div>
 
         {/* Clean Verification & Impact Strip on White Canvas (Directly Below Hero Photo) */}
-        <div className="mt-10 sm:mt-14 rounded-2xl border border-border-subtle bg-surface-bento/50 px-6 py-6 sm:px-8">
+        <div
+          className="hero-enter mt-10 sm:mt-14 rounded-2xl border border-border-subtle bg-surface-bento/50 px-6 py-6 sm:px-8"
+          style={{ "--enter-delay": "240ms" } as React.CSSProperties}
+        >
           <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-5 lg:divide-x lg:divide-border-subtle">
             {strip.map((item, index) => (
               <div

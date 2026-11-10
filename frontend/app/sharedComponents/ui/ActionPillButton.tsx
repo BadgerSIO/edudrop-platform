@@ -6,7 +6,9 @@ import { cn } from "@/lib/utils";
 export interface ActionPillButtonProps {
   children: React.ReactNode;
   href?: string;
-  onClick?: () => void;
+  onClick?: (
+    event: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>
+  ) => void;
   type?: "button" | "submit" | "reset";
   variant?: "lime" | "dark" | "outline-glass" | "outline-dark";
   size?: "sm" | "md" | "lg";
@@ -31,11 +33,11 @@ export const ActionPillButton: React.FC<ActionPillButtonProps> = ({
   ariaLabel,
 }) => {
   const baseClasses =
-    "group inline-flex items-center justify-between gap-3 rounded-full font-semibold transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-lime select-none disabled:opacity-50 disabled:pointer-events-none active:scale-[0.98]";
+    "group/pill inline-flex items-center justify-between gap-3 rounded-full font-semibold transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-lime select-none disabled:opacity-50 disabled:pointer-events-none active:scale-[0.98]";
 
   const variantClasses = {
     lime: "bg-brand-lime text-surface-forest hover:bg-brand-lime-hover shadow-sm hover:shadow-md",
-    dark: "bg-text-ink text-white hover:bg-surface-forest shadow-sm hover:shadow-md",
+    dark: "bg-text-ink text-white hover:bg-surface-forest hover:text-white shadow-sm hover:shadow-md",
     "outline-glass":
       "bg-white/10 text-white border border-white/15 hover:bg-white/20 hover:border-white/25 backdrop-blur-sm",
     "outline-dark":
@@ -61,12 +63,12 @@ export const ActionPillButton: React.FC<ActionPillButtonProps> = ({
   }[size];
 
   const circleColorClasses = {
-    lime: "bg-surface-forest text-white group-hover:translate-x-0.5",
-    dark: "bg-white text-text-ink group-hover:translate-x-0.5",
+    lime: "bg-surface-forest text-white group-hover/pill:translate-x-0.5",
+    dark: "bg-white text-text-ink group-hover/pill:translate-x-0.5",
     "outline-glass":
-      "bg-brand-lime text-surface-forest group-hover:translate-x-0.5",
+      "bg-brand-lime text-surface-forest group-hover/pill:translate-x-0.5",
     "outline-dark":
-      "bg-surface-forest text-white group-hover:translate-x-0.5",
+      "bg-surface-forest text-white group-hover/pill:translate-x-0.5",
   }[variant];
 
   const content = (
@@ -88,6 +90,7 @@ export const ActionPillButton: React.FC<ActionPillButtonProps> = ({
     return (
       <Link
         href={href}
+        onClick={onClick}
         target={target}
         rel={rel}
         aria-label={ariaLabel}

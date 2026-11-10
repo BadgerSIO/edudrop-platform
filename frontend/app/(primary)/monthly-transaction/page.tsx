@@ -8,11 +8,11 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import BentoCard from "@/app/sharedComponents/ui/BentoCard";
 import ActionPillButton from "@/app/sharedComponents/ui/ActionPillButton";
+import EduDropLoader from "@/app/sharedComponents/Loders/EduDropLoader";
 import {
   CheckCircle2,
   XCircle,
   Repeat,
-  Loader2,
   Calendar,
   Hash,
   ArrowRight,
@@ -184,12 +184,11 @@ const MonthlyTransaction = () => {
   return (
     <Suspense
       fallback={
-        <div className="flex min-h-[50vh] items-center justify-center bg-surface-canvas">
-          <div className="flex flex-col items-center gap-2.5 text-surface-forest">
-            <Loader2 className="h-8 w-8 animate-spin" />
-            <p className="text-sm font-semibold">Loading recurring status...</p>
-          </div>
-        </div>
+        <EduDropLoader
+          size="md"
+          label="Loading recurring status..."
+          className="min-h-[50vh] bg-surface-canvas"
+        />
       }
     >
       <MonthlyTransactionContent />
