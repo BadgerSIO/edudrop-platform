@@ -104,13 +104,11 @@ const ProductList = async () => {
       </div>
 
       {/* Data Table */}
-      <div className="rounded-2xl border border-border-subtle bg-white shadow-bento overflow-hidden">
-        <DataTable
-          columns={columns}
-          data={products}
-          searchPlaceholder="Search products by title or slug..."
-        />
-      </div>
+      <DataTable
+        columns={columns}
+        data={products}
+        searchPlaceholder="Search products by title or slug..."
+      />
     </div>
   );
 };
