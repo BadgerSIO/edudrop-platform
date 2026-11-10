@@ -119,13 +119,11 @@ const SchoolsList = async () => {
       </div>
 
       {/* Modern Data Table Bento Box */}
-      <div className="rounded-2xl border border-border-subtle bg-white shadow-bento overflow-hidden">
-        <DataTable
-          columns={columns}
-          data={schools}
-          searchPlaceholder="Search campus by name, city, bursar..."
-        />
-      </div>
+      <DataTable
+        columns={columns}
+        data={schools}
+        searchPlaceholder="Search campus by name, city, bursar..."
+      />
     </div>
   );
 };

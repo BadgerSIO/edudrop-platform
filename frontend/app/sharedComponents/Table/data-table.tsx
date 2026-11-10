@@ -28,6 +28,7 @@ interface DataTableProps<TData, TValue> {
   data: TData[];
   searchPlaceholder?: string;
   enableExport?: boolean;
+  variant?: "card" | "embedded";
 }
 
 export function DataTable<TData extends { _id: string; slug?: string }, TValue>({
@@ -35,6 +36,7 @@ export function DataTable<TData extends { _id: string; slug?: string }, TValue>(
   data = [],
   searchPlaceholder = "Search records...",
   enableExport = true,
+  variant = "card",
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [globalFilter, setGlobalFilter] = useState("");
@@ -119,10 +121,15 @@ export function DataTable<TData extends { _id: string; slug?: string }, TValue>(
     document.body.removeChild(link);
   };
 
+  const containerClass =
+    variant === "card"
+      ? "w-full overflow-hidden rounded-2xl border border-border-subtle bg-white shadow-bento"
+      : "w-full bg-white";
+
   return (
-    <div className="w-full space-y-3">
+    <div className={containerClass}>
       {/* Search & Actions Bar */}
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between px-1">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border-b border-border-subtle bg-white px-4 py-3.5 sm:px-5">
         <div className="relative max-w-sm flex-1">
           <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted" />
           <input
@@ -141,7 +148,7 @@ export function DataTable<TData extends { _id: string; slug?: string }, TValue>(
             <select
               value={table.getState().pagination.pageSize}
               onChange={(e) => table.setPageSize(Number(e.target.value))}
-              className="rounded-lg border border-border-subtle bg-white px-2 py-1 text-xs font-semibold text-text-ink focus:border-surface-forest focus:outline-none"
+              className="rounded-lg border border-border-subtle bg-white py-1 pl-2.5 pr-7 text-xs font-semibold text-text-ink focus:border-surface-forest focus:outline-none cursor-pointer"
             >
               {[10, 20, 30, 50].map((pageSize) => (
                 <option key={pageSize} value={pageSize}>
@@ -166,64 +173,63 @@ export function DataTable<TData extends { _id: string; slug?: string }, TValue>(
         </div>
       </div>
 
-      <div className="overflow-x-auto rounded-xl border border-border-subtle bg-white shadow-sm">
-        <Table>
-          <TableHeader className="bg-surface-bento/50 border-b border-border-subtle">
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id} className="hover:bg-transparent border-border-subtle">
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead
-                      key={header.id}
-                      className="h-11 px-4 text-xs font-semibold uppercase tracking-wider text-text-muted"
-                    >
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext(),
-                          )}
-                    </TableHead>
-                  );
-                })}
+      {/* Borderless Table Grid inside Card */}
+      <Table>
+        <TableHeader className="bg-surface-bento/40">
+          {table.getHeaderGroups().map((headerGroup) => (
+            <TableRow key={headerGroup.id} className="hover:bg-transparent">
+              {headerGroup.headers.map((header) => {
+                return (
+                  <TableHead
+                    key={header.id}
+                    className="h-11 px-4 text-xs font-semibold uppercase tracking-wider text-text-muted"
+                  >
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext(),
+                        )}
+                  </TableHead>
+                );
+              })}
+            </TableRow>
+          ))}
+        </TableHeader>
+        <TableBody>
+          {table.getRowModel().rows?.length ? (
+            table.getRowModel().rows.map((row) => (
+              <TableRow
+                className="cursor-pointer transition-colors hover:bg-surface-bento/40"
+                onClick={() => handleRouting(row.original)}
+                key={row.id}
+                data-state={row.getIsSelected() && "selected"}
+              >
+                {row.getVisibleCells().map((cell) => (
+                  <TableCell key={cell.id} className="px-4 py-3.5 text-sm text-text-body">
+                    {flexRender(
+                      cell.column.columnDef.cell,
+                      cell.getContext(),
+                    )}
+                  </TableCell>
+                ))}
               </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  className="cursor-pointer border-b border-border-subtle/70 transition-colors hover:bg-surface-bento/40"
-                  onClick={() => handleRouting(row.original)}
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className="px-4 py-3.5 text-sm text-text-body">
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext(),
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-32 text-center text-sm text-text-muted"
-                >
-                  No records found.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </div>
+            ))
+          ) : (
+            <TableRow className="hover:bg-transparent">
+              <TableCell
+                colSpan={columns.length}
+                className="h-32 text-center text-sm text-text-muted"
+              >
+                No records found.
+              </TableCell>
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
 
       {/* Pagination Bar */}
-      <div className="flex items-center justify-between px-2 py-2">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border-t border-border-subtle bg-surface-bento/20 px-4 py-3 sm:px-5">
         <div className="text-xs text-text-muted font-medium">
           Showing {table.getRowModel().rows.length} of {table.getFilteredRowModel().rows.length} entries
         </div>
