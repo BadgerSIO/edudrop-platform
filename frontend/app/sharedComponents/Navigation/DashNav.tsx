@@ -12,10 +12,8 @@ import {
 import { AlignRight, LogOut, X } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useAuthContext } from "@/app/context/AuthContext";
-import DashNavLoading from "@/app/sharedComponents/Loders/DashNavLoading";
 import useAuth from "@/app/hooks/useAuth";
 import { SERVERURL } from "@/lib/constants";
-import { useNotificationContext } from "@/app/context/NotificationContext";
 import Notifications from "./Notifications";
 
 const navItems = [
@@ -27,7 +25,6 @@ const navItems = [
 const DashNav = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { data, loading } = useAuthContext();
-  const { notificationLoading } = useNotificationContext();
   const pathname = usePathname();
   const { signout } = useAuth();
   const [profileImageUrl, setProfileImageUrl] = useState("/user-avatar.webp");
@@ -60,9 +57,16 @@ const DashNav = () => {
     setIsOpen(false);
   };
 
-  if (loading || notificationLoading) {
-    return <DashNavLoading />;
-  }
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen]);
 
   const role = data?.role;
   const firstName =
@@ -90,7 +94,8 @@ const DashNav = () => {
               type="button"
               onClick={handleMenuIcon}
               aria-label="Toggle navigation menu"
-              className="flex h-10 w-10 items-center justify-center rounded-xl border border-border-subtle text-text-body hover:bg-surface-bento hover:text-text-ink transition-colors"
+              aria-expanded={isOpen}
+              className="flex h-10 w-10 items-center justify-center rounded-xl border border-border-subtle text-text-body hover:bg-surface-bento hover:text-text-ink active:scale-[0.97] motion-reduce:active:scale-100 transition-all"
             >
               <AlignRight className="h-5 w-5" />
             </button>
@@ -127,94 +132,116 @@ const DashNav = () => {
           <div className="hidden sm:block h-7 w-px bg-border-subtle/80" />
 
           {/* User Profile Dropdown Trigger */}
-          <DropdownMenu>
-            <DropdownMenuTrigger className="outline-none">
-              <div className="group flex items-center gap-3 rounded-full border border-border-subtle bg-white py-1.5 pl-1.5 pr-4 shadow-xs transition-all hover:border-surface-forest/30 hover:bg-surface-bento/60 cursor-pointer select-none">
-                <Image
-                  src={profileImageUrl}
-                  className="h-9 w-9 rounded-full object-cover ring-2 ring-border-subtle"
-                  alt={fullName}
-                  width={72}
-                  height={72}
-                  priority
-                />
-                <div className="flex flex-col text-left">
-                  <span className="text-xs font-bold text-text-ink leading-tight truncate max-w-[130px]">
-                    {firstName}
-                  </span>
-                  <span className="text-[11px] font-medium text-text-muted capitalize leading-tight">
-                    {data?.role === "donar" ? "Donor" : data?.role}
+          {loading ? (
+            <div
+              aria-hidden="true"
+              className="edudrop-shimmer h-12 w-36 rounded-full border border-border-subtle"
+            />
+          ) : (
+            <DropdownMenu>
+              <DropdownMenuTrigger className="outline-none">
+                <div className="group flex items-center gap-3 rounded-full border border-border-subtle bg-white py-1.5 pl-1.5 pr-4 shadow-xs transition-all hover:border-surface-forest/30 hover:bg-surface-bento/60 active:scale-[0.98] motion-reduce:active:scale-100 cursor-pointer select-none">
+                  <Image
+                    src={profileImageUrl}
+                    className="h-9 w-9 rounded-full object-cover ring-2 ring-border-subtle"
+                    alt={fullName}
+                    width={72}
+                    height={72}
+                    priority
+                  />
+                  <div className="flex flex-col text-left">
+                    <span className="text-xs font-bold text-text-ink leading-tight truncate max-w-[130px]">
+                      {firstName}
+                    </span>
+                    <span className="text-[11px] font-medium text-text-muted capitalize leading-tight">
+                      {data?.role === "donar" ? "Donor" : data?.role}
+                    </span>
+                  </div>
+                </div>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                align="end"
+                className="z-[999] mt-2 w-64 rounded-2xl border border-border-subtle bg-white p-2 shadow-2xl"
+              >
+                <div className="rounded-xl bg-surface-bento/70 p-3 mb-1">
+                  <p className="text-sm font-bold text-text-ink truncate">{fullName}</p>
+                  <p className="text-xs text-text-muted truncate mt-0.5">{data?.email}</p>
+                  <span className="mt-2 inline-flex items-center gap-1 rounded-full bg-surface-forest/10 px-2 py-0.5 text-[10px] font-bold text-surface-forest capitalize">
+                    {data?.role === "donar" ? "Verified Donor" : `${data?.role} Portal`}
                   </span>
                 </div>
-              </div>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent
-              align="end"
-              className="z-[999] mt-2 w-64 rounded-2xl border border-border-subtle bg-white p-2 shadow-2xl"
-            >
-              <div className="rounded-xl bg-surface-bento/70 p-3 mb-1">
-                <p className="text-sm font-bold text-text-ink truncate">{fullName}</p>
-                <p className="text-xs text-text-muted truncate mt-0.5">{data?.email}</p>
-                <span className="mt-2 inline-flex items-center gap-1 rounded-full bg-surface-forest/10 px-2 py-0.5 text-[10px] font-bold text-surface-forest capitalize">
-                  {data?.role === "donar" ? "Verified Donor" : `${data?.role} Portal`}
-                </span>
-              </div>
-              <DropdownMenuSeparator className="bg-border-subtle/80" />
-              <DropdownMenuItem asChild>
-                <Link
-                  href={
-                    data?.role === "donar"
-                      ? "/donar-dashboard"
-                      : data?.role === "bursar"
-                        ? "/bursar-dashboard"
-                        : data?.role === "admin"
-                          ? "/dashboard"
-                          : "/"
-                  }
-                  className="group flex cursor-pointer items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-semibold text-text-ink hover:bg-surface-forest hover:text-white transition-colors"
+                <DropdownMenuSeparator className="bg-border-subtle/80" />
+                <DropdownMenuItem asChild>
+                  <Link
+                    href={
+                      data?.role === "donar"
+                        ? "/donar-dashboard"
+                        : data?.role === "bursar"
+                          ? "/bursar-dashboard"
+                          : data?.role === "admin"
+                            ? "/dashboard"
+                            : "/"
+                    }
+                    className="group flex cursor-pointer items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-semibold text-text-ink hover:bg-surface-forest hover:text-white transition-colors"
+                  >
+                    <span>My Profile & Portal</span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={signout}
+                  className="group flex cursor-pointer items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-semibold text-red-600 hover:bg-red-50 transition-colors"
                 >
-                  <span>My Profile & Portal</span>
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={signout}
-                className="group flex cursor-pointer items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-semibold text-red-600 hover:bg-red-50 transition-colors"
-              >
-                <LogOut className="h-4 w-4" />
-                <span>Log Out</span>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+                  <LogOut className="h-4 w-4" />
+                  <span>Log Out</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
         </div>
       </div>
 
       {/* Dropdown drawer for mobile and tablet */}
-      <div
-        className={`fixed right-0 top-0 z-[99999] h-screen w-full max-w-[240px] bg-white p-5 border-l border-border-subtle shadow-2xl transition-transform duration-300 sm:max-w-xs lg:hidden ${
-          !isOpen && "translate-x-full"
-        }`}
-      >
-        <div className="flex items-center justify-between pb-4 border-b border-border-subtle">
-          <span className="text-xs font-bold uppercase tracking-wider text-text-body">Navigation</span>
-          <X
-            className="cursor-pointer text-text-body hover:text-surface-forest transition-colors h-5 w-5"
-            onClick={handleMenuClose}
-          />
-        </div>
-        <ul className="mt-4 space-y-2">
-          {navItems.map((item, index) => (
-            <li key={index}>
-              <Link
-                href={item.href}
+      {isOpen && (
+        <div
+          className="drawer-backdrop fixed inset-0 z-[99999] bg-black/50 backdrop-blur-sm lg:hidden"
+          onClick={handleMenuClose}
+        >
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-label="Portal navigation"
+            className="mobile-drawer-panel ml-auto flex h-screen w-full max-w-[260px] flex-col bg-white p-5 border-l border-border-subtle shadow-2xl sm:max-w-xs"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between pb-4 border-b border-border-subtle">
+              <span className="text-xs font-bold uppercase tracking-wider text-text-body">
+                Navigation
+              </span>
+              <button
+                type="button"
                 onClick={handleMenuClose}
-                className="block px-3 py-2 rounded-xl text-sm font-semibold text-text-ink hover:bg-surface-bento transition-colors"
+                aria-label="Close navigation menu"
+                className="flex h-8 w-8 items-center justify-center rounded-full text-text-body hover:bg-surface-bento hover:text-surface-forest transition-colors"
               >
-                {item.text}
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </div>
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+            <ul className="mt-4 space-y-2">
+              {navItems.map((item, index) => (
+                <li key={index}>
+                  <Link
+                    href={item.href}
+                    onClick={handleMenuClose}
+                    className="block px-3 py-2 rounded-xl text-sm font-semibold text-text-ink hover:bg-surface-bento transition-colors"
+                  >
+                    {item.text}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      )}
     </header>
   );
 };

@@ -4,6 +4,7 @@ import LightboxModal from "../../sharedComponents/LightboxModal";
 import { IOurRecentWork } from "@/app/types/Homepage";
 import SingleWorkImage from "./SingleWorkImage";
 import SectionHeader from "@/app/sharedComponents/ui/SectionHeader";
+import Reveal from "@/app/sharedComponents/ui/Reveal";
 
 const OurWorks = ({ data }: { data: IOurRecentWork[] }) => {
   const [lightBoxOpen, setLightBoxOpen] = useState(false);
@@ -28,21 +29,27 @@ const OurWorks = ({ data }: { data: IOurRecentWork[] }) => {
     <>
       <section className="bg-surface-canvas py-16 sm:py-24 lg:py-28 border-t border-border-subtle/50">
         <div className="mx-auto max-w-[1320px] px-5 sm:px-8">
-          <SectionHeader
-            align="center"
-            eyebrow="Proven Impact"
-            title="Recent Campus Deliveries"
-            subtitle="Every month, sponsored spring water cases, dispensers, and learning supplies are delivered directly into student and teacher hands."
-          />
+          <Reveal>
+            <SectionHeader
+              align="center"
+              eyebrow="Proven Impact"
+              title="Recent Campus Deliveries"
+              subtitle="Every month, sponsored spring water cases, dispensers, and learning supplies are delivered directly into student and teacher hands."
+            />
+          </Reveal>
 
           <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {displayWorks.map((item, indexImage) => (
-              <SingleWorkImage
+              <Reveal
                 key={item?._id || indexImage}
-                info={item}
-                handleLightBox={handleLightBox}
-                indexImage={indexImage}
-              />
+                delayMs={(indexImage % 3) * 70}
+              >
+                <SingleWorkImage
+                  info={item}
+                  handleLightBox={handleLightBox}
+                  indexImage={indexImage}
+                />
+              </Reveal>
             ))}
           </div>
         </div>

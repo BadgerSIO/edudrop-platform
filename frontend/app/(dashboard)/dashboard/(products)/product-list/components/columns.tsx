@@ -75,7 +75,7 @@ const StatusCell = ({ product }: { product: IProduct }) => {
       type="button"
       onClick={toggleStatus}
       disabled={loading}
-      className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold transition-all ${
+      className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold transition-all active:scale-[0.98] motion-reduce:active:scale-100 ${
         isActive
           ? "border border-surface-forest/20 bg-surface-forest/10 text-surface-forest hover:bg-surface-forest/20"
           : "border border-border-subtle bg-surface-bento/60 text-text-muted hover:bg-surface-bento"
@@ -84,7 +84,7 @@ const StatusCell = ({ product }: { product: IProduct }) => {
     >
       <span
         className={`h-1.5 w-1.5 rounded-full ${
-          isActive ? "bg-surface-forest animate-pulse" : "bg-gray-400"
+          isActive ? "bg-surface-forest" : "bg-gray-400"
         }`}
       />
       <span>{isActive ? "Active" : "Draft / Paused"}</span>

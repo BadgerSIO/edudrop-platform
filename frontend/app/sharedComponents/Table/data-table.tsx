@@ -164,7 +164,7 @@ export function DataTable<TData extends { _id: string; slug?: string }, TValue>(
               variant="outline"
               size="sm"
               onClick={exportToCSV}
-              className="h-8 rounded-xl border-border-subtle text-xs font-semibold text-surface-forest hover:bg-surface-bento"
+              className="h-8 rounded-xl border-border-subtle text-xs font-semibold text-surface-forest hover:bg-surface-bento active:scale-[0.98] motion-reduce:active:scale-100 transition-all"
             >
               <Download className="mr-1.5 h-3.5 w-3.5" />
               Export CSV
@@ -196,7 +196,10 @@ export function DataTable<TData extends { _id: string; slug?: string }, TValue>(
             </TableRow>
           ))}
         </TableHeader>
-        <TableBody>
+        <TableBody
+          key={table.getState().pagination.pageIndex}
+          className="tab-panel-enter"
+        >
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
               <TableRow
@@ -239,7 +242,7 @@ export function DataTable<TData extends { _id: string; slug?: string }, TValue>(
             size="sm"
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
-            className="h-8 rounded-lg border-border-subtle text-xs font-semibold text-text-ink hover:bg-surface-bento"
+            className="h-8 rounded-lg border-border-subtle text-xs font-semibold text-text-ink hover:bg-surface-bento active:scale-[0.98] motion-reduce:active:scale-100 transition-all"
           >
             <ChevronLeft className="mr-1 h-3.5 w-3.5" />
             Previous
@@ -249,7 +252,7 @@ export function DataTable<TData extends { _id: string; slug?: string }, TValue>(
             size="sm"
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
-            className="h-8 rounded-lg border-border-subtle text-xs font-semibold text-text-ink hover:bg-surface-bento"
+            className="h-8 rounded-lg border-border-subtle text-xs font-semibold text-text-ink hover:bg-surface-bento active:scale-[0.98] motion-reduce:active:scale-100 transition-all"
           >
             Next
             <ChevronRight className="ml-1 h-3.5 w-3.5" />

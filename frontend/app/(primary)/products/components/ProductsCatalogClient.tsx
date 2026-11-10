@@ -1,8 +1,9 @@
 "use client";
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import { ICategory, IProduct, isICategory } from "@/app/types/Product";
 import ProductCard from "@/app/sharedComponents/ProductCard";
 import ProductSearchFilter from "./ProductSearchFilter";
+import { runViewTransition, toViewTransitionName } from "@/app/utility/viewTransition";
 import { SearchX } from "lucide-react";
 
 interface ProductsCatalogClientProps {
@@ -16,6 +17,25 @@ export const ProductsCatalogClient: React.FC<ProductsCatalogClientProps> = ({
 }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const handleSelectCategory = (category: string) => {
+    runViewTransition(() => {
+      setSelectedCategory(category);
+    });
+  };
+
+  const handleResetFromEmpty = () => {
+    runViewTransition(
+      () => {
+        setSearchQuery("");
+        setSelectedCategory("all");
+      },
+      () => {
+        containerRef.current?.focus();
+      }
+    );
+  };
 
   const filteredProducts = useMemo(() => {
     return products.filter((product) => {
@@ -38,13 +58,13 @@ export const ProductsCatalogClient: React.FC<ProductsCatalogClientProps> = ({
   }, [products, searchQuery, selectedCategory]);
 
   return (
-    <div className="w-full">
+    <div ref={containerRef} tabIndex={-1} className="w-full focus:outline-none">
       {/* Unified Bento Search & Category Filter Toolbar */}
       <ProductSearchFilter
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
         selectedCategory={selectedCategory}
-        onSelectCategory={setSelectedCategory}
+        onSelectCategory={handleSelectCategory}
         categories={categories}
         totalCount={products.length}
         filteredCount={filteredProducts.length}
@@ -53,8 +73,17 @@ export const ProductsCatalogClient: React.FC<ProductsCatalogClientProps> = ({
       {/* Products Grid */}
       {filteredProducts.length > 0 ? (
         <div className="mt-8 grid grid-cols-1 gap-7 sm:grid-cols-2 lg:grid-cols-3">
-          {filteredProducts.map((product) => (
-            <ProductCard key={product._id || product.slug} product={product} />
+          {filteredProducts.map((product, idx) => (
+            <ProductCard
+              key={product._id || product.slug}
+              product={product}
+              style={{
+                viewTransitionName: toViewTransitionName(
+                  "product-card",
+                  product._id || product.slug || String(idx)
+                ),
+              }}
+            />
           ))}
         </div>
       ) : (
@@ -69,10 +98,7 @@ export const ProductsCatalogClient: React.FC<ProductsCatalogClientProps> = ({
           </p>
           <button
             type="button"
-            onClick={() => {
-              setSearchQuery("");
-              setSelectedCategory("all");
-            }}
+            onClick={handleResetFromEmpty}
             className="mt-6 inline-flex rounded-full bg-surface-forest px-6 py-2.5 text-sm font-semibold text-white transition-all hover:bg-surface-forest-light"
           >
             Reset Filters

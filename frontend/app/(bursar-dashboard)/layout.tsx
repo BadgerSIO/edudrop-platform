@@ -4,6 +4,7 @@ import DashNav from "@/app/sharedComponents/Navigation/DashNav";
 import AuthContext from "../context/AuthContext";
 import DashNavLoading from "../sharedComponents/Loders/DashNavLoading";
 import SideBarLoading from "../sharedComponents/Loders/SideBarLoading";
+import CardFullLoading from "../sharedComponents/Loders/CardFullLoading";
 import { NavbarProvider } from "../context/NavContext";
 import NotificationContextProvider from "../context/NotificationContext";
 import Breadcrumb from "../sharedComponents/Breadcrumb";
@@ -24,7 +25,7 @@ const BursarDashboardLayout = ({ children }: { children: React.ReactNode }) => {
             <main className="col-start-2 row-start-2 min-w-0 overflow-x-hidden px-6 py-8 sm:px-10 sm:py-10 lg:px-12 lg:py-12">
               <div className="mx-auto max-w-[1440px]">
                 <Breadcrumb />
-                <Suspense fallback={<p className="text-text-muted text-sm">Loading feed...</p>}>{children}</Suspense>
+                <Suspense fallback={<CardFullLoading />}>{children}</Suspense>
               </div>
             </main>
             <Toaster />

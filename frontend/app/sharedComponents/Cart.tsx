@@ -58,11 +58,11 @@ const Cart = ({
   return (
     <div
       id="cart-wrapper"
-      className="fixed inset-0 z-[999] flex h-screen w-full overflow-hidden bg-surface-forest/40 backdrop-blur-sm transition-all duration-300"
+      className="drawer-backdrop fixed inset-0 z-[999] flex h-screen w-full overflow-hidden bg-surface-forest/40 backdrop-blur-sm"
     >
       <div
         id="cart-main"
-        className="ml-auto flex h-full w-full max-w-[480px] flex-col justify-between bg-white shadow-2xl transition-transform duration-300 animate-in slide-in-from-right"
+        className="ml-auto flex h-full w-full max-w-[480px] flex-col justify-between bg-white shadow-2xl"
         ref={mainRef}
       >
         {/* Cart Header */}
