@@ -2,9 +2,12 @@ import React from "react";
 import AdminLogin from "./components/AdminLogin";
 import AuthPillar from "@/app/sharedComponents/Auth/AuthPillar";
 import Link from "next/link";
+import { getServerDemoMode } from "@/app/utility/getDemoStatus";
 import { Shield } from "lucide-react";
 
-const EdudropAdminLogin = () => {
+const EdudropAdminLogin = async () => {
+  const initialDemoMode = await getServerDemoMode();
+
   return (
     <section className="bg-surface-canvas min-h-[calc(100vh-80px)] py-8 sm:py-12 lg:py-16">
       <div className="mx-auto max-w-[1240px] px-4 sm:px-6 lg:px-8">
@@ -39,7 +42,7 @@ const EdudropAdminLogin = () => {
                 </div>
 
                 {/* Form */}
-                <AdminLogin />
+                <AdminLogin initialDemoMode={initialDemoMode} />
               </div>
 
               {/* Cross-Link Footer */}

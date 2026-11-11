@@ -1,6 +1,5 @@
 "use client";
 
-import { useAuthContext } from "@/app/context/AuthContext";
 import useAuth from "@/app/hooks/useAuth";
 import React, { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
@@ -14,7 +13,9 @@ interface FormValues {
   password: string;
 }
 
-const AdminLogin: React.FC = () => {
+const AdminLogin: React.FC<{ initialDemoMode?: boolean }> = ({
+  initialDemoMode = false,
+}) => {
   const { signinAdmin } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -161,6 +162,7 @@ const AdminLogin: React.FC = () => {
 
     <DemoCredentialsBox
       role="admin"
+      initialDemoMode={initialDemoMode}
       onSelect={handleDemoSignIn}
       disabled={submitting}
     />

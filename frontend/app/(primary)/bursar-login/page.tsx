@@ -2,9 +2,12 @@ import React from "react";
 import BursarLogin from "./BursarLogin";
 import AuthPillar from "@/app/sharedComponents/Auth/AuthPillar";
 import Link from "next/link";
+import { getServerDemoMode } from "@/app/utility/getDemoStatus";
 import { GraduationCap } from "lucide-react";
 
-const EdudropBursarLogin = () => {
+const EdudropBursarLogin = async () => {
+  const initialDemoMode = await getServerDemoMode();
+
   return (
     <section className="bg-surface-canvas min-h-[calc(100vh-80px)] py-8 sm:py-12 lg:py-16">
       <div className="mx-auto max-w-[1240px] px-4 sm:px-6 lg:px-8">
@@ -39,7 +42,7 @@ const EdudropBursarLogin = () => {
                 </div>
 
                 {/* Form */}
-                <BursarLogin />
+                <BursarLogin initialDemoMode={initialDemoMode} />
               </div>
 
               {/* Cross-Link Footer */}

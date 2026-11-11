@@ -3,8 +3,11 @@ import React, { Suspense } from "react";
 import LoginForm from "./components/LoginForm";
 import AuthPillar from "@/app/sharedComponents/Auth/AuthPillar";
 import EduDropLoader from "@/app/sharedComponents/Loders/EduDropLoader";
+import { getServerDemoMode } from "@/app/utility/getDemoStatus";
 
-const Login = () => {
+const Login = async () => {
+  const initialDemoMode = await getServerDemoMode();
+
   return (
     <section className="bg-surface-canvas min-h-[calc(100vh-80px)] py-8 sm:py-12 lg:py-16">
       <div className="mx-auto max-w-[1240px] px-4 sm:px-6 lg:px-8">
@@ -57,7 +60,7 @@ const Login = () => {
                     />
                   }
                 >
-                  <LoginForm />
+                  <LoginForm initialDemoMode={initialDemoMode} />
                 </Suspense>
               </div>
 
