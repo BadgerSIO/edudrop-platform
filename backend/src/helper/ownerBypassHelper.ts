@@ -6,6 +6,7 @@ import config from "../config";
 import ApiError from "../error/ApiError";
 
 export const OWNER_BYPASS_HEADER = "x-edudrop-owner-token";
+export const CRON_SECRET_HEADER = "x-cron-secret";
 const OWNER_BYPASS_EXPIRY_SECONDS = 4 * 60 * 60; // 4 hours
 const OWNER_TOKEN_TYPE = "edudrop-owner-bypass";
 
@@ -77,6 +78,28 @@ export function verifyOwnerPasskey(input: string): boolean {
   const configured = config.ownerBypassKey;
   if (!configured || !input) return false;
   return crypto.timingSafeEqual(sha256(input), sha256(configured));
+}
+
+export function extractCronSecret(req: Request): string | undefined {
+  const headerVal = req.headers[CRON_SECRET_HEADER];
+  if (Array.isArray(headerVal) && headerVal[0]?.trim()) {
+    return headerVal[0].trim();
+  }
+  if (typeof headerVal === "string" && headerVal.trim()) {
+    return headerVal.trim();
+  }
+  const authHeader = req.headers["authorization"];
+  if (typeof authHeader === "string" && authHeader.startsWith("Bearer ")) {
+    return authHeader.slice("Bearer ".length).trim() || undefined;
+  }
+  return undefined;
+}
+
+export function verifyCronSecret(req: Request): boolean {
+  const configured = config.cronSecret;
+  const provided = extractCronSecret(req);
+  if (!configured || !provided) return false;
+  return crypto.timingSafeEqual(sha256(provided), sha256(configured));
 }
 
 export async function issueOwnerBypassToken(): Promise<{

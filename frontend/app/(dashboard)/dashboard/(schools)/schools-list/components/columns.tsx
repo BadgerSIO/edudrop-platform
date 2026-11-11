@@ -35,7 +35,7 @@ import Link from "next/link";
 import Image from "next/image";
 import useSchool from "@/app/hooks/useSchool";
 import { dateConverter } from "@/app/utility/dateConverter";
-import { SERVERURL } from "@/lib/constants";
+import { handleBuildImage } from "@/app/utility/handleBuildImage";
 import StatusBadge from "@/app/sharedComponents/ui/StatusBadge";
 import StatusChangeDialog from "@/app/sharedComponents/ui/StatusChangeDialog";
 
@@ -196,10 +196,7 @@ export const columns: ColumnDef<ISchool>[] = [
     cell: ({ row }) => {
       const school = row.original;
       const logo = school.schoolLogo;
-      let logoUrl = "";
-      if (logo) {
-        logoUrl = logo.startsWith("http") ? logo : `${SERVERURL}${logo}`;
-      }
+      const logoUrl = logo ? handleBuildImage(logo, "") : "";
 
       return (
         <div className="flex items-center gap-3">

@@ -4,6 +4,7 @@ import config from "../../config";
 import ApiError from "../../error/ApiError";
 import {
   extractOwnerBypassToken,
+  verifyCronSecret,
   verifyOwnerBypassToken,
 } from "../../helper/ownerBypassHelper";
 
@@ -98,6 +99,15 @@ const demoGuard = async (req: Request, res: Response, next: NextFunction) => {
   }
 
   const normalizedPath = req.path.replace(/\/+$/, "") || "/";
+  if (
+    method === "POST" &&
+    normalizedPath === "/auth/demo-reset" &&
+    verifyCronSecret(req)
+  ) {
+    res.locals.cronBypass = true;
+    return next();
+  }
+
   const isAllowed = SAFE_SANDBOX_MUTATIONS.some(
     (rule) => rule.method === method && rule.pattern.test(normalizedPath)
   );

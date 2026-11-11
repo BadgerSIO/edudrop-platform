@@ -46,7 +46,7 @@ import Link from "next/link";
 import Image from "next/image";
 import useUser from "@/app/hooks/useUser";
 import { dateConverter } from "@/app/utility/dateConverter";
-import { SERVERURL } from "@/lib/constants";
+import { handleBuildImage } from "@/app/utility/handleBuildImage";
 import { generatePassword } from "@/app/utility/passwordGenerator";
 import toast from "react-hot-toast";
 import { AuthenticationContext } from "@/app/context/AuthContext";
@@ -96,11 +96,7 @@ const UserAccountCell = ({ user }: { user: IUser }) => {
   const lastName = profile?.name?.lastName || "";
   const fullName = `${firstName} ${lastName}`.trim() || user.email.split("@")[0];
   const image = profile?.profileImage;
-  const fullImageUrl = image
-    ? image.startsWith("http")
-      ? image
-      : `${SERVERURL}${image}`
-    : null;
+  const fullImageUrl = image ? handleBuildImage(image, "") || null : null;
 
   const initials =
     (firstName[0] || "") + (lastName[0] || "") ||

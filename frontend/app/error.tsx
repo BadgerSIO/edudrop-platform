@@ -10,7 +10,7 @@ const Error = ({ error }: { error: Error }) => {
         <Ban className="h-10 w-10 text-red-500" />
         <h1 className="text-2xl font-bold">My bad. An error occured!</h1>
         <Link
-          href={process.env.NEXT_PUBLIC_EDUDROP_DOMAIN || "/"}
+          href="/"
           className="inline-block rounded-full bg-surface-forest px-5 py-2.5 text-sm font-semibold text-white hover:bg-surface-forest/90 transition-all"
         >
           Back to Home

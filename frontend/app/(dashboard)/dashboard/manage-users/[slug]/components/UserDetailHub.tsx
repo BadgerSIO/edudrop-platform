@@ -20,7 +20,7 @@ import {
   Ban,
 } from "lucide-react";
 import { IUser } from "@/app/types/User";
-import { SERVERURL } from "@/lib/constants";
+import { handleBuildImage } from "@/app/utility/handleBuildImage";
 import { dateConverter } from "@/app/utility/dateConverter";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import CustomAlertDialouge from "@/app/sharedComponents/CustomAlertDialouge";
@@ -60,11 +60,7 @@ export default function UserDetailHub({ user }: UserDetailHubProps) {
   const lastName = profile?.name?.lastName || "";
   const fullName = `${firstName} ${lastName}`.trim() || user.email.split("@")[0];
   const image = profile?.profileImage;
-  const fullImageUrl = image
-    ? image.startsWith("http")
-      ? image
-      : `${SERVERURL}${image}`
-    : null;
+  const fullImageUrl = image ? handleBuildImage(image, "") || null : null;
 
   const initials =
     (firstName[0] || "") + (lastName[0] || "") ||

@@ -9,6 +9,7 @@ async function getSingleOrderById(id: string) {
     const res = await fetch(`${SERVERURLAPI}/order/${id}`, {
       headers: jwt ? { Authorization: `Bearer ${jwt}` } : {},
       next: { tags: ["orderInfo"] },
+      cache: "no-store",
     });
     if (!res.ok) {
       return null;

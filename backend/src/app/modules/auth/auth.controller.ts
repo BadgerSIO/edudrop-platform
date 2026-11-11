@@ -3,7 +3,6 @@ import httpStatus from "http-status";
 import catchAsync from "../../../shared/catchAsync";
 import sendResponse from "../../../shared/sendResponse";
 import { AuthService } from "./auth.service";
-import jwt from "jsonwebtoken";
 import * as jose from "jose";
 import config from "../../../config";
 import ApiError from "../../../error/ApiError";
@@ -16,6 +15,7 @@ import {
   getClientIp,
   issueOwnerBypassToken,
   recordFailedOwnerUnlock,
+  verifyCronSecret,
   verifyOwnerBypassToken,
   verifyOwnerPasskey,
 } from "../../../helper/ownerBypassHelper";
@@ -109,10 +109,8 @@ const createAdmin = catchAsync(async (req: Request, res: Response) => {
   });
 });
 const verifyUser = catchAsync(async (req: Request, res: Response) => {
-  const bearertoken = req.headers["authorization"] as string;
-  const token = bearertoken?.split(" ")[1];
-  const payload = jwt.decode(token) as { email: string };
-  const result = await AuthService.verifyUser(payload);
+  const email = res.locals.email as string;
+  const result = await AuthService.verifyUser({ email });
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
@@ -187,8 +185,9 @@ const ownerUnlock = catchAsync(async (req: Request, res: Response) => {
 const demoReset = catchAsync(async (req: Request, res: Response) => {
   const ownerToken = extractOwnerBypassToken(req);
   const hasOwnerBypass = await verifyOwnerBypassToken(ownerToken);
+  const hasCronBypass = verifyCronSecret(req);
 
-  if (!hasOwnerBypass) {
+  if (!hasOwnerBypass && !hasCronBypass) {
     if (config.demoMode) {
       throw new ApiError(
         httpStatus.FORBIDDEN,

@@ -23,7 +23,7 @@ import {
 import { usePathname, useRouter } from "next/navigation";
 import { useAuthContext } from "@/app/context/AuthContext";
 import useAuth from "@/app/hooks/useAuth";
-import { SERVERURL } from "@/lib/constants";
+import { handleBuildImage } from "@/app/utility/handleBuildImage";
 import Notifications from "./Notifications";
 import OwnerUnlockModal from "./OwnerUnlockModal";
 
@@ -64,15 +64,11 @@ const DashNav = () => {
   };
 
   useEffect(() => {
-    let buildUrl = "/user-avatar.webp";
-    if (data?.donar?.profileImage) {
-      buildUrl = `${SERVERURL}${data.donar.profileImage}`;
-    } else if (data?.bursar?.profileImage) {
-      buildUrl = `${SERVERURL}${data.bursar.profileImage}`;
-    } else if (data?.admin?.profileImage) {
-      buildUrl = `${SERVERURL}${data.admin.profileImage}`;
-    }
-    setProfileImageUrl(buildUrl);
+    const rawAvatar =
+      data?.donar?.profileImage ||
+      data?.bursar?.profileImage ||
+      data?.admin?.profileImage;
+    setProfileImageUrl(handleBuildImage(rawAvatar, "/user-avatar.webp"));
   }, [data]);
 
   const handleMenuIcon = () => {
