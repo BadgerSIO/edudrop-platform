@@ -1,4 +1,4 @@
-name: Deploy Backend to cPanel (SG Hosting)
+name: Build & Publish Backend Bundle for cPanel
 
 on:
   push:
@@ -8,15 +8,18 @@ on:
       - ".github/workflows/deploy-backend-cpanel.yml"
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 concurrency:
-  group: deploy-backend-cpanel
+  group: build-backend-cpanel
   cancel-in-progress: true
 
 jobs:
-  build-and-deploy:
-    environment: edudropprod # Use the exact name configured in Settings → Environments
-    name: Build TypeScript & Deploy to cPanel
+  build-and-publish:
+    name: Build TypeScript & Push deploy-backend Branch
     runs-on: ubuntu-latest
+    timeout-minutes: 10
 
     steps:
       - name: Checkout repository
@@ -58,77 +61,19 @@ jobs:
           npx tsc --noEmit
           npm run build
 
-      - name: Stage production deployment bundle
-        working-directory: backend
-        run: |
-          rm -rf _deploy
-          mkdir -p _deploy
-          cp -r dist seed uploads package.json package-lock.json app.js _deploy/
-
-      - name: Configure SSH deploy key
+      - name: Stage clean production bundle and push deploy-backend branch
         env:
-          CPANEL_SSH_KEY: ${{ secrets.CPANEL_SSH_KEY }}
-          CPANEL_HOST: ${{ secrets.CPANEL_HOST }}
-          CPANEL_USER: ${{ secrets.CPANEL_USER }}
-          CPANEL_APP_DIR: ${{ secrets.CPANEL_APP_DIR }}
-          CPANEL_SSH_PORT: ${{ secrets.CPANEL_SSH_PORT }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          for var in CPANEL_HOST CPANEL_USER CPANEL_SSH_KEY CPANEL_APP_DIR; do
-            if [ -z "${!var}" ]; then
-              echo "::error::Missing required GitHub Actions Secret: $var. Add it in Repo Settings -> Secrets and variables -> Actions."
-              exit 1
-            fi
-          done
-          mkdir -p "$HOME/.ssh"
-          chmod 700 "$HOME/.ssh"
-          printf '%s\n' "$CPANEL_SSH_KEY" > "$HOME/.ssh/cpanel_deploy_key"
-          chmod 600 "$HOME/.ssh/cpanel_deploy_key"
-          SSH_PORT="${CPANEL_SSH_PORT:-22}"
-          SSH_HOST="$(printf '%s' "$CPANEL_HOST" | tr -d '[:space:]')"
-          ssh-keyscan -p "$SSH_PORT" -H "$SSH_HOST" >> "$HOME/.ssh/known_hosts" 2>/dev/null || true
+          BUNDLE_DIR="$(mktemp -d)"
+          cp -r backend/dist backend/seed backend/uploads backend/package.json backend/package-lock.json backend/app.js "$BUNDLE_DIR/"
 
-      - name: Sync built backend to cPanel & restart Passenger
-        env:
-          CPANEL_HOST: ${{ secrets.CPANEL_HOST }}
-          CPANEL_USER: ${{ secrets.CPANEL_USER }}
-          CPANEL_SSH_PORT: ${{ secrets.CPANEL_SSH_PORT }}
-          CPANEL_APP_DIR: ${{ secrets.CPANEL_APP_DIR }}
-          CPANEL_NODE_BIN: ${{ secrets.CPANEL_NODE_BIN }}
-        run: |
-          SSH_PORT="$(printf '%s' "${CPANEL_SSH_PORT:-22}" | tr -d '[:space:]')"
-          SSH_HOST="$(printf '%s' "$CPANEL_HOST" | tr -d '[:space:]')"
-          SSH_USER="$(printf '%s' "$CPANEL_USER" | tr -d '[:space:]')"
-          APP_DIR_CLEAN="$(printf '%s' "$CPANEL_APP_DIR" | tr -d '\r\n')"
-          NODE_BIN="${CPANEL_NODE_BIN:-/opt/alt/alt-nodejs22/root/usr/bin}"
-          RUN_CACHE="/tmp/npm-deploy-cache-${GITHUB_RUN_ID}"
-          KEY_PATH="$HOME/.ssh/cpanel_deploy_key"
-          SSH_CMD="ssh -i $KEY_PATH -p $SSH_PORT -o BatchMode=yes -o StrictHostKeyChecking=accept-new"
-
-          REMOTE_APP_DIR=$($SSH_CMD "${SSH_USER}@${SSH_HOST}" "eval echo ${APP_DIR_CLEAN}")
-          $SSH_CMD "${SSH_USER}@${SSH_HOST}" "mkdir -p '${REMOTE_APP_DIR}/dist' '${REMOTE_APP_DIR}/seed' '${REMOTE_APP_DIR}/uploads' '${REMOTE_APP_DIR}/tmp'"
-
-          rsync -az --delete -e "$SSH_CMD" backend/_deploy/dist/ "${SSH_USER}@${SSH_HOST}:${REMOTE_APP_DIR}/dist/"
-          rsync -az --delete -e "$SSH_CMD" backend/_deploy/seed/ "${SSH_USER}@${SSH_HOST}:${REMOTE_APP_DIR}/seed/"
-          rsync -az -e "$SSH_CMD" backend/_deploy/package.json backend/_deploy/package-lock.json backend/_deploy/app.js "${SSH_USER}@${SSH_HOST}:${REMOTE_APP_DIR}/"
-          rsync -az -e "$SSH_CMD" backend/_deploy/uploads/ "${SSH_USER}@${SSH_HOST}:${REMOTE_APP_DIR}/uploads/"
-
-          $SSH_CMD "${SSH_USER}@${SSH_HOST}" "
-            set -e
-            export PATH='${NODE_BIN}:/usr/local/bin:/usr/bin:/bin'
-            cd '${REMOTE_APP_DIR}'
-            npm ci --omit=dev --no-audit --no-fund --cache '${RUN_CACHE}'
-            rm -rf '${RUN_CACHE}'
-            mkdir -p tmp
-            touch tmp/restart.txt
-          "
-
-      - name: Verify live health endpoint (optional)
-        if: ${{ vars.BACKEND_HEALTH_URL != '' }}
-        env:
-          BACKEND_HEALTH_URL: ${{ vars.BACKEND_HEALTH_URL }}
-        run: |
-          curl -fsSL --retry 4 --retry-delay 5 "$BACKEND_HEALTH_URL"
-
-      - name: Cleanup SSH key
-        if: always()
-        run: rm -rf ~/.ssh/cpanel_deploy_key backend/_deploy
+          cd "$BUNDLE_DIR"
+          git init -b deploy-backend
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "deploy(backend): build ${GITHUB_SHA::7}"
+          git remote add origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git"
+          git push --force origin deploy-backend
+          rm -rf "$BUNDLE_DIR"
