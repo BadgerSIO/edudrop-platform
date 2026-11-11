@@ -1,0 +1,120 @@
+name: Deploy Backend to cPanel (SG Hosting)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "backend/**"
+      - ".github/workflows/deploy-backend-cpanel.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-backend-cpanel
+  cancel-in-progress: true
+
+jobs:
+  build-and-deploy:
+    name: Build TypeScript & Deploy to cPanel
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Install backend dependencies
+        working-directory: backend
+        run: npm ci
+
+      - name: Validate seed snapshots and assets
+        run: |
+          node -e '
+          const fs = require("fs");
+          const path = require("path");
+          const seedDir = "backend/seed";
+          for (const file of fs.readdirSync(seedDir).filter(f => f.endsWith(".json"))) {
+            const raw = fs.readFileSync(path.join(seedDir, file), "utf8");
+            const docs = JSON.parse(raw);
+            const matches = [...raw.matchAll(/"(\/(?:uploads|home|images)\/[^"]+)"/g)].map(m => m[1]);
+            for (const url of new Set(matches)) {
+              const clean = url.replace(/^\//, "");
+              const target = clean.startsWith("uploads/") ? path.join("backend", clean) : path.join("frontend/public", clean);
+              if (!fs.existsSync(target)) throw new Error(`Missing seed asset ${target} referenced in ${file}`);
+            }
+            console.log(`OK ${file}: ${docs.length} docs, ${new Set(matches).size} unique assets`);
+          }
+          '
+
+      - name: Typecheck & build backend
+        working-directory: backend
+        run: |
+          npx tsc --noEmit
+          npm run build
+
+      - name: Stage production deployment bundle
+        working-directory: backend
+        run: |
+          rm -rf _deploy
+          mkdir -p _deploy
+          cp -r dist seed uploads package.json package-lock.json app.js _deploy/
+
+      - name: Configure SSH deploy key
+        env:
+          CPANEL_SSH_KEY: ${{ secrets.CPANEL_SSH_KEY }}
+          CPANEL_HOST: ${{ secrets.CPANEL_HOST }}
+          CPANEL_SSH_PORT: ${{ secrets.CPANEL_SSH_PORT }}
+        run: |
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          printf '%s\n' "$CPANEL_SSH_KEY" > ~/.ssh/cpanel_deploy_key
+          chmod 600 ~/.ssh/cpanel_deploy_key
+          SSH_PORT="${CPANEL_SSH_PORT:-22}"
+          ssh-keyscan -p "$SSH_PORT" -H "$CPANEL_HOST" >> ~/.ssh/known_hosts 2>/dev/null || true
+
+      - name: Sync built backend to cPanel & restart Passenger
+        env:
+          CPANEL_HOST: ${{ secrets.CPANEL_HOST }}
+          CPANEL_USER: ${{ secrets.CPANEL_USER }}
+          CPANEL_SSH_PORT: ${{ secrets.CPANEL_SSH_PORT }}
+          CPANEL_APP_DIR: ${{ secrets.CPANEL_APP_DIR }}
+          CPANEL_NODE_BIN: ${{ secrets.CPANEL_NODE_BIN }}
+        run: |
+          SSH_PORT="${CPANEL_SSH_PORT:-22}"
+          NODE_BIN="${CPANEL_NODE_BIN:-/opt/alt/alt-nodejs22/root/usr/bin}"
+          RUN_CACHE="/tmp/npm-deploy-cache-${GITHUB_RUN_ID}"
+          SSH_OPTS="-i ~/.ssh/cpanel_deploy_key -p $SSH_PORT -o BatchMode=yes -o StrictHostKeyChecking=accept-new"
+
+          REMOTE_APP_DIR=$(ssh $SSH_OPTS "${CPANEL_USER}@${CPANEL_HOST}" "eval echo ${CPANEL_APP_DIR}")
+          ssh $SSH_OPTS "${CPANEL_USER}@${CPANEL_HOST}" "mkdir -p '${REMOTE_APP_DIR}/dist' '${REMOTE_APP_DIR}/seed' '${REMOTE_APP_DIR}/uploads' '${REMOTE_APP_DIR}/tmp'"
+
+          rsync -az --delete -e "ssh $SSH_OPTS" backend/_deploy/dist/ "${CPANEL_USER}@${CPANEL_HOST}:${REMOTE_APP_DIR}/dist/"
+          rsync -az --delete -e "ssh $SSH_OPTS" backend/_deploy/seed/ "${CPANEL_USER}@${CPANEL_HOST}:${REMOTE_APP_DIR}/seed/"
+          rsync -az -e "ssh $SSH_OPTS" backend/_deploy/package.json backend/_deploy/package-lock.json backend/_deploy/app.js "${CPANEL_USER}@${CPANEL_HOST}:${REMOTE_APP_DIR}/"
+          rsync -az -e "ssh $SSH_OPTS" backend/_deploy/uploads/ "${CPANEL_USER}@${CPANEL_HOST}:${REMOTE_APP_DIR}/uploads/"
+
+          ssh $SSH_OPTS "${CPANEL_USER}@${CPANEL_HOST}" "
+            set -e
+            export PATH='${NODE_BIN}:/usr/local/bin:/usr/bin:/bin'
+            cd '${REMOTE_APP_DIR}'
+            npm ci --omit=dev --no-audit --no-fund --cache '${RUN_CACHE}'
+            rm -rf '${RUN_CACHE}'
+            mkdir -p tmp
+            touch tmp/restart.txt
+          "
+
+      - name: Verify live health endpoint (optional)
+        if: ${{ vars.BACKEND_HEALTH_URL != '' }}
+        env:
+          BACKEND_HEALTH_URL: ${{ vars.BACKEND_HEALTH_URL }}
+        run: |
+          curl -fsSL --retry 4 --retry-delay 5 "$BACKEND_HEALTH_URL"
+
+      - name: Cleanup SSH key
+        if: always()
+        run: rm -rf ~/.ssh/cpanel_deploy_key backend/_deploy
