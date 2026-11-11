@@ -1,11 +1,8 @@
-import fs from "fs";
-import path from "path";
 import { AnyZodObject, ZodEffects } from "zod";
-
-const ALLOWED_USERS_UPLOAD_DIR = path.resolve(
-  __dirname,
-  "../../uploads/users"
-);
+import {
+  safeUnlinkMulterFile,
+  safeUnlinkUpload,
+} from "./mediaCleanupHelper";
 
 const FORBIDDEN_KEYS = new Set(["__proto__", "constructor", "prototype"]);
 
@@ -77,28 +74,7 @@ export const unflattenDottedBody = (
 export const safeUnlinkUserImage = async (
   relativePath?: string | null
 ): Promise<void> => {
-  try {
-    if (!relativePath || typeof relativePath !== "string") return;
-    if (relativePath.startsWith("http://") || relativePath.startsWith("https://")) {
-      return;
-    }
-
-    const cleanRelative = relativePath.replace(/^\/+/, "");
-    if (!cleanRelative.startsWith("uploads/users/")) {
-      return;
-    }
-
-    const resolvedTarget = path.resolve(__dirname, "../..", cleanRelative);
-    if (!resolvedTarget.startsWith(ALLOWED_USERS_UPLOAD_DIR + path.sep)) {
-      return;
-    }
-
-    if (fs.existsSync(resolvedTarget)) {
-      await fs.promises.unlink(resolvedTarget);
-    }
-  } catch (err) {
-    console.error("Failed to safely delete user image:", relativePath, err);
-  }
+  await safeUnlinkUpload(relativePath, "users");
 };
 
 /**
@@ -107,18 +83,7 @@ export const safeUnlinkUserImage = async (
 export const cleanupUploadedFile = async (
   file?: Express.Multer.File
 ): Promise<void> => {
-  try {
-    if (!file?.path) return;
-    const resolvedPath = path.resolve(file.path);
-    if (!resolvedPath.startsWith(ALLOWED_USERS_UPLOAD_DIR + path.sep)) {
-      return;
-    }
-    if (fs.existsSync(resolvedPath)) {
-      await fs.promises.unlink(resolvedPath);
-    }
-  } catch (err) {
-    console.error("Failed to rollback orphaned upload:", err);
-  }
+  await safeUnlinkMulterFile(file, "users");
 };
 
 /**

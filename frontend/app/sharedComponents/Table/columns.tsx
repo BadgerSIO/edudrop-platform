@@ -2,19 +2,75 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, Download, CheckCircle2, Clock, Truck, PackageCheck, AlertCircle } from "lucide-react";
+import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { IOrder } from "@/app/types/Order";
 import { dateConverter } from "@/app/utility/dateConverter";
-import { generateOrderInvoice } from "@/app/utility/generateOrderInvoice";
+import {
+  generateOrderInvoice,
+  InvoiceAudience,
+} from "@/app/utility/generateOrderInvoice";
+
+const InvoiceActionCell = ({ order }: { order: IOrder }) => {
+  const pathname = usePathname();
+  const audience: InvoiceAudience = pathname?.startsWith("/bursar-dashboard")
+    ? "bursar"
+    : pathname?.startsWith("/dashboard")
+      ? "admin"
+      : "donor";
+
+  const label = audience === "bursar" ? "Receipt" : "Invoice";
+  const tooltip =
+    audience === "bursar"
+      ? "Download Campus Delivery Receipt"
+      : "Download PDF Invoice";
+
+  return (
+    <div onClick={(e) => e.stopPropagation()} className="flex items-center">
+      <button
+        type="button"
+        onClick={() => generateOrderInvoice(order, { audience })}
+        className="inline-flex items-center gap-1.5 rounded-lg border border-border-subtle bg-white px-2.5 py-1 text-xs font-semibold text-text-ink shadow-sm transition-all hover:bg-surface-bento hover:border-surface-forest/30 active:scale-95"
+        title={tooltip}
+      >
+        <Download className="h-3.5 w-3.5 text-surface-forest" />
+        {label}
+      </button>
+    </div>
+  );
+};
 
 export const columns: ColumnDef<IOrder>[] = [
   {
-    accessorKey: "_id",
-    header: "Products",
+    accessorKey: "orderId",
+    header: () => (
+      <span className="text-xs font-semibold uppercase tracking-wider text-text-muted">
+        Order ID
+      </span>
+    ),
+    cell: ({ row }) => {
+      const displayId =
+        row.original.orderId ||
+        (row.original._id ? `ORD-${row.original._id.slice(-8).toUpperCase()}` : "N/A");
+      return (
+        <span className="inline-flex items-center rounded-lg border border-border-subtle bg-surface-bento/60 px-2.5 py-1 font-mono text-xs font-bold text-text-ink whitespace-nowrap">
+          {displayId}
+        </span>
+      );
+    },
+  },
+  {
+    id: "products",
+    accessorFn: (row) => row.products?.map((p) => p.title).join(", ") || "",
+    header: () => (
+      <span className="text-xs font-semibold uppercase tracking-wider text-text-muted">
+        Products
+      </span>
+    ),
     cell: ({ row }) => {
       const products = row.original.products;
       return (
-        <div className="flex flex-col gap-1 max-w-[280px]">
+        <div className="flex flex-col gap-1 max-w-[260px]">
           {products?.map((product) => (
             <span
               key={product?._id}
@@ -53,9 +109,10 @@ export const columns: ColumnDef<IOrder>[] = [
     header: () => <span className="text-xs font-semibold uppercase tracking-wider text-text-muted">Type</span>,
     cell: ({ row }) => {
       const payMonthly = row.getValue("payMonthly");
+      const isMonthly = payMonthly === "yes" || payMonthly === true;
       return (
         <span className="text-xs font-medium text-text-body">
-          {payMonthly ? "Monthly Recurring" : "One-Time"}
+          {isMonthly ? "Monthly Recurring" : "One-Time"}
         </span>
       );
     },
@@ -119,11 +176,12 @@ export const columns: ColumnDef<IOrder>[] = [
               On the Way
             </span>
           );
+        case "delivered":
         case "received":
           return (
             <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200/80 bg-emerald-50 px-2.5 py-0.5 text-xs font-semibold text-emerald-700">
               <CheckCircle2 className="h-3 w-3" />
-              Received
+              {orderStatus === "delivered" ? "Delivered" : "Received"}
             </span>
           );
         default:
@@ -143,19 +201,7 @@ export const columns: ColumnDef<IOrder>[] = [
       if (!paid) {
         return null;
       }
-      return (
-        <div onClick={(e) => e.stopPropagation()} className="flex items-center">
-          <button
-            type="button"
-            onClick={() => generateOrderInvoice(row.original)}
-            className="inline-flex items-center gap-1.5 rounded-lg border border-border-subtle bg-white px-2.5 py-1 text-xs font-semibold text-text-ink shadow-sm transition-all hover:bg-surface-bento hover:border-surface-forest/30 active:scale-95"
-            title="Download PDF Invoice"
-          >
-            <Download className="h-3.5 w-3.5 text-surface-forest" />
-            Invoice
-          </button>
-        </div>
-      );
+      return <InvoiceActionCell order={row.original} />;
     },
   },
 ];

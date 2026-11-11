@@ -134,10 +134,16 @@ const resetPassword = async (
 const changePass = async (payload: any, email: string) => {
   const doesUserExist = await User.findOne(
     { email },
-    { password: 1, status: 1, isDeleted: 1 }
+    { password: 1, role: 1, status: 1, isDeleted: 1 }
   ).lean();
   if (!doesUserExist) {
     throw new ApiError(httpStatus.BAD_REQUEST, "User account not found");
+  }
+  if (doesUserExist.role === "admin") {
+    throw new ApiError(
+      httpStatus.FORBIDDEN,
+      "Password changes are disabled for administrator accounts"
+    );
   }
   if (doesUserExist.isDeleted || doesUserExist.status === "suspended") {
     throw new ApiError(

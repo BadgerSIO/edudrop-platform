@@ -33,7 +33,7 @@ export const ActionPillButton: React.FC<ActionPillButtonProps> = ({
   ariaLabel,
 }) => {
   const baseClasses =
-    "group/pill inline-flex items-center justify-between gap-3 rounded-full font-semibold transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-lime select-none disabled:opacity-50 disabled:pointer-events-none active:scale-[0.98]";
+    "group/pill inline-flex cursor-pointer items-center justify-between gap-3 rounded-full font-semibold transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-lime select-none disabled:opacity-50 disabled:pointer-events-none active:scale-[0.98]";
 
   const variantClasses = {
     lime: "bg-brand-lime text-surface-forest hover:bg-brand-lime-hover shadow-sm hover:shadow-md",
@@ -73,7 +73,9 @@ export const ActionPillButton: React.FC<ActionPillButtonProps> = ({
 
   const content = (
     <>
-      <span className="leading-none">{children}</span>
+      <span className="inline-flex items-center justify-center gap-2 leading-none">
+        {children}
+      </span>
       <span
         className={cn(
           "inline-flex items-center justify-center rounded-full transition-transform duration-300",

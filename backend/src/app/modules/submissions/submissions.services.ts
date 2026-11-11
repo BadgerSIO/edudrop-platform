@@ -10,32 +10,55 @@ import { Submissions } from "./submissions.model";
 import { transport } from "../../../config/nodemailer";
 import { User } from "../user/user.model";
 import emailTemplate from "../../../shared/emailTemplate";
+import { NotificationService } from "../notification/notification.services";
 
 const createSubmissions = async (
   payload: ISubmissions
 ): Promise<ISubmissions | null> => {
-  payload.seen = false;
-  payload.status = "unread";
-  payload.isDeleted = false;
+  const submissionData: ISubmissions = {
+    firstName: String(payload.firstName || "").trim(),
+    lastName: String(payload.lastName || "").trim(),
+    email: String(payload.email || "").trim(),
+    phone: payload.phone ? String(payload.phone).trim() : undefined,
+    topic: payload.topic ? String(payload.topic).trim() : undefined,
+    message: String(payload.message || "").trim(),
+    seen: false,
+    status: "unread",
+    isDeleted: false,
+  };
 
+  let adminUser: { _id: any; email: string } | null = null;
   // Non-blocking try-catch for admin SMTP notification
   try {
-    const admin = await User.findOne({ role: "admin" }, { email: 1 }).lean();
-    if (admin) {
+    adminUser = await User.findOne({ role: "admin" }, { _id: 1, email: 1 }).lean();
+    if (adminUser) {
+      const topicTag = submissionData.topic ? ` [${submissionData.topic}]` : "";
       const info = await transport.sendMail({
-        from: `"EduDrop Platform Inquiry" <${payload.email}>`,
-        to: admin.email,
-        subject: `Platform Inquiry from ${payload.firstName} ${payload.lastName}`,
-        text: payload.message,
-        html: emailTemplate("contactForm", payload),
+        from: `"EduDrop Platform Inquiry" <${submissionData.email}>`,
+        to: adminUser.email,
+        subject: `Platform Inquiry${topicTag} from ${submissionData.firstName} ${submissionData.lastName}`,
+        text: submissionData.message,
+        html: emailTemplate("contactForm", submissionData),
       });
-      payload.messageId = info.messageId;
+      submissionData.messageId = info.messageId;
     }
   } catch (error) {
     console.error("Failed to dispatch admin inquiry email:", error);
   }
 
-  const result = await Submissions.create(payload);
+  const result = await Submissions.create(submissionData);
+
+  if (result && adminUser?._id) {
+    const senderName = `${submissionData.firstName} ${submissionData.lastName}`.trim() || submissionData.email;
+    const topicPrefix = submissionData.topic ? `[${submissionData.topic}] ` : "";
+    NotificationService.createNotificationSafe({
+      user: adminUser._id,
+      message: `${topicPrefix}New inquiry from ${senderName}`,
+      link: `/dashboard/form-submissions/${result._id}`,
+      read: false,
+    }).catch(console.error);
+  }
+
   return result;
 };
 

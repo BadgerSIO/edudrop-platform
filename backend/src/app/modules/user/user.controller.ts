@@ -44,7 +44,7 @@ const updateUserStatus: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
     const { id } = req.params;
     const { status } = req.body;
-    const adminEmail = (req as any).user?.email;
+    const adminEmail = res.locals.email || res.locals.user?.email;
 
     const result = await UserService.updateUserStatus(id, status, adminEmail);
 
@@ -61,7 +61,7 @@ const resetUserPassword: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
     const { id } = req.params;
     const { newPassword } = req.body;
-    const adminEmail = (req as any).user?.email;
+    const adminEmail = res.locals.email || res.locals.user?.email;
 
     const result = await UserService.resetUserPassword(
       id,
@@ -81,7 +81,7 @@ const resetUserPassword: RequestHandler = catchAsync(
 const deleteUser: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
     const { id } = req.params;
-    const adminEmail = (req as any).user?.email;
+    const adminEmail = res.locals.email || res.locals.user?.email;
 
     const result = await UserService.deleteUser(id, adminEmail);
 

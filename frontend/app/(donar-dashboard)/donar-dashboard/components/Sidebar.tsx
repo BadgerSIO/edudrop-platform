@@ -1,7 +1,7 @@
 "use client";
 import useAuth from "@/app/hooks/useAuth";
 import { User, ShoppingBag, LogOut } from "lucide-react";
-import Image from "next/image";
+import BrandLogo from "@/app/sharedComponents/ui/BrandLogo";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
@@ -22,15 +22,12 @@ const Sidebar = () => {
         <div className="space-y-6">
           {/* Logo & Portal Badge */}
           <div className="flex flex-col items-center lg:items-start px-1 pt-2">
-            <Link href="/" className="inline-block transition-opacity hover:opacity-85">
-              <Image
-                src="/logo.webp"
-                alt="EduDrop Logo"
-                width={120}
-                height={40}
-                className="h-6 sm:h-7 lg:h-8 w-auto object-contain"
-                priority
-              />
+            <Link
+              href="/"
+              aria-label="EduDrop Foundation Home"
+              className="inline-flex items-center transition-opacity hover:opacity-85"
+            >
+              <BrandLogo variant="on-light" size="sm" showTagline compactBelowLg />
             </Link>
             <div className="mt-2.5 hidden lg:inline-flex items-center gap-1.5 rounded-full border border-border-subtle bg-surface-bento/80 px-2.5 py-0.5 text-[11px] font-semibold text-text-muted">
               <span className="h-1.5 w-1.5 rounded-full bg-brand-forest shrink-0" />

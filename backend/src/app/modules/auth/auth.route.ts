@@ -6,6 +6,13 @@ import verifyJWT from "../../middleware/verifyJWT";
 import requireRole from "../../middleware/requireRole";
 const router = express.Router();
 router.get("/", verifyJWT, AuthController.verifyUser);
+router.get("/demo-status", AuthController.getDemoStatus);
+router.post(
+  "/owner-unlock",
+  validateRequest(AuthValidation.ownerUnlockZodSchema),
+  AuthController.ownerUnlock
+);
+router.post("/demo-reset", AuthController.demoReset);
 router.post("/forget-password-user", AuthController.forgetPassword);
 router.post("/reset-password-user", AuthController.resetPassword);
 router.post(

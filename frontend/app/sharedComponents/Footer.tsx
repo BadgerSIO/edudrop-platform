@@ -1,9 +1,12 @@
 "use client";
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
+import { Code2, ExternalLink, Globe } from "lucide-react";
 import ActionPillButton from "./ui/ActionPillButton";
+import BrandLogo from "./ui/BrandLogo";
+import LinkedInIcon from "./ui/LinkedInIcon";
+import { DEVELOPER_INFO } from "@/lib/developerInfo";
 
 const Footer = () => {
   const pathname = usePathname();
@@ -19,16 +22,12 @@ const Footer = () => {
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-16">
           {/* Brand & Mission Column */}
           <div className="space-y-6 lg:col-span-5">
-            <Link href="/" className="inline-block">
-              <div className="rounded-full bg-white px-3.5 py-1.5 shadow-sm">
-                <Image
-                  src="/logo.webp"
-                  width={96}
-                  height={40}
-                  alt="EduDrop Foundation"
-                  className="h-8 w-auto object-contain"
-                />
-              </div>
+            <Link
+              href="/"
+              aria-label="EduDrop Foundation Home"
+              className="inline-flex items-center transition-opacity hover:opacity-90"
+            >
+              <BrandLogo variant="on-dark" size="md" showTagline />
             </Link>
             <p className="max-w-md text-sm leading-relaxed text-on-forest-muted sm:text-base">
               EduDrop is a community-driven sponsorship platform. We connect
@@ -77,7 +76,7 @@ const Footer = () => {
                 </li>
                 <li>
                   <Link
-                    href="/#contact"
+                    href="/contact"
                     className="text-on-forest-muted transition-colors hover:text-white"
                   >
                     Get in Touch
@@ -135,7 +134,7 @@ const Footer = () => {
               <ul className="space-y-2.5 text-sm">
                 <li>
                   <Link
-                    href="/#contact"
+                    href="/contact#faq"
                     className="text-on-forest-muted transition-colors hover:text-white"
                   >
                     Terms & Delivery Policy
@@ -143,7 +142,7 @@ const Footer = () => {
                 </li>
                 <li>
                   <Link
-                    href="/#contact"
+                    href="/contact#faq"
                     className="text-on-forest-muted transition-colors hover:text-white"
                   >
                     Privacy Commitment
@@ -151,7 +150,7 @@ const Footer = () => {
                 </li>
                 <li>
                   <Link
-                    href="/#contact"
+                    href="/contact?topic=school"
                     className="text-on-forest-muted transition-colors hover:text-white"
                   >
                     Bursar Portal Verification
@@ -168,13 +167,48 @@ const Footer = () => {
         </div>
 
         {/* Bottom Sub-bar */}
-        <div className="mt-14 flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-8 sm:flex-row">
-          <p className="text-xs text-on-forest-muted">
+        <div className="mt-14 flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-8 lg:flex-row">
+          <p className="text-center text-xs text-on-forest-muted lg:text-left">
             © {new Date().getFullYear()} EduDrop Foundation. All rights reserved. Every Drop Counts for Education!
           </p>
-          <p className="text-xs text-on-forest-muted">
-            Direct Classroom Hydration & Supplies Platform
-          </p>
+
+          <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-2 lg:justify-end">
+            <span className="inline-flex items-center gap-1.5 text-xs text-on-forest-muted">
+              <Code2 aria-hidden="true" className="h-3.5 w-3.5 text-brand-lime" />
+              <span>
+                Built by{" "}
+                <strong className="font-semibold text-on-forest">
+                  {DEVELOPER_INFO.name}
+                </strong>
+              </span>
+            </span>
+
+            <div className="flex items-center gap-2">
+              <a
+                href={DEVELOPER_INFO.portfolioUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`Portfolio — ${DEVELOPER_INFO.name} (opens in a new tab)`}
+                className="inline-flex min-h-7 items-center gap-1.5 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs font-semibold text-on-forest transition-colors hover:border-brand-lime hover:bg-brand-lime hover:text-surface-forest focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-lime"
+              >
+                <Globe aria-hidden="true" className="h-3.5 w-3.5" />
+                <span>Portfolio</span>
+                <ExternalLink aria-hidden="true" className="h-3 w-3 opacity-75" />
+              </a>
+
+              <a
+                href={DEVELOPER_INFO.linkedinUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`LinkedIn — ${DEVELOPER_INFO.name} (opens in a new tab)`}
+                className="inline-flex min-h-7 items-center gap-1.5 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs font-semibold text-on-forest transition-colors hover:border-brand-lime hover:bg-brand-lime hover:text-surface-forest focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-lime"
+              >
+                <LinkedInIcon className="h-3.5 w-3.5" />
+                <span>LinkedIn</span>
+                <ExternalLink aria-hidden="true" className="h-3 w-3 opacity-75" />
+              </a>
+            </div>
+          </div>
         </div>
       </div>
     </footer>

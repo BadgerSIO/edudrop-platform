@@ -3,20 +3,35 @@ import { useAuthContext } from "@/app/context/AuthContext";
 import useAuth from "@/app/hooks/useAuth";
 import { ISubmissions } from "@/app/types/submission";
 import { User, ShoppingBag, Inbox, LogOut, Lock, School } from "lucide-react";
-import Image from "next/image";
+import BrandLogo from "@/app/sharedComponents/ui/BrandLogo";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
+import useUnreadInboxCount from "@/app/hooks/useUnreadInboxCount";
 
-const Sidebar = ({ propdata = [] }: { propdata?: ISubmissions[] }) => {
-  const unseenData = Array.isArray(propdata)
-    ? propdata.filter((item: ISubmissions) => item.seen === false)
-    : [];
+const Sidebar = ({
+  propdata = [],
+  unreadCount,
+}: {
+  propdata?: ISubmissions[];
+  unreadCount?: number;
+}) => {
+  const initialUnseenCount =
+    typeof unreadCount === "number"
+      ? unreadCount
+      : Array.isArray(propdata)
+        ? propdata.filter((item: ISubmissions) => item.seen === false).length
+        : 0;
   const { data, loading } = useAuthContext();
   const { signout } = useAuth();
   const pathname = usePathname();
 
   const isBursarActive = Boolean(data?.bursar?.active);
+  const unseenCount = useUnreadInboxCount(
+    "school-inbox",
+    initialUnseenCount,
+    isBursarActive
+  );
 
   return (
     <aside className="relative z-30 col-start-1 row-span-3 w-[72px] min-w-[72px] max-w-[72px] lg:w-[260px] lg:min-w-[260px] lg:max-w-[260px] shrink-0 border-r border-border-subtle bg-white">
@@ -25,15 +40,12 @@ const Sidebar = ({ propdata = [] }: { propdata?: ISubmissions[] }) => {
         <div className="space-y-6">
           {/* Logo & Portal Badge */}
           <div className="flex flex-col items-center lg:items-start px-1 pt-2">
-            <Link href="/" className="inline-block transition-opacity hover:opacity-85">
-              <Image
-                src="/logo.webp"
-                alt="EduDrop Logo"
-                width={120}
-                height={40}
-                className="h-6 sm:h-7 lg:h-8 w-auto object-contain"
-                priority
-              />
+            <Link
+              href="/"
+              aria-label="EduDrop Foundation Home"
+              className="inline-flex items-center transition-opacity hover:opacity-85"
+            >
+              <BrandLogo variant="on-light" size="sm" showTagline compactBelowLg />
             </Link>
             <div className="mt-2.5 hidden lg:inline-flex items-center gap-1.5 rounded-full border border-border-subtle bg-surface-bento/80 px-2.5 py-0.5 text-[11px] font-semibold text-text-muted">
               <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 shrink-0" />
@@ -138,9 +150,9 @@ const Sidebar = ({ propdata = [] }: { propdata?: ISubmissions[] }) => {
                   >
                     <Inbox className="h-5 w-5 shrink-0" />
                     <span className="hidden lg:inline truncate">Inbox</span>
-                    {unseenData.length > 0 && (
+                    {unseenCount > 0 && (
                       <span className="lg:ml-auto inline-flex items-center justify-center rounded-full bg-brand-lime px-1.5 py-0.5 text-[11px] font-bold text-surface-forest">
-                        {unseenData.length}
+                        {unseenCount}
                       </span>
                     )}
                   </Link>

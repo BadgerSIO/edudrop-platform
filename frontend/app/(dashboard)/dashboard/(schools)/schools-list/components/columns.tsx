@@ -1,50 +1,180 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, MoreVertical, Building2, MapPin, ExternalLink } from "lucide-react";
+import {
+  ArrowUpDown,
+  MoreVertical,
+  Building2,
+  MapPin,
+  ExternalLink,
+  CheckCircle2,
+  PauseCircle,
+  ShieldAlert,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuItem,
   DropdownMenuContent,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { ISchool } from "@/app/types/School";
 import Link from "next/link";
 import Image from "next/image";
 import useSchool from "@/app/hooks/useSchool";
 import { dateConverter } from "@/app/utility/dateConverter";
-import CustomAlertDialouge from "@/app/sharedComponents/CustomAlertDialouge";
-import { SERVERURL } from "@/lib/constants";
+import { handleBuildImage } from "@/app/utility/handleBuildImage";
+import StatusBadge from "@/app/sharedComponents/ui/StatusBadge";
+import StatusChangeDialog from "@/app/sharedComponents/ui/StatusChangeDialog";
 
-// 1-Click Interactive Status Pill
-const StatusCell = ({ school }: { school: ISchool }) => {
-  const { handleSchoolStatus, loadingSchool } = useSchool();
-  const isActive = school.active || school.status === "active";
+// Read-only Status Indicator
+const SchoolStatusCell = ({ school }: { school: ISchool }) => {
+  const isActive = Boolean(school.active || school.status === "active");
+  return (
+    <StatusBadge
+      label={isActive ? "Active" : "Inactive"}
+      tone={isActive ? "active" : "warning"}
+    />
+  );
+};
+
+// Actions Cell with Lifted Confirmation Dialogs
+const SchoolActionsCell = ({ school }: { school: ISchool }) => {
+  const { handleSchoolStatus, handleDeleteSchool, loadingSchool } = useSchool();
+  const [statusModalOpen, setStatusModalOpen] = useState(false);
+  const [archiveModalOpen, setArchiveModalOpen] = useState(false);
+
+  const isActive = Boolean(school.active || school.status === "active");
 
   return (
-    <button
-      type="button"
-      onClick={(e) => {
-        e.stopPropagation();
-        handleSchoolStatus(school.slug);
-      }}
-      disabled={loadingSchool}
-      title="Click to toggle status"
-      className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold transition-all hover:scale-105 active:scale-95 ${
-        isActive
-          ? "border border-surface-forest/20 bg-surface-forest/10 text-surface-forest hover:bg-surface-forest/20"
-          : "border border-amber-200 bg-amber-50 text-amber-700 hover:bg-amber-100"
-      }`}
-    >
-      <span
-        className={`h-1.5 w-1.5 rounded-full ${
-          isActive ? "bg-surface-forest" : "bg-amber-500"
-        }`}
+    <div className="flex justify-end" onClick={(e) => e.stopPropagation()}>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button
+            variant="ghost"
+            className="h-8 w-8 p-0 text-text-muted hover:text-text-ink rounded-lg"
+          >
+            <span className="sr-only">Open menu</span>
+            <MoreVertical className="h-4 w-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent
+          align="end"
+          className="w-52 bg-white border border-border-subtle shadow-bento rounded-xl p-1.5 space-y-1"
+        >
+          <DropdownMenuItem
+            asChild
+            className="cursor-pointer rounded-lg text-xs font-medium text-text-ink hover:bg-surface-bento/50"
+          >
+            <Link href={`/dashboard/schools-list/${school.slug}`}>
+              Manage Campus Hub
+            </Link>
+          </DropdownMenuItem>
+
+          <DropdownMenuItem
+            asChild
+            className="cursor-pointer rounded-lg text-xs font-medium text-text-ink hover:bg-surface-bento/50"
+          >
+            <a
+              href={`/schools/${school.slug}`}
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center justify-between"
+            >
+              <span>View Public Page</span>
+              <ExternalLink className="h-3 w-3 text-text-muted" />
+            </a>
+          </DropdownMenuItem>
+
+          <DropdownMenuItem
+            className={`cursor-pointer rounded-lg text-xs font-medium ${
+              isActive
+                ? "text-amber-700 hover:bg-amber-50 focus:bg-amber-50"
+                : "text-surface-forest hover:bg-surface-forest/10 focus:bg-surface-forest/10"
+            }`}
+            onSelect={() => setStatusModalOpen(true)}
+          >
+            {isActive ? (
+              <PauseCircle className="mr-2 h-3.5 w-3.5" />
+            ) : (
+              <CheckCircle2 className="mr-2 h-3.5 w-3.5" />
+            )}
+            <span>{isActive ? "Pause Campus..." : "Activate Campus..."}</span>
+          </DropdownMenuItem>
+
+          <DropdownMenuSeparator className="my-1 bg-border-subtle/80" />
+
+          <DropdownMenuItem
+            className="cursor-pointer rounded-lg text-xs font-medium text-red-600 hover:bg-red-50 focus:bg-red-50 focus:text-red-700"
+            onSelect={() => setArchiveModalOpen(true)}
+          >
+            <ShieldAlert className="mr-2 h-3.5 w-3.5" />
+            <span>Archive Campus...</span>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      <StatusChangeDialog
+        open={statusModalOpen}
+        onOpenChange={setStatusModalOpen}
+        title="Confirm Campus Visibility Change"
+        entityName={school.name}
+        entitySubtitle={`/schools/${school.slug}`}
+        entityMetaBadge="Partner School"
+        currentStatus={{
+          label: isActive ? "Active" : "Inactive",
+          tone: isActive ? "active" : "warning",
+        }}
+        targetStatus={{
+          label: isActive ? "Inactive" : "Active",
+          tone: isActive ? "warning" : "active",
+        }}
+        impactDescription={
+          isActive
+            ? "Pausing this campus hides it from the public donor directory and temporarily pauses new sponsorships. Historic donations and bursar records remain preserved."
+            : "Activating this campus publishes it to the public EduDrop directory so donors can browse and sponsor campus needs."
+        }
+        confirmLabel={isActive ? "Pause Campus" : "Activate Campus"}
+        confirmTone={isActive ? "amber" : "forest"}
+        loading={loadingSchool}
+        onConfirm={() => handleSchoolStatus(school.slug)}
       />
-      <span>{isActive ? "Active" : "Inactive"}</span>
-    </button>
+
+      <AlertDialog open={archiveModalOpen} onOpenChange={setArchiveModalOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Archive Partner Campus?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will archive{" "}
+              <span className="font-semibold text-text-ink">{school.name}</span>{" "}
+              and suspend its associated bursar credentials. Historic donor
+              transactions and orders will remain safely preserved.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-red-600 text-white hover:bg-red-700"
+              onClick={() => handleDeleteSchool(school._id)}
+            >
+              Archive Campus
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </div>
   );
 };
 
@@ -66,10 +196,7 @@ export const columns: ColumnDef<ISchool>[] = [
     cell: ({ row }) => {
       const school = row.original;
       const logo = school.schoolLogo;
-      let logoUrl = "";
-      if (logo) {
-        logoUrl = logo.startsWith("http") ? logo : `${SERVERURL}${logo}`;
-      }
+      const logoUrl = logo ? handleBuildImage(logo, "") : "";
 
       return (
         <div className="flex items-center gap-3">
@@ -79,6 +206,7 @@ export const columns: ColumnDef<ISchool>[] = [
                 src={logoUrl}
                 alt={school.name}
                 fill
+                sizes="40px"
                 className="object-contain p-1"
               />
             ) : (
@@ -88,6 +216,7 @@ export const columns: ColumnDef<ISchool>[] = [
           <div className="min-w-0">
             <Link
               href={`/dashboard/schools-list/${school.slug}`}
+              onClick={(e) => e.stopPropagation()}
               className="font-bold text-sm text-text-ink hover:text-surface-forest transition-colors block truncate"
             >
               {school.name}
@@ -196,72 +325,13 @@ export const columns: ColumnDef<ISchool>[] = [
     cell: ({ row }) => {
       return (
         <div className="flex justify-center">
-          <StatusCell school={row.original} />
+          <SchoolStatusCell school={row.original} />
         </div>
       );
     },
   },
   {
     id: "actions",
-    cell: ({ row }) => {
-      const { handleSchoolStatus, handleDeleteSchool } = useSchool();
-      const school = row.original;
-      const isActive = school.active || school.status === "active";
-
-      return (
-        <div className="flex justify-end" onClick={(e) => e.stopPropagation()}>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                className="h-8 w-8 p-0 text-text-muted hover:text-text-ink rounded-lg"
-              >
-                <span className="sr-only">Open menu</span>
-                <MoreVertical className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent
-              align="end"
-              className="w-48 bg-white border border-border-subtle shadow-bento rounded-xl p-1.5 space-y-1"
-            >
-              <DropdownMenuItem asChild className="cursor-pointer rounded-lg text-xs font-medium text-text-ink hover:bg-surface-bento/50">
-                <Link href={`/dashboard/schools-list/${school.slug}`}>
-                  Manage Campus Hub
-                </Link>
-              </DropdownMenuItem>
-
-              <DropdownMenuItem asChild className="cursor-pointer rounded-lg text-xs font-medium text-text-ink hover:bg-surface-bento/50">
-                <a
-                  href={`/schools/${school.slug}`}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="flex items-center justify-between"
-                >
-                  <span>View Public Page</span>
-                  <ExternalLink className="h-3 w-3 text-text-muted" />
-                </a>
-              </DropdownMenuItem>
-
-              <DropdownMenuItem
-                className="cursor-pointer rounded-lg text-xs font-medium text-text-ink hover:bg-surface-bento/50"
-                onSelect={() => handleSchoolStatus(school.slug)}
-              >
-                Mark as {isActive ? "Inactive" : "Active"}
-              </DropdownMenuItem>
-
-              <div className="my-1 border-t border-border-subtle/80" />
-
-              <div className="px-1 py-0.5">
-                <CustomAlertDialouge
-                  triggerText="Archive Campus"
-                  onConfirm={() => handleDeleteSchool(school._id)}
-                  alertDescription="This will archive the school campus and suspend bursar credentials. Historic donor transactions and orders will remain safely preserved."
-                />
-              </div>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-      );
-    },
+    cell: ({ row }) => <SchoolActionsCell school={row.original} />,
   },
 ];

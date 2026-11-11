@@ -21,6 +21,9 @@ import axios from "axios";
 import ActionPillButton from "@/app/sharedComponents/ui/ActionPillButton";
 import BentoCard from "@/app/sharedComponents/ui/BentoCard";
 import EduDropLoader from "@/app/sharedComponents/Loders/EduDropLoader";
+import RoleCheckoutGuard, {
+  isStaffRole,
+} from "@/app/sharedComponents/RoleCheckoutGuard";
 import { CheckCircle2, Lock, ArrowRight, Loader2 } from "lucide-react";
 
 interface IFormInput {
@@ -51,6 +54,7 @@ export const CheckoutForm = ({ schools }: CheckoutProps) => {
   const { data: userData, loading } = useAuthContext();
   const { cartProducts, subtotal, isCartOpen, setIsCartOpen } =
     useNavbarContext();
+  const staffBlocked = isStaffRole(userData?.role);
 
   const methods = useForm<IFormInput>({
     mode: "onChange",
@@ -86,7 +90,7 @@ export const CheckoutForm = ({ schools }: CheckoutProps) => {
   }, []);
 
   useEffect(() => {
-    if (userData?.email) {
+    if (userData?.email && userData?.role === "donar") {
       setValue("email", userData.email);
       const { donar } = userData;
       if (donar) {
@@ -114,6 +118,13 @@ export const CheckoutForm = ({ schools }: CheckoutProps) => {
   const activeEmail = userData?.email || guestEmailExist;
 
   const onSubmit = async (data: IFormInput) => {
+    if (staffBlocked) {
+      toast.error(
+        "Bursar and Admin accounts cannot submit sponsorship orders. Please sign out and continue as a Donor or Guest."
+      );
+      return;
+    }
+
     const targetEmail = userData?.email || data.email || guestEmailExist;
 
     if (!targetEmail) {
@@ -193,102 +204,112 @@ export const CheckoutForm = ({ schools }: CheckoutProps) => {
             <div className="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:items-start">
               {/* Main Checkout Form Column (8 cols) */}
               <div className="lg:col-span-8">
-                {/* Step 1: Account Access / Active Badge */}
-                {!userData?.email && !guestEmailExist ? (
-                  <CheckoutAuthentication cookiechecker={cookiechecker} />
+                {staffBlocked ? (
+                  <RoleCheckoutGuard
+                    variant="card"
+                    redirectTo="/checkout"
+                    className="mb-8"
+                  />
                 ) : (
-                  <BentoCard
-                    variant="white"
-                    className="mb-8 border-border-subtle/80 p-5 sm:p-6 shadow-bento"
-                  >
-                    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-lime/20 text-surface-forest shrink-0">
-                          <CheckCircle2 className="h-5 w-5" />
-                        </div>
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <span className="text-xs font-bold uppercase tracking-wider text-surface-forest">
-                              {userData?.email ? "Logged In Donor" : "Guest Donor"}
-                            </span>
-                            <span className="inline-flex items-center rounded-full bg-surface-forest/10 px-2 py-0.5 text-[11px] font-semibold text-surface-forest">
-                              Verified
-                            </span>
+                  <>
+                    {/* Step 1: Account Access / Active Badge */}
+                    {!userData?.email && !guestEmailExist ? (
+                      <CheckoutAuthentication cookiechecker={cookiechecker} />
+                    ) : (
+                      <BentoCard
+                        variant="white"
+                        className="mb-8 border-border-subtle/80 p-5 sm:p-6 shadow-bento"
+                      >
+                        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                          <div className="flex items-center gap-3">
+                            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-lime/20 text-surface-forest shrink-0">
+                              <CheckCircle2 className="h-5 w-5" />
+                            </div>
+                            <div>
+                              <div className="flex items-center gap-2">
+                                <span className="text-xs font-bold uppercase tracking-wider text-surface-forest">
+                                  {userData?.email ? "Logged In Donor" : "Guest Donor"}
+                                </span>
+                                <span className="inline-flex items-center rounded-full bg-surface-forest/10 px-2 py-0.5 text-[11px] font-semibold text-surface-forest">
+                                  Verified
+                                </span>
+                              </div>
+                              <p className="font-display text-sm font-bold text-text-ink sm:text-base">
+                                {activeEmail}
+                              </p>
+                            </div>
                           </div>
-                          <p className="font-display text-sm font-bold text-text-ink sm:text-base">
-                            {activeEmail}
+
+                          {!userData?.email && (
+                            <button
+                              type="button"
+                              onClick={handleClearGuestEmail}
+                              className="inline-flex text-xs font-semibold text-text-body transition-colors hover:text-surface-forest underline underline-offset-2"
+                            >
+                              Use a different email
+                            </button>
+                          )}
+                        </div>
+                      </BentoCard>
+                    )}
+
+                    {/* Steps 2 & 3: Multi-step Form */}
+                    <DonationTo schools={schools} />
+                    <CustomerInfo />
+
+                    {/* Final Order Placement Action Bento Card */}
+                    <BentoCard
+                      variant="white"
+                      className="border-border-subtle/80 p-6 sm:p-8 shadow-bento"
+                    >
+                      <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+                        <div>
+                          <div className="flex items-center gap-2 text-xs font-semibold text-surface-forest">
+                            <Lock className="h-4 w-4 shrink-0" />
+                            <span>256-Bit SSL Encrypted Classroom Sponsorship</span>
+                          </div>
+                          <p className="mt-1 text-xs text-text-body max-w-md">
+                            100% of your gift is channeled to physical classroom supply
+                            orders with official Bursar delivery receipts.
                           </p>
                         </div>
-                      </div>
 
-                      {!userData?.email && (
-                        <button
-                          type="button"
-                          onClick={handleClearGuestEmail}
-                          className="inline-flex text-xs font-semibold text-text-body transition-colors hover:text-surface-forest underline underline-offset-2"
-                        >
-                          Use a different email
-                        </button>
-                      )}
-                    </div>
-                  </BentoCard>
-                )}
-
-                {/* Steps 2 & 3: Multi-step Form */}
-                <DonationTo schools={schools} />
-                <CustomerInfo />
-
-                {/* Final Order Placement Action Bento Card */}
-                <BentoCard
-                  variant="white"
-                  className="border-border-subtle/80 p-6 sm:p-8 shadow-bento"
-                >
-                  <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
-                    <div>
-                      <div className="flex items-center gap-2 text-xs font-semibold text-surface-forest">
-                        <Lock className="h-4 w-4 shrink-0" />
-                        <span>256-Bit SSL Encrypted Classroom Sponsorship</span>
-                      </div>
-                      <p className="mt-1 text-xs text-text-body max-w-md">
-                        100% of your gift is channeled to physical classroom supply
-                        orders with official Bursar delivery receipts.
-                      </p>
-                    </div>
-
-                    <div className="shrink-0">
-                      {cartProducts?.length > 0 ? (
-                        <ActionPillButton
-                          type="submit"
-                          variant="lime"
-                          size="lg"
-                          disabled={orderLoading}
-                          className="w-full justify-center whitespace-nowrap shadow-bento hover:shadow-bento-hover"
-                        >
-                          {orderLoading ? (
-                            <span className="inline-flex items-center gap-2">
-                              <Loader2 className="h-4 w-4 animate-spin" />
-                              Processing Requisition...
-                            </span>
+                        <div className="shrink-0">
+                          {cartProducts?.length > 0 ? (
+                            <ActionPillButton
+                              type="submit"
+                              variant="lime"
+                              size="lg"
+                              disabled={orderLoading}
+                              className="w-full justify-center whitespace-nowrap shadow-bento hover:shadow-bento-hover"
+                            >
+                              {orderLoading ? (
+                                <span className="inline-flex items-center gap-2">
+                                  <Loader2 className="h-4 w-4 animate-spin" />
+                                  Processing Requisition...
+                                </span>
+                              ) : (
+                                <span className="inline-flex items-center gap-2">
+                                  Confirm & Complete Sponsorship
+                                  <ArrowRight className="h-4 w-4" />
+                                </span>
+                              )}
+                            </ActionPillButton>
                           ) : (
-                            <span className="inline-flex items-center gap-2">
-                              Confirm & Complete Sponsorship
-                              <ArrowRight className="h-4 w-4" />
-                            </span>
+                            <ActionPillButton
+                              variant="dark"
+                              size="lg"
+                              href="/products"
+                              className="w-full justify-center whitespace-nowrap"
+                            >
+                              Add Classroom Supplies First
+                            </ActionPillButton>
                           )}
-                        </ActionPillButton>
-                      ) : (
-                        <ActionPillButton
-                          variant="dark"
-                          size="lg"
-                          href="/products"
-                          className="w-full justify-center whitespace-nowrap"
-                        >
-                          Add Classroom Supplies First
-                        </ActionPillButton>
-                      )}
-                    </div>
-                  </div>
-                </BentoCard>
+                        </div>
+                      </div>
+                    </BentoCard>
+                  </>
+                )}
               </div>
 
               {/* Sticky Shopping Cart Column (4 cols) */}

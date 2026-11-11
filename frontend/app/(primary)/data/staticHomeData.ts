@@ -166,8 +166,9 @@ export const contactInfoData: IContactInfo = {
   phone: "+1 (555) 234-8900",
   email: "hello@edudrop.org",
   location: "450 Education Way, Suite 200, Austin, TX 78701",
-  facebook: "https://www.facebook.com/edudrop",
-  instagram: "https://www.instagram.com/edudrop",
-  youtube: "https://www.youtube.com/@edudrop",
-  tiktok: "https://www.tiktok.com/@edudrop",
+  linkedin: "https://www.linkedin.com/in/saad-ibne-omar/",
+  facebook: "",
+  instagram: "",
+  youtube: "",
+  tiktok: "",
 };

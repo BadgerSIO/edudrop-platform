@@ -6,6 +6,7 @@ export interface SectionHeaderProps {
   eyebrow?: string;
   eyebrowVariant?: "light" | "dark" | "lime";
   title: string;
+  titleId?: string;
   subtitle?: string;
   action?: React.ReactNode;
   align?: "left" | "center";
@@ -17,6 +18,7 @@ export const SectionHeader: React.FC<SectionHeaderProps> = ({
   eyebrow,
   eyebrowVariant,
   title,
+  titleId,
   subtitle,
   action,
   align = "left",
@@ -48,6 +50,7 @@ export const SectionHeader: React.FC<SectionHeaderProps> = ({
       >
         <div className={cn("max-w-2xl", align === "center" && "mx-auto")}>
           <h2
+            id={titleId}
             className={cn(
               "text-h2 font-bold tracking-tight",
               isDark ? "text-on-forest" : "text-text-ink"

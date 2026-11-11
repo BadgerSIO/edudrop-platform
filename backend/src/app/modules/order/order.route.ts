@@ -1,6 +1,6 @@
 import express from "express";
 import { OrderController } from "./order.controller";
-import verifyJWT from "../../middleware/verifyJWT";
+import verifyJWT, { verifyOptionalJWT } from "../../middleware/verifyJWT";
 import verifyAdmin from "../../middleware/verifyAdmin";
 import validateRequest from "../../middleware/validateRequest";
 import { OrderValidation } from "./order.validation";
@@ -9,6 +9,7 @@ const router = express.Router();
 
 router.post(
   "/create",
+  verifyOptionalJWT,
   validateRequest(OrderValidation.createOrderSchema),
   OrderController.createOrder
 );

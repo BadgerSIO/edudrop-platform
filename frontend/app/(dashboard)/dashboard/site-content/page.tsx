@@ -4,8 +4,13 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import Image from "next/image";
 import { getCookie } from "@/app/utility/handleCookie";
-import { SERVERURL, SERVERURLAPI } from "@/lib/constants";
+import { SERVERURLAPI } from "@/lib/constants";
 import EduDropLoader from "@/app/sharedComponents/Loders/EduDropLoader";
+import { handleBuildImage } from "@/app/utility/handleBuildImage";
+import {
+  IMAGE_ACCEPT_ATTR,
+  validateImageFile,
+} from "@/app/utility/validateImageFile";
 import {
   Globe,
   Sparkles,
@@ -68,13 +73,21 @@ export default function SiteContentCMSPage() {
     }
   };
 
-  const handleImageUpload = async (file: File): Promise<string | null> => {
+  const handleImageUpload = async (
+    file: File,
+    previousTemporaryUrl?: string
+  ): Promise<string | null> => {
     if (!file) return null;
-    if (file.size > 5 * 1024 * 1024) {
-      toast.error("Image size must be under 5MB");
+    const validation = validateImageFile(file);
+    if (!validation.valid) {
+      toast.error(validation.error);
       return null;
     }
+
     const formData = new FormData();
+    if (previousTemporaryUrl) {
+      formData.append("previousTemporaryUrl", previousTemporaryUrl);
+    }
     formData.append("image", file);
 
     try {
@@ -92,7 +105,7 @@ export default function SiteContentCMSPage() {
       }
       return null;
     } catch (err: any) {
-      toast.error("Image upload failed");
+      toast.error(err?.response?.data?.message || "Image upload failed");
       return null;
     } finally {
       setUploading(false);
@@ -432,11 +445,15 @@ export default function SiteContentCMSPage() {
                 <div className="mt-2 flex items-center gap-4">
                   <input
                     type="file"
-                    accept="image/*"
+                    accept={IMAGE_ACCEPT_ATTR}
                     onChange={async (e) => {
                       const file = e.target.files?.[0];
+                      e.target.value = "";
                       if (file) {
-                        const url = await handleImageUpload(file);
+                        const url = await handleImageUpload(
+                          file,
+                          content?.whyEduDrop?.image
+                        );
                         if (url) {
                           setContent({
                             ...content,
@@ -450,15 +467,10 @@ export default function SiteContentCMSPage() {
                   {content?.whyEduDrop?.image && (
                     <div className="relative h-14 w-24 overflow-hidden rounded-lg border border-border-subtle">
                       <Image
-                        src={
-                          content.whyEduDrop.image.startsWith("http")
-                            ? content.whyEduDrop.image
-                            : content.whyEduDrop.image.startsWith("/")
-                            ? content.whyEduDrop.image
-                            : `${SERVERURL}${content.whyEduDrop.image}`
-                        }
+                        src={handleBuildImage(content.whyEduDrop.image, "/home/w7.webp")}
                         alt="Preview"
                         fill
+                        sizes="96px"
                         className="object-cover"
                       />
                     </div>
@@ -564,27 +576,23 @@ export default function SiteContentCMSPage() {
                     <div className="sm:w-36 flex flex-col items-center">
                       <div className="relative h-24 w-36 overflow-hidden rounded-lg border border-border-subtle bg-black/10">
                         <Image
-                          src={
-                            work.imageUrl?.startsWith("http")
-                              ? work.imageUrl
-                              : work.imageUrl?.startsWith("/")
-                              ? work.imageUrl
-                              : `${SERVERURL}${work.imageUrl}`
-                          }
+                          src={handleBuildImage(work.imageUrl, "/home/w1.webp")}
                           alt={work.title || "Preview"}
                           fill
+                          sizes="144px"
                           className="object-cover"
                         />
                       </div>
                       <input
                         type="file"
-                        accept="image/*"
+                        accept={IMAGE_ACCEPT_ATTR}
                         id={`work-file-${idx}`}
                         className="hidden"
                         onChange={async (e) => {
                           const file = e.target.files?.[0];
+                          e.target.value = "";
                           if (file) {
-                            const url = await handleImageUpload(file);
+                            const url = await handleImageUpload(file, work.imageUrl);
                             if (url) {
                               const newWorks = [...content.ourWorks];
                               newWorks[idx].imageUrl = url;
@@ -859,41 +867,61 @@ export default function SiteContentCMSPage() {
                 />
               </div>
 
-              <div>
-                <label className="text-xs font-semibold text-text-ink">Facebook URL</label>
-                <input
-                  type="text"
-                  value={content?.contactInfo?.facebook ?? ""}
-                  onChange={(e) =>
-                    setContent({
-                      ...content,
-                      contactInfo: {
-                        ...content.contactInfo,
-                        facebook: e.target.value,
-                      },
-                    })
-                  }
-                  className="mt-1 w-full rounded-lg border border-border-subtle p-2.5 text-xs text-text-ink outline-none"
-                />
-              </div>
-
-              <div>
-                <label className="text-xs font-semibold text-text-ink">Instagram URL</label>
-                <input
-                  type="text"
-                  value={content?.contactInfo?.instagram ?? ""}
-                  onChange={(e) =>
-                    setContent({
-                      ...content,
-                      contactInfo: {
-                        ...content.contactInfo,
-                        instagram: e.target.value,
-                      },
-                    })
-                  }
-                  className="mt-1 w-full rounded-lg border border-border-subtle p-2.5 text-xs text-text-ink outline-none"
-                />
-              </div>
+              {[
+                {
+                  key: "linkedin" as const,
+                  label: "LinkedIn URL",
+                  placeholder: "https://www.linkedin.com/in/saad-ibne-omar/",
+                },
+                {
+                  key: "facebook" as const,
+                  label: "Facebook URL",
+                  placeholder: "https://www.facebook.com/...",
+                },
+                {
+                  key: "instagram" as const,
+                  label: "Instagram URL",
+                  placeholder: "https://www.instagram.com/...",
+                },
+                {
+                  key: "youtube" as const,
+                  label: "YouTube URL",
+                  placeholder: "https://www.youtube.com/...",
+                },
+                {
+                  key: "tiktok" as const,
+                  label: "TikTok URL",
+                  placeholder: "https://www.tiktok.com/...",
+                },
+              ].map((socialField) => {
+                const inputId = `cms-contact-${socialField.key}`;
+                return (
+                  <div key={socialField.key}>
+                    <label
+                      htmlFor={inputId}
+                      className="text-xs font-semibold text-text-ink"
+                    >
+                      {socialField.label}
+                    </label>
+                    <input
+                      id={inputId}
+                      type="url"
+                      placeholder={socialField.placeholder}
+                      value={content?.contactInfo?.[socialField.key] ?? ""}
+                      onChange={(e) =>
+                        setContent({
+                          ...content,
+                          contactInfo: {
+                            ...content.contactInfo,
+                            [socialField.key]: e.target.value,
+                          },
+                        })
+                      }
+                      className="mt-1 w-full rounded-lg border border-border-subtle p-2.5 text-xs text-text-ink outline-none focus:border-surface-forest"
+                    />
+                  </div>
+                );
+              })}
             </div>
 
             {/* SEO Section */}

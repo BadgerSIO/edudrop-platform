@@ -4,6 +4,10 @@ import Image from "next/image";
 import React, { useEffect, useRef, useState } from "react";
 import { Upload, Trash2, User } from "lucide-react";
 import { handleBuildImage } from "../utility/handleBuildImage";
+import {
+  IMAGE_ACCEPT_ATTR,
+  validateImageFile,
+} from "../utility/validateImageFile";
 
 interface SingleImageUploadProps {
   imageUrl?: string;
@@ -14,16 +18,6 @@ interface SingleImageUploadProps {
   onRemoveImage: () => void;
   label?: string;
 }
-
-const ALLOWED_TYPES = [
-  "image/jpeg",
-  "image/png",
-  "image/webp",
-  "image/avif",
-  "image/svg+xml",
-];
-
-const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 
 const SingleImageUpload: React.FC<SingleImageUploadProps> = ({
   imageUrl,
@@ -60,14 +54,9 @@ const SingleImageUpload: React.FC<SingleImageUploadProps> = ({
 
     if (!file) return;
 
-    if (!ALLOWED_TYPES.includes(file.type)) {
-      setErrorMessage("Only JPEG, PNG, WebP, AVIF, or SVG images are allowed.");
-      if (fileInputRef.current) fileInputRef.current.value = "";
-      return;
-    }
-
-    if (file.size > MAX_FILE_SIZE) {
-      setErrorMessage("Image size must be under 5MB.");
+    const validation = validateImageFile(file);
+    if (!validation.valid) {
+      setErrorMessage(validation.error);
       if (fileInputRef.current) fileInputRef.current.value = "";
       return;
     }
@@ -114,7 +103,7 @@ const SingleImageUpload: React.FC<SingleImageUploadProps> = ({
             <input
               ref={fileInputRef}
               type="file"
-              accept="image/jpeg,image/png,image/webp,image/avif,image/svg+xml"
+              accept={IMAGE_ACCEPT_ATTR}
               onChange={handleFileChange}
               className="sr-only"
               id="profile-avatar-input"
