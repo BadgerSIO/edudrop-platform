@@ -4,6 +4,7 @@ import { Plus, Package, Layers, CheckCircle2 } from "lucide-react";
 import { DataTable } from "@/app/sharedComponents/Table/data-table";
 import { columns } from "./components/columns";
 import { SERVERURLAPI } from "@/lib/constants";
+import { safeFetchJson } from "@/app/utility/safeFetchJson";
 import { IProduct } from "@/app/types/Product";
 
 export const metadata = {
@@ -12,18 +13,14 @@ export const metadata = {
 };
 
 async function getProducts() {
-  try {
-    const res = await fetch(`${SERVERURLAPI}/product`, {
+  return safeFetchJson(
+    `${SERVERURLAPI}/product`,
+    {
       next: { tags: ["productsCollection"] },
       cache: "no-store",
-    });
-    if (!res.ok) {
-      return { data: [] };
-    }
-    return res.json();
-  } catch (error) {
-    return { data: [] };
-  }
+    },
+    { data: [] }
+  );
 }
 
 const ProductList = async () => {

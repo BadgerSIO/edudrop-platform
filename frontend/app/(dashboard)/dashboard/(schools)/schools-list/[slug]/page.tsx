@@ -1,21 +1,18 @@
 import React from "react";
 import { SERVERURLAPI } from "@/lib/constants";
 import { getCookie } from "@/app/utility/handleCookie";
+import { safeFetchJson } from "@/app/utility/safeFetchJson";
 import SchoolDetailHub from "./components/SchoolDetailHub";
 
 async function getSingleSchoolBySlug(slug: string) {
-  try {
-    const res = await fetch(`${SERVERURLAPI}/school/${slug}`, {
+  return safeFetchJson<{ data?: any } | null>(
+    `${SERVERURLAPI}/school/${slug}`,
+    {
       next: { tags: ["schoolSinglebyslugCollection"] },
       cache: "no-store",
-    });
-    if (!res.ok) {
-      return null;
-    }
-    return res.json();
-  } catch {
-    return null;
-  }
+    },
+    null
+  );
 }
 
 async function getSingleSchoolInfoBySlug(slug: string) {
@@ -23,20 +20,16 @@ async function getSingleSchoolInfoBySlug(slug: string) {
   if (!jwt) {
     return null;
   }
-  try {
-    const res = await fetch(`${SERVERURLAPI}/school-info/${slug}`, {
+  return safeFetchJson<{ data?: any } | null>(
+    `${SERVERURLAPI}/school-info/${slug}`,
+    {
       headers: {
         Authorization: `Bearer ${jwt}`,
       },
       cache: "no-store",
-    });
-    if (!res.ok) {
-      return null;
-    }
-    return res.json();
-  } catch {
-    return null;
-  }
+    },
+    null
+  );
 }
 
 const SchoolSingle = async ({ params }: { params: Promise<{ slug: string }> }) => {

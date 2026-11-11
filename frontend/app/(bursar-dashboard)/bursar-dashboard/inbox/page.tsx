@@ -1,6 +1,7 @@
 import React from "react";
 import { SERVERURLAPI } from "@/lib/constants";
 import { getCookie } from "@/app/utility/handleCookie";
+import { safeFetchJson } from "@/app/utility/safeFetchJson";
 import InboxDirectory from "@/app/sharedComponents/inbox/InboxDirectory";
 import { ISubmissions } from "@/app/types/submission";
 
@@ -12,21 +13,17 @@ async function getBursarInbox(): Promise<{
   if (!jwt) {
     return { data: [] };
   }
-  try {
-    const res = await fetch(`${SERVERURLAPI}/school-inbox?limit=150`, {
+  return safeFetchJson(
+    `${SERVERURLAPI}/school-inbox?limit=150`,
+    {
       headers: {
         Authorization: `Bearer ${jwt}`,
       },
       next: { tags: ["bursarInboxCollection", "getInbox"] },
       cache: "no-store",
-    });
-    if (!res.ok) {
-      return { data: [] };
-    }
-    return res.json();
-  } catch {
-    return { data: [] };
-  }
+    },
+    { data: [] }
+  );
 }
 
 const BursarInbox = async () => {

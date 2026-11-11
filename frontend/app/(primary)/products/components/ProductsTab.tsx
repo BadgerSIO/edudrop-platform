@@ -1,6 +1,7 @@
 import React from "react";
 import { ICategory, IProduct } from "@/app/types/Product";
 import { SERVERURLAPI } from "@/lib/constants";
+import { safeFetchJson } from "@/app/utility/safeFetchJson";
 import ProductsCatalogClient from "./ProductsCatalogClient";
 
 export async function getAllProductsOptimized(
@@ -22,19 +23,14 @@ export async function getAllProductsOptimized(
     }
   }
 
-  try {
-    const res = await fetch(url, {
+  return safeFetchJson(
+    url,
+    {
       next: { tags: ["productsCollection"] },
       cache: "no-store",
-    });
-
-    if (!res.ok) {
-      return { data: [] };
-    }
-    return res.json();
-  } catch {
-    return { data: [] };
-  }
+    },
+    { data: [] }
+  );
 }
 
 export const ProductsTab = async () => {

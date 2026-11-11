@@ -3,16 +3,18 @@ import { DataTable } from "@/app/sharedComponents/Table/data-table";
 import React from "react";
 import { SERVERURLAPI } from "@/lib/constants";
 import { getCookie } from "@/app/utility/handleCookie";
+import { safeFetchJson } from "@/app/utility/safeFetchJson";
+import { IOrder } from "@/app/types/Order";
 export async function getOrders(
   filters: Record<string, any> = {}, // Accept dynamic filters
   sortBy?: string,
   sortOrder?: string,
   page?: number,
   limit?: number,
-) {
+): Promise<{ data: IOrder[] }> {
   const jwt = await getCookie("jwt");
   if (!jwt) {
-    return;
+    return { data: [] };
   }
   let url = `${SERVERURLAPI}/order?sortBy=${
     sortBy ? sortBy : "createdAt"
@@ -27,22 +29,17 @@ export async function getOrders(
     }
   }
 
-  try {
-    const res = await fetch(url, {
+  return safeFetchJson<{ data: IOrder[] }>(
+    url,
+    {
       headers: {
         Authorization: `Bearer ${jwt}`,
       },
       next: { tags: ["orderCollection"] },
       cache: "no-store",
-    });
-
-    if (!res.ok) {
-      return { data: [] };
-    }
-    return res.json();
-  } catch {
-    return { data: [] };
-  }
+    },
+    { data: [] }
+  );
 }
 
 const RecentOrderTable = async () => {
