@@ -1,6 +1,7 @@
 import React from "react";
 import { SERVERURLAPI } from "@/lib/constants";
 import { getCookie } from "@/app/utility/handleCookie";
+import { safeFetchJson } from "@/app/utility/safeFetchJson";
 import UserDirectoryHub from "./components/UserDirectoryHub";
 import { Users } from "lucide-react";
 import { IUser } from "@/app/types/User";
@@ -13,21 +14,17 @@ async function getAllUsers(): Promise<{
   if (!jwt) {
     return { data: [] };
   }
-  try {
-    const res = await fetch(`${SERVERURLAPI}/user?limit=250`, {
+  return safeFetchJson(
+    `${SERVERURLAPI}/user?limit=250`,
+    {
       headers: {
         Authorization: `Bearer ${jwt}`,
       },
       next: { tags: ["manageUsersCollection"] },
       cache: "no-store",
-    });
-    if (!res.ok) {
-      return { data: [] };
-    }
-    return res.json();
-  } catch {
-    return { data: [] };
-  }
+    },
+    { data: [] }
+  );
 }
 
 const ManageUsers = async () => {

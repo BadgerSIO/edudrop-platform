@@ -1,6 +1,7 @@
 import React from "react";
 import CategoryManager from "./components/CategoryManager";
 import { SERVERURLAPI } from "@/lib/constants";
+import { safeFetchJson } from "@/app/utility/safeFetchJson";
 
 export const metadata = {
   title: "Manage Categories | Admin Dashboard",
@@ -8,18 +9,14 @@ export const metadata = {
 };
 
 export async function getCategories() {
-  try {
-    const res = await fetch(`${SERVERURLAPI}/categories`, {
+  return safeFetchJson(
+    `${SERVERURLAPI}/categories`,
+    {
       next: { tags: ["categoryCollections"] },
       cache: "no-store",
-    });
-    if (!res.ok) {
-      return { data: [] };
-    }
-    return res.json();
-  } catch (error) {
-    return { data: [] };
-  }
+    },
+    { data: [] }
+  );
 }
 
 const ManageCategories = async () => {

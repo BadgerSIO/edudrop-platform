@@ -1,5 +1,6 @@
 import React from "react";
 import { Metadata } from "next";
+import { notFound } from "next/navigation";
 import Hero from "./components/Hero";
 import CampusMission from "./components/CampusMission";
 import PrincipalWelcome from "./components/PrincipalWelcome";
@@ -8,19 +9,17 @@ import InfoSidebar from "./components/InfoSidebar";
 import SchoolGallery from "./components/SchoolGallery";
 import { ISchoolInfo } from "@/app/types/SchoolInfo";
 import { SERVERURLAPI } from "@/lib/constants";
+import { safeFetchJson } from "@/app/utility/safeFetchJson";
 
 async function getSingleSchoolInfoBySlug(slug: string) {
-  const res = await fetch(
+  return safeFetchJson<{ data?: ISchoolInfo } | null>(
     `${SERVERURLAPI}/school-info/single-optimized/${slug}`,
     {
       next: { tags: ["schoolInfoCollection"] },
       cache: "no-store",
-    }
+    },
+    null
   );
-  if (!res.ok) {
-    throw new Error("Failed to fetch data");
-  }
-  return res.json();
 }
 
 export async function generateMetadata({
@@ -31,12 +30,12 @@ export async function generateMetadata({
   try {
     const { slug } = await params;
     const school = await getSingleSchoolInfoBySlug(slug);
-    const data: ISchoolInfo = school?.data;
+    const data = school?.data;
     return {
       title: `${data?.schoolName || "Partner School"} | EduDrop Foundation`,
       description:
         data?.shortDescription ||
-        `Sponsor classroom hydration and essential supplies directly for ${data?.schoolName}.`,
+        `Sponsor classroom hydration and essential supplies directly for ${data?.schoolName || "verified partner schools"}.`,
     };
   } catch {
     return {
@@ -49,7 +48,11 @@ export async function generateMetadata({
 const SingleSchool = async ({ params }: { params: Promise<{ slug: string }> }) => {
   const { slug } = await params;
   const school = await getSingleSchoolInfoBySlug(slug);
-  const schoolData: ISchoolInfo = school?.data;
+  const schoolData = school?.data;
+
+  if (!schoolData) {
+    notFound();
+  }
 
   return (
     <main className="min-h-screen bg-surface-canvas">

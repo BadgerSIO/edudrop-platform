@@ -1,6 +1,7 @@
 import React from "react";
 import { getCookie } from "@/app/utility/handleCookie";
 import { SERVERURLAPI } from "@/lib/constants";
+import { safeFetchJson } from "@/app/utility/safeFetchJson";
 import { IOrder } from "@/app/types/Order";
 import TableWrapper from "@/app/sharedComponents/Table/TableWrapper";
 export async function getBursarOrders(
@@ -9,10 +10,10 @@ export async function getBursarOrders(
   sortOrder?: string,
   page?: number,
   limit?: number,
-) {
+): Promise<{ data: IOrder[] }> {
   const jwt = await getCookie("jwt");
   if (!jwt) {
-    return;
+    return { data: [] };
   }
   let url = `${SERVERURLAPI}/order/get-bursar-order?sortBy=${
     sortBy ? sortBy : "createdAt"
@@ -27,22 +28,17 @@ export async function getBursarOrders(
     }
   }
 
-  try {
-    const res = await fetch(url, {
+  return safeFetchJson<{ data: IOrder[] }>(
+    url,
+    {
       headers: {
         Authorization: `Bearer ${jwt}`,
       },
       next: { tags: ["orderCollection"] },
       cache: "no-store",
-    });
-
-    if (!res.ok) {
-      return { data: [] };
-    }
-    return res.json();
-  } catch {
-    return { data: [] };
-  }
+    },
+    { data: [] }
+  );
 }
 const OrderTable = async () => {
   const all = await getBursarOrders({}, "createdAt", "desc");

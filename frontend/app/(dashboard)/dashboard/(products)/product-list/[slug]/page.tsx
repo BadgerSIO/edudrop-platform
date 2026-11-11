@@ -2,6 +2,7 @@ import React from "react";
 import ProductForm from "../../components/ProductForm";
 import { getCategories } from "../../manage-categories/page";
 import { SERVERURLAPI } from "@/lib/constants";
+import { safeFetchJson } from "@/app/utility/safeFetchJson";
 import { notFound } from "next/navigation";
 
 export const metadata = {
@@ -10,18 +11,14 @@ export const metadata = {
 };
 
 async function getSingleProductBySlug(slug: string) {
-  try {
-    const res = await fetch(`${SERVERURLAPI}/product/${slug}`, {
+  return safeFetchJson<{ data?: any } | null>(
+    `${SERVERURLAPI}/product/${slug}`,
+    {
       next: { tags: ["productSingle"] },
       cache: "no-store",
-    });
-    if (!res.ok) {
-      return null;
-    }
-    return res.json();
-  } catch (error) {
-    return null;
-  }
+    },
+    null
+  );
 }
 
 const SingleProductDash = async ({
