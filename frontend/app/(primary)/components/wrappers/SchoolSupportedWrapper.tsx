@@ -1,18 +1,13 @@
 import { SERVERURLAPI } from "@/lib/constants";
+import { safeFetchJson } from "@/app/utility/safeFetchJson";
 import React from "react";
 import SchoolSupported from "../SchoolSupported";
 export async function getSchoolInfo() {
-  try {
-    const res = await fetch(`${SERVERURLAPI}/school-info/get-all`, {
-      cache: "no-store",
-    });
-    if (!res.ok) {
-      return { data: [] };
-    }
-    return res.json();
-  } catch {
-    return { data: [] };
-  }
+  return safeFetchJson(
+    `${SERVERURLAPI}/school-info/get-all`,
+    { cache: "no-store" },
+    { data: [] }
+  );
 }
 const SchoolSupportedWrapper = async () => {
   const data = await getSchoolInfo();

@@ -1,6 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import { SERVERURLAPI } from "@/lib/constants";
+import { safeFetchJson } from "@/app/utility/safeFetchJson";
 import { columns } from "./components/columns";
 import { DataTable } from "@/app/sharedComponents/Table/data-table";
 import { ISchool } from "@/app/types/School";
@@ -13,17 +14,11 @@ import {
 } from "lucide-react";
 
 async function getSchoolList(): Promise<{ data: ISchool[] }> {
-  try {
-    const res = await fetch(`${SERVERURLAPI}/school`, {
-      cache: "no-store",
-    });
-    if (!res.ok) {
-      return { data: [] };
-    }
-    return res.json();
-  } catch {
-    return { data: [] };
-  }
+  return safeFetchJson(
+    `${SERVERURLAPI}/school`,
+    { cache: "no-store" },
+    { data: [] }
+  );
 }
 
 const SchoolsList = async () => {

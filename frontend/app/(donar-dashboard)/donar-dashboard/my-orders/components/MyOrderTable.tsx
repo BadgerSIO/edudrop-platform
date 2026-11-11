@@ -1,5 +1,6 @@
 import { getCookie } from "@/app/utility/handleCookie";
 import { SERVERURLAPI } from "@/lib/constants";
+import { safeFetchJson } from "@/app/utility/safeFetchJson";
 import React from "react";
 import TableWrapper from "@/app/sharedComponents/Table/TableWrapper";
 import { IOrder } from "@/app/types/Order";
@@ -9,10 +10,10 @@ export async function getDonarOrders(
   sortOrder?: string,
   page?: number,
   limit?: number,
-) {
+): Promise<{ data: IOrder[] }> {
   const jwt = await getCookie("jwt");
   if (!jwt) {
-    return;
+    return { data: [] };
   }
   let url = `${SERVERURLAPI}/order/get-donar-order?sortBy=${
     sortBy ? sortBy : "createdAt"
@@ -27,22 +28,17 @@ export async function getDonarOrders(
     }
   }
 
-  try {
-    const res = await fetch(url, {
+  return safeFetchJson<{ data: IOrder[] }>(
+    url,
+    {
       headers: {
         Authorization: `Bearer ${jwt}`,
       },
       next: { tags: ["orderCollection"] },
       cache: "no-store",
-    });
-
-    if (!res.ok) {
-      return { data: [] };
-    }
-    return res.json();
-  } catch {
-    return { data: [] };
-  }
+    },
+    { data: [] }
+  );
 }
 const MyOrderTable = async () => {
   const all = await getDonarOrders({}, "createdAt", "desc");

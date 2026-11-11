@@ -1,19 +1,21 @@
 import React from "react";
 import { Metadata } from "next";
+import { notFound } from "next/navigation";
 import Hero from "./components/Hero";
 import ProductInfo from "./components/ProductInfo";
 import { SERVERURLAPI } from "@/lib/constants";
+import { safeFetchJson } from "@/app/utility/safeFetchJson";
 import { IProduct } from "@/app/types/Product";
 
 async function getProductOptimized(slug: string) {
-  const res = await fetch(`${SERVERURLAPI}/product/optimized/${slug}`, {
-    next: { tags: ["productsCollection"] },
-    cache: "no-store",
-  });
-  if (!res.ok) {
-    throw new Error("Failed to fetch data");
-  }
-  return res.json();
+  return safeFetchJson<{ data?: IProduct } | null>(
+    `${SERVERURLAPI}/product/optimized/${slug}`,
+    {
+      next: { tags: ["productsCollection"] },
+      cache: "no-store",
+    },
+    null
+  );
 }
 
 export async function generateMetadata({
@@ -24,12 +26,12 @@ export async function generateMetadata({
   try {
     const { slug } = await params;
     const data = await getProductOptimized(slug);
-    const product: IProduct = data?.data;
+    const product = data?.data;
     return {
       title: `${product?.title || "Classroom Essential"} | EduDrop Foundation`,
       description:
         product?.description ||
-        `Sponsor ${product?.title} for verified partner classrooms with direct gate delivery.`,
+        `Sponsor ${product?.title || "classroom supplies"} for verified partner classrooms with direct gate delivery.`,
     };
   } catch {
     return {
@@ -42,7 +44,11 @@ export async function generateMetadata({
 const ProductSingle = async ({ params }: { params: Promise<{ slug: string }> }) => {
   const { slug } = await params;
   const data = await getProductOptimized(slug);
-  const product: IProduct = data?.data;
+  const product = data?.data;
+
+  if (!product) {
+    notFound();
+  }
 
   return (
     <main className="min-h-screen bg-surface-canvas">
