@@ -10,6 +10,7 @@ import {
   Trash2,
   ShieldAlert,
   CheckCircle2,
+  FileWarning,
 } from "lucide-react";
 import { SERVERURLAPI } from "@/lib/constants";
 import { useAuthContext } from "@/app/context/AuthContext";
@@ -25,6 +26,7 @@ interface CleanupSummary {
   removedUploadsCount: number;
   freedBytes: number;
   minAgeHours: number;
+  deletedUrls?: string[];
 }
 
 const formatBytes = (bytes: number): string => {
@@ -35,7 +37,7 @@ const formatBytes = (bytes: number): string => {
   return `${(kb / 1024).toFixed(2)} MB`;
 };
 
-const AdminStorageCleanupCard = () => {
+const StorageMaintenanceCard = () => {
   const { demoStatus } = useAuthContext();
   const [runningMode, setRunningMode] = useState<"scan" | "clean" | null>(null);
   const [summary, setSummary] = useState<CleanupSummary | null>(null);
@@ -84,11 +86,11 @@ const AdminStorageCleanupCard = () => {
   return (
     <div className="dash-card-enter rounded-2xl border border-border-subtle bg-white p-6 sm:p-8 shadow-bento space-y-5">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-        <div className="flex items-start gap-3.5">
+        <div className="flex items-start gap-3.5 min-w-0">
           <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-surface-forest/10 text-surface-forest">
             <HardDrive className="h-5 w-5" aria-hidden="true" />
           </div>
-          <div className="space-y-1">
+          <div className="space-y-1 min-w-0">
             <h2 className="text-base sm:text-lg font-bold tracking-tight text-text-ink">
               Upload Storage Maintenance
             </h2>
@@ -159,25 +161,51 @@ const AdminStorageCleanupCard = () => {
         </div>
       )}
 
-      <div aria-live="polite">
+      <div aria-live="polite" className="space-y-3">
         {summary && (
-          <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-border-subtle/80 bg-surface-bento/40 px-4 py-3 text-xs">
-            <div className="flex items-center gap-2 font-semibold text-text-ink">
-              <CheckCircle2
-                className="h-4 w-4 text-surface-forest shrink-0"
-                aria-hidden="true"
-              />
-              <span>
-                {summary.removedUploadsCount === 0
-                  ? `Storage clean — no unreferenced files older than ${summary.minAgeHours}h.`
-                  : summary.dryRun
-                    ? `Dry run found ${summary.removedUploadsCount} unreferenced upload(s) (${formatBytes(summary.freedBytes)} reclaimable).`
-                    : `Removed ${summary.removedUploadsCount} unreferenced upload(s), freeing ${formatBytes(summary.freedBytes)}.`}
+          <div className="rounded-xl border border-border-subtle/80 bg-surface-bento/40 p-4 space-y-3 text-xs">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div className="flex items-center gap-2 font-semibold text-text-ink">
+                <CheckCircle2
+                  className="h-4 w-4 text-surface-forest shrink-0"
+                  aria-hidden="true"
+                />
+                <span>
+                  {summary.removedUploadsCount === 0
+                    ? `Storage clean — no unreferenced files older than ${summary.minAgeHours}h.`
+                    : summary.dryRun
+                      ? `Preview found ${summary.removedUploadsCount} unreferenced upload(s) (${formatBytes(summary.freedBytes)} reclaimable).`
+                      : `Removed ${summary.removedUploadsCount} unreferenced upload(s), freeing ${formatBytes(summary.freedBytes)}.`}
+                </span>
+              </div>
+              <span className="font-mono text-[11px] text-text-muted">
+                {summary.activeReferencesCount} active asset references preserved
               </span>
             </div>
-            <span className="font-mono text-[11px] text-text-muted">
-              {summary.activeReferencesCount} active asset references preserved
-            </span>
+
+            {summary.dryRun &&
+              Array.isArray(summary.deletedUrls) &&
+              summary.deletedUrls.length > 0 && (
+                <div className="border-t border-border-subtle/70 pt-3 space-y-2">
+                  <div className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-text-muted">
+                    <FileWarning
+                      className="h-3.5 w-3.5 text-surface-forest shrink-0"
+                      aria-hidden="true"
+                    />
+                    <span>Files Queued for Removal</span>
+                  </div>
+                  <ul className="max-h-44 overflow-y-auto overscroll-contain space-y-1.5 rounded-lg border border-border-subtle bg-white p-2.5">
+                    {summary.deletedUrls.map((fileUrl) => (
+                      <li
+                        key={fileUrl}
+                        className="font-mono text-[11px] text-text-ink break-all"
+                      >
+                        {fileUrl}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
           </div>
         )}
       </div>
@@ -185,4 +213,4 @@ const AdminStorageCleanupCard = () => {
   );
 };
 
-export default AdminStorageCleanupCard;
+export default StorageMaintenanceCard;

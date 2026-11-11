@@ -283,12 +283,23 @@ const DashNav = () => {
                   </DropdownMenuItem>
                 )}
                 {data?.role === "admin" && (
-                  <DropdownMenuItem asChild>
-                    <Link href="/dashboard" className={dropdownNavLinkClass}>
-                      <LayoutDashboard className="h-4 w-4" />
-                      <span>Dashboard Overview</span>
-                    </Link>
-                  </DropdownMenuItem>
+                  <>
+                    <DropdownMenuItem asChild>
+                      <Link href="/dashboard" className={dropdownNavLinkClass}>
+                        <LayoutDashboard className="h-4 w-4" />
+                        <span>Dashboard Overview</span>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link
+                        href="/dashboard/settings"
+                        className={dropdownNavLinkClass}
+                      >
+                        <Settings className="h-4 w-4" />
+                        <span>Platform Settings</span>
+                      </Link>
+                    </DropdownMenuItem>
+                  </>
                 )}
                 {demoStatus?.demoMode && demoStatus.ownerBypassActive && (
                   <>
