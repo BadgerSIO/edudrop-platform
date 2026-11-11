@@ -39,6 +39,7 @@ const TransactionContent = () => {
   const executedOrderIdRef = useRef<string | null>(null);
   const { cartProducts, captureCount, setCaptureCount } = useNavbarContext();
   const [orderLoading, setOrderLoading] = useState(false);
+  const [orderError, setOrderError] = useState<string | null>(null);
   const [createdCredentials, setCreatedCredentials] =
     useState<ICredentials | null>(null);
   const [copied, setCopied] = useState(false);
@@ -62,11 +63,18 @@ const TransactionContent = () => {
     const maxAge = 60 * 10;
     await setCookie("paymentIntent", "true", maxAge);
     try {
-      const guestEmail = await getCookie("guestEmail");
+      const [guestEmail, jwt] = await Promise.all([
+        getCookie("guestEmail"),
+        getCookie("jwt"),
+      ]);
       setOrderLoading(true);
+      setOrderError(null);
       const response = await axios.post(
         `${SERVERURLAPI}/order/create`,
         orderPayload,
+        {
+          headers: jwt ? { Authorization: `Bearer ${jwt}` } : {},
+        },
       );
       if (response.status === 200) {
         const createdOrder = response.data?.data;
@@ -99,11 +107,17 @@ const TransactionContent = () => {
         setCaptureCount(!captureCount);
         localStorage.setItem("orderMade", "true");
       } else {
+        setOrderError("Failed to create sponsorship order.");
         toast.error("Failed to create order");
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Order creation error:", error);
-      toast.error(`Failed to create Order: ${error}`);
+      const message =
+        error?.response?.data?.message ||
+        error?.message ||
+        "Failed to complete order";
+      setOrderError(message);
+      toast.error(message);
     } finally {
       setOrderLoading(false);
     }
@@ -151,6 +165,34 @@ const TransactionContent = () => {
   const card = showOrder?.card || searchParams.get("card") || "(VISA) ... 4242";
   const totalAmount = showOrder?.totalAmount || 0;
   const products = showOrder?.products || [];
+
+  if (orderError) {
+    return (
+      <div className="min-h-screen bg-surface-canvas py-12 sm:py-16">
+        <div className="mx-auto w-full max-w-[680px] px-5 sm:px-8">
+          <BentoCard
+            variant="white"
+            className="border-red-200/80 p-8 sm:p-10 text-center shadow-bento space-y-5"
+          >
+            <h1 className="font-display text-2xl font-extrabold text-text-ink sm:text-3xl">
+              Unable to Process Sponsorship Order
+            </h1>
+            <p className="text-sm text-text-body leading-relaxed">
+              {orderError}
+            </p>
+            <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+              <ActionPillButton variant="dark" href="/checkout" size="md">
+                Return to Checkout
+              </ActionPillButton>
+              <ActionPillButton variant="outline-dark" href="/products" size="md">
+                Browse Supplies
+              </ActionPillButton>
+            </div>
+          </BentoCard>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-surface-canvas py-12 sm:py-16">
@@ -452,7 +494,11 @@ const TransactionContent = () => {
           <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
             <ActionPillButton
               variant="dark"
-              href="/donar-dashboard/my-orders"
+              href={
+                orderId && orderId !== "N/A"
+                  ? `/donar-dashboard/my-orders/${orderId}`
+                  : "/donar-dashboard/my-orders"
+              }
               size="lg"
             >
               <PackageCheck className="h-4 w-4 shrink-0" />

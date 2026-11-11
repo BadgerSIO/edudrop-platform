@@ -1,4 +1,5 @@
 import express from "express";
+import demoGuard from "../middleware/demoGuard";
 import { SubmissionsRoutes } from "../modules/submissions/submissions.route";
 import { SchoolRoutes } from "../modules/school/school.route";
 import { AuthRoutes } from "../modules/auth/auth.route";
@@ -15,6 +16,7 @@ import { CMSRoutes } from "../modules/cms/cms.route";
 import { UserRoutes } from "../modules/user/user.route";
 
 const router = express.Router();
+router.use(demoGuard);
 const moduleRoutes = [
   {
     path: "/cms",

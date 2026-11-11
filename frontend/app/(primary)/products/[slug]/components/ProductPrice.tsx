@@ -3,6 +3,10 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { IProduct, isICategory } from "@/app/types/Product";
 import { useNavbarContext } from "@/app/context/NavContext";
+import { useAuthContext } from "@/app/context/AuthContext";
+import RoleCheckoutGuard, {
+  isStaffRole,
+} from "@/app/sharedComponents/RoleCheckoutGuard";
 import ActionPillButton from "@/app/sharedComponents/ui/ActionPillButton";
 import BentoCard from "@/app/sharedComponents/ui/BentoCard";
 import { CheckCircle2, ShieldCheck, Truck, Droplets } from "lucide-react";
@@ -17,6 +21,8 @@ export const ProductPrice = ({ product }: { product: IProduct }) => {
     captureCount,
     setIsCartOpen,
   } = useNavbarContext();
+  const { data: userData } = useAuthContext();
+  const staffPreviewOnly = isStaffRole(userData?.role);
 
   const [count, setCount] = useState(1);
 
@@ -51,6 +57,10 @@ export const ProductPrice = ({ product }: { product: IProduct }) => {
   };
 
   const handleAddToCart = () => {
+    if (staffPreviewOnly) {
+      toast.error("Bursar & Admin accounts browse in preview mode. Sign in as a Donor to add supplies.");
+      return;
+    }
     try {
       updateCartWithQuantity();
       setIsCartOpen(true);
@@ -61,6 +71,10 @@ export const ProductPrice = ({ product }: { product: IProduct }) => {
   };
 
   const handleCheckout = () => {
+    if (staffPreviewOnly) {
+      toast.error("Bursar & Admin accounts cannot place sponsorship orders.");
+      return;
+    }
     try {
       updateCartWithQuantity();
       router.push("/checkout");
@@ -121,62 +135,72 @@ export const ProductPrice = ({ product }: { product: IProduct }) => {
           </p>
         </div>
 
-        {/* Quantity Controls & Actions */}
-        <div className="mt-8 space-y-4">
-          <div className="flex flex-wrap items-center gap-4">
-            {/* Pill Counter */}
-            <div className="inline-flex items-center gap-3 rounded-full border border-border-subtle bg-surface-bento px-4 py-2 font-bold text-text-ink">
-              <span className="text-xs uppercase font-medium text-text-body mr-1">
-                Qty
+        {/* Quantity Controls & Actions (or Role Preview Guard for Staff) */}
+        {staffPreviewOnly ? (
+          <div className="mt-8">
+            <RoleCheckoutGuard
+              variant="card"
+              compact
+              redirectTo={`/products/${product.slug}`}
+            />
+          </div>
+        ) : (
+          <div className="mt-8 space-y-4">
+            <div className="flex flex-wrap items-center gap-4">
+              {/* Pill Counter */}
+              <div className="inline-flex items-center gap-3 rounded-full border border-border-subtle bg-surface-bento px-4 py-2 font-bold text-text-ink">
+                <span className="text-xs uppercase font-medium text-text-body mr-1">
+                  Qty
+                </span>
+                <button
+                  type="button"
+                  onClick={handleDecrement}
+                  aria-label="Decrease quantity"
+                  className="flex h-7 w-7 items-center justify-center rounded-full bg-white text-base shadow-sm transition-colors hover:bg-surface-forest hover:text-white"
+                >
+                  -
+                </button>
+                <span className="w-8 text-center text-base">{count}</span>
+                <button
+                  type="button"
+                  onClick={handleIncrement}
+                  aria-label="Increase quantity"
+                  className="flex h-7 w-7 items-center justify-center rounded-full bg-white text-base shadow-sm transition-colors hover:bg-surface-forest hover:text-white"
+                >
+                  +
+                </button>
+              </div>
+
+              {/* Total Line */}
+              <span className="text-sm font-semibold text-text-body">
+                Total:{" "}
+                <strong className="text-text-ink font-display text-lg">
+                  ${((price || 0) * count).toFixed(2)}
+                </strong>
               </span>
-              <button
-                type="button"
-                onClick={handleDecrement}
-                aria-label="Decrease quantity"
-                className="flex h-7 w-7 items-center justify-center rounded-full bg-white text-base shadow-sm transition-colors hover:bg-surface-forest hover:text-white"
-              >
-                -
-              </button>
-              <span className="w-8 text-center text-base">{count}</span>
-              <button
-                type="button"
-                onClick={handleIncrement}
-                aria-label="Increase quantity"
-                className="flex h-7 w-7 items-center justify-center rounded-full bg-white text-base shadow-sm transition-colors hover:bg-surface-forest hover:text-white"
-              >
-                +
-              </button>
             </div>
 
-            {/* Total Line */}
-            <span className="text-sm font-semibold text-text-body">
-              Total:{" "}
-              <strong className="text-text-ink font-display text-lg">
-                ${((price || 0) * count).toFixed(2)}
-              </strong>
-            </span>
+            {/* Action Buttons */}
+            <div className="flex flex-wrap items-center gap-3 pt-2">
+              <ActionPillButton
+                variant="lime"
+                onClick={handleCheckout}
+                size="lg"
+                className="flex-1 justify-center whitespace-nowrap min-w-[200px]"
+              >
+                Sponsor Now & Checkout
+              </ActionPillButton>
+              <ActionPillButton
+                variant="dark"
+                onClick={handleAddToCart}
+                size="lg"
+                className="flex-1 justify-center whitespace-nowrap min-w-[180px]"
+              >
+                Add to Cart
+              </ActionPillButton>
+            </div>
           </div>
-
-          {/* Action Buttons */}
-          <div className="flex flex-wrap items-center gap-3 pt-2">
-            <ActionPillButton
-              variant="lime"
-              onClick={handleCheckout}
-              size="lg"
-              className="flex-1 justify-center whitespace-nowrap min-w-[200px]"
-            >
-              Sponsor Now & Checkout
-            </ActionPillButton>
-            <ActionPillButton
-              variant="dark"
-              onClick={handleAddToCart}
-              size="lg"
-              className="flex-1 justify-center whitespace-nowrap min-w-[180px]"
-            >
-              Add to Cart
-            </ActionPillButton>
-          </div>
-        </div>
+        )}
       </div>
 
       {/* Direct Delivery Reassurance Box */}

@@ -5,7 +5,9 @@ import { useSearchParams } from "next/navigation";
 import {
   Building2,
   Clock,
+  Code2,
   ExternalLink,
+  Globe,
   Mail,
   MapPin,
   PackageCheck,
@@ -18,6 +20,9 @@ import ContactForm, {
 import BentoCard from "@/app/sharedComponents/ui/BentoCard";
 import SectionEyebrow from "@/app/sharedComponents/ui/SectionEyebrow";
 import ActionPillButton from "@/app/sharedComponents/ui/ActionPillButton";
+import LinkedInIcon from "@/app/sharedComponents/ui/LinkedInIcon";
+import SocialLinkPills from "@/app/sharedComponents/ui/SocialLinkPills";
+import { DEVELOPER_INFO } from "@/lib/developerInfo";
 import { IContactInfo } from "@/app/types/ContactInfo";
 
 const routingCards = [
@@ -77,15 +82,6 @@ export const ContactWorkspace: React.FC<ContactWorkspaceProps> = ({
       formEl.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   };
-
-  const socialLinks = [
-    { label: "Facebook", href: contactInfo?.facebook },
-    { label: "Instagram", href: contactInfo?.instagram },
-    { label: "YouTube", href: contactInfo?.youtube },
-    { label: "TikTok", href: contactInfo?.tiktok },
-  ].filter((item): item is { label: string; href: string } =>
-    Boolean(item.href && item.href.trim().length > 0)
-  );
 
   return (
     <section className="bg-surface-canvas py-10 sm:py-14 lg:py-16">
@@ -228,28 +224,7 @@ export const ContactWorkspace: React.FC<ContactWorkspaceProps> = ({
               </div>
 
               {/* Social Links */}
-              {socialLinks.length > 0 && (
-                <div className="border-t border-border-subtle/80 pt-5">
-                  <p className="text-[11px] font-semibold uppercase tracking-wider text-text-body mb-3">
-                    Official Channels
-                  </p>
-                  <div className="flex flex-wrap gap-2">
-                    {socialLinks.map((social) => (
-                      <a
-                        key={social.label}
-                        href={social.href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        aria-label={`EduDrop on ${social.label}`}
-                        className="inline-flex items-center gap-1.5 rounded-full border border-border-subtle bg-white px-3.5 py-1.5 text-xs font-semibold text-text-ink transition-colors hover:border-surface-forest hover:bg-surface-forest hover:text-white"
-                      >
-                        <span>{social.label}</span>
-                        <ExternalLink className="h-3 w-3 opacity-70" />
-                      </a>
-                    ))}
-                  </div>
-                </div>
-              )}
+              <SocialLinkPills contactInfo={contactInfo} heading="Social Links" />
             </BentoCard>
 
             {/* Campus Bursar Direct Callout */}
@@ -275,6 +250,53 @@ export const ContactWorkspace: React.FC<ContactWorkspaceProps> = ({
                   >
                     Browse Partner Schools
                   </ActionPillButton>
+                </div>
+              </div>
+            </BentoCard>
+
+            {/* Platform Developer Info Card */}
+            <BentoCard variant="forest" className="p-6">
+              <div className="flex items-start gap-3.5">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-lime/20 text-brand-lime">
+                  <Code2 aria-hidden="true" className="h-5 w-5" />
+                </div>
+                <div className="min-w-0 space-y-3">
+                  <div>
+                    <span className="block text-[11px] font-bold uppercase tracking-wider text-brand-lime">
+                      Platform Developer
+                    </span>
+                    <h3 className="mt-0.5 text-base font-bold text-on-forest">
+                      Built by {DEVELOPER_INFO.name}
+                    </h3>
+                    <p className="mt-1 text-sm leading-relaxed text-on-forest-muted">
+                      Full-stack web application designed and engineered for
+                      transparent school sponsorship.
+                    </p>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    <a
+                      href={DEVELOPER_INFO.portfolioUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`Portfolio — ${DEVELOPER_INFO.name} (opens in a new tab)`}
+                      className="inline-flex min-h-8 items-center gap-1.5 rounded-full bg-brand-lime px-3.5 py-1.5 text-xs font-bold text-surface-forest transition-colors hover:bg-brand-lime-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-lime focus-visible:ring-offset-2 focus-visible:ring-offset-surface-forest"
+                    >
+                      <Globe aria-hidden="true" className="h-3.5 w-3.5" />
+                      <span>Portfolio</span>
+                      <ExternalLink aria-hidden="true" className="h-3 w-3 opacity-80" />
+                    </a>
+                    <a
+                      href={DEVELOPER_INFO.linkedinUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`LinkedIn — ${DEVELOPER_INFO.name} (opens in a new tab)`}
+                      className="inline-flex min-h-8 items-center gap-1.5 rounded-full border border-white/15 bg-white/10 px-3.5 py-1.5 text-xs font-semibold text-on-forest transition-colors hover:border-white/30 hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-lime focus-visible:ring-offset-2 focus-visible:ring-offset-surface-forest"
+                    >
+                      <LinkedInIcon className="h-3.5 w-3.5" />
+                      <span>LinkedIn</span>
+                      <ExternalLink aria-hidden="true" className="h-3 w-3 opacity-80" />
+                    </a>
+                  </div>
                 </div>
               </div>
             </BentoCard>

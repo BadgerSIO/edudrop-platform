@@ -182,10 +182,14 @@ const MonthlyTransactionContent = () => {
             )}
             <ActionPillButton
               variant="lime"
-              href="/donar-dashboard/my-orders"
+              href={
+                orderId && orderId !== "N/A"
+                  ? `/donar-dashboard/my-orders/${orderId}`
+                  : "/donar-dashboard/my-orders"
+              }
               size="md"
             >
-              Donor Dashboard
+              View Order in Dashboard
             </ActionPillButton>
             <ActionPillButton
               variant="outline-dark"

@@ -5,6 +5,7 @@ import useAuth from "@/app/hooks/useAuth";
 import React, { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import ActionPillButton from "@/app/sharedComponents/ui/ActionPillButton";
+import DemoCredentialsBox from "@/app/sharedComponents/Auth/DemoCredentialsBox";
 import { Mail, Lock, Eye, EyeOff, AlertCircle, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -21,6 +22,7 @@ const AdminLogin: React.FC = () => {
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm<FormValues>();
 
@@ -33,8 +35,23 @@ const AdminLogin: React.FC = () => {
     }
   };
 
+  const handleDemoSignIn = async (credentials: {
+    email: string;
+    password: string;
+  }) => {
+    setValue("email", credentials.email);
+    setValue("password", credentials.password);
+    setSubmitting(true);
+    try {
+      await signinAdmin(credentials);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+    <div className="w-full">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
       {/* Email */}
       <div className="space-y-1.5">
         <label
@@ -141,6 +158,13 @@ const AdminLogin: React.FC = () => {
         </ActionPillButton>
       </div>
     </form>
+
+    <DemoCredentialsBox
+      role="admin"
+      onSelect={handleDemoSignIn}
+      disabled={submitting}
+    />
+  </div>
   );
 };
 

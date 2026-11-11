@@ -6,6 +6,8 @@ import Link from "next/link";
 import { IProduct, isICategory } from "../types/Product";
 import { handleBuildImage } from "../utility/handleBuildImage";
 import { useNavbarContext } from "../context/NavContext";
+import { useAuthContext } from "../context/AuthContext";
+import { isStaffRole } from "./RoleCheckoutGuard";
 import ActionPillButton from "./ui/ActionPillButton";
 import { Check, CheckCircle2, Droplets } from "lucide-react";
 import toast from "react-hot-toast";
@@ -23,6 +25,8 @@ export const ProductCard = ({
     captureCount,
     setCaptureCount,
   } = useNavbarContext();
+  const { data: userData } = useAuthContext();
+  const staffPreviewOnly = isStaffRole(userData?.role);
 
   const [justAdded, setJustAdded] = useState(false);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -40,6 +44,11 @@ export const ProductCard = ({
   ) => {
     event.preventDefault();
     event.stopPropagation();
+
+    if (staffPreviewOnly) {
+      toast.error("Bursar & Admin accounts browse in preview mode. Please use a Donor account to sponsor.");
+      return;
+    }
 
     try {
       const storedCart = localStorage.getItem("cart");
@@ -149,29 +158,40 @@ export const ProductCard = ({
           </div>
 
           <div className="relative z-10 shrink-0">
-            <ActionPillButton
-              variant="dark"
-              size="sm"
-              onClick={handleAddToCart}
-              ariaLabel={`Sponsor ${product.title}`}
-              className={
-                justAdded ? "bg-surface-forest text-white" : undefined
-              }
-            >
-              <span
-                className="inline-flex items-center gap-1.5"
-                aria-live="polite"
+            {staffPreviewOnly ? (
+              <ActionPillButton
+                variant="outline-dark"
+                size="sm"
+                href={productHref}
+                ariaLabel={`Inspect ${product.title} details`}
               >
-                {justAdded ? (
-                  <>
-                    <Check className="h-3.5 w-3.5 text-brand-lime" />
-                    <span>Added</span>
-                  </>
-                ) : (
-                  <span>Sponsor Item</span>
-                )}
-              </span>
-            </ActionPillButton>
+                <span>View Specs</span>
+              </ActionPillButton>
+            ) : (
+              <ActionPillButton
+                variant="dark"
+                size="sm"
+                onClick={handleAddToCart}
+                ariaLabel={`Sponsor ${product.title}`}
+                className={
+                  justAdded ? "bg-surface-forest text-white" : undefined
+                }
+              >
+                <span
+                  className="inline-flex items-center gap-1.5"
+                  aria-live="polite"
+                >
+                  {justAdded ? (
+                    <>
+                      <Check className="h-3.5 w-3.5 text-brand-lime" />
+                      <span>Added</span>
+                    </>
+                  ) : (
+                    <span>Sponsor Item</span>
+                  )}
+                </span>
+              </ActionPillButton>
+            )}
           </div>
         </div>
       </div>

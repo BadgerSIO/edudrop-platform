@@ -1,5 +1,6 @@
 import fs from "fs";
 import path from "path";
+import { isProtectedSeedUpload } from "./seedHelper";
 
 export type UploadSubdir = "users" | "school" | "products" | "cms";
 
@@ -71,6 +72,10 @@ export const safeUnlinkUpload = async (
   allowedSubdir?: UploadSubdir
 ): Promise<boolean> => {
   try {
+    if (isProtectedSeedUpload(relativePath)) {
+      return false;
+    }
+
     const resolvedTarget = resolveSafeUploadPath(relativePath, allowedSubdir);
     if (!resolvedTarget) return false;
 

@@ -413,7 +413,7 @@ export default function UserDetailHub({ user }: UserDetailHubProps) {
                                 </td>
                                 <td className="p-3 text-right">
                                   <Link
-                                    href={`/dashboard/orders/${ord._id}`}
+                                    href={`/dashboard/orders/${ord.orderId || ord._id}`}
                                     className="inline-flex items-center gap-1 text-surface-forest hover:underline font-semibold"
                                   >
                                     <span>Inspect</span>

@@ -4,7 +4,7 @@ import { SERVERURLAPI } from "@/lib/constants";
 import { deleteCookie, setCookie } from "../utility/handleCookie";
 import { usePathname, useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-import { useRef } from "react";
+import { useRef, type SyntheticEvent } from "react";
 const useAuth = () => {
   const dialogCloseRef = useRef<HTMLButtonElement>(null);
   const router = useRouter();
@@ -49,10 +49,12 @@ const useAuth = () => {
         });
       }
     } catch (error: any) {
-      toast.error(`Invalid credentials ${error}`);
+      const msg =
+        error?.response?.data?.message || "Invalid email or password";
+      toast.error(msg);
       setAuthState({
         loading: false,
-        error: error.message,
+        error: msg,
         data: null,
       });
     }
@@ -82,10 +84,12 @@ const useAuth = () => {
         }
       }
     } catch (error: any) {
-      toast.error(`Invalid credentials ${error}`);
+      const msg =
+        error?.response?.data?.message || "Unable to send password reset";
+      toast.error(msg);
       setAuthState({
         loading: false,
-        error: error.message,
+        error: msg,
         data: null,
       });
     }
@@ -123,10 +127,12 @@ const useAuth = () => {
         router.push("/login");
       }
     } catch (error: any) {
-      toast.error(`Invalid credentials ${error}`);
+      const msg =
+        error?.response?.data?.message || "Unable to reset password";
+      toast.error(msg);
       setAuthState({
         loading: false,
-        error: error.message,
+        error: msg,
         data: null,
       });
     }
@@ -287,7 +293,9 @@ const useAuth = () => {
   };
 
   // signout -------------------
-  const signout = async () => {
+  const signout = async (
+    optionsOrEvent?: { redirectTo?: string } | SyntheticEvent
+  ) => {
     setAuthState({
       loading: true,
       error: null,
@@ -297,7 +305,19 @@ const useAuth = () => {
       await deleteCookie("jwt");
       await deleteCookie("edudropUserRole");
       await deleteCookie("isEdudropUserValid");
-      router.push("/");
+      delete axios.defaults.headers.common["Authorization"];
+      const target =
+        optionsOrEvent &&
+        typeof optionsOrEvent === "object" &&
+        "redirectTo" in optionsOrEvent &&
+        typeof optionsOrEvent.redirectTo === "string"
+          ? optionsOrEvent.redirectTo
+          : "/";
+      if (target === pathname) {
+        router.refresh();
+      } else {
+        router.push(target);
+      }
 
       setAuthState({
         error: null,

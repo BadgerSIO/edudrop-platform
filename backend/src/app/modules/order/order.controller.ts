@@ -11,7 +11,8 @@ import jwt from "jsonwebtoken";
 const createOrder: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
     const payload = await req.body;
-    const result = await OrderService.createOrder(payload);
+    const currentUser = res.locals.user;
+    const result = await OrderService.createOrder(payload, currentUser);
 
     sendResponse(res, {
       statusCode: httpStatus.OK,
@@ -77,7 +78,8 @@ const getAllBursarOrder: RequestHandler = catchAsync(
 const getSingleOrderById: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
     const id = req.params.id;
-    const result = await OrderService.getSingleOrderById(id);
+    const currentUser = res.locals.user;
+    const result = await OrderService.getSingleOrderById(id, currentUser);
     sendResponse<IOrder>(res, {
       statusCode: httpStatus.OK,
       success: true,
