@@ -1,6 +1,5 @@
 "use client";
 
-import { useAuthContext } from "@/app/context/AuthContext";
 import useAuth from "@/app/hooks/useAuth";
 import React, { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
@@ -14,7 +13,9 @@ interface FormValues {
   password: string;
 }
 
-const BursarLogin: React.FC = () => {
+const BursarLogin: React.FC<{ initialDemoMode?: boolean }> = ({
+  initialDemoMode = false,
+}) => {
   const { signinBursar } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -161,6 +162,7 @@ const BursarLogin: React.FC = () => {
 
     <DemoCredentialsBox
       role="bursar"
+      initialDemoMode={initialDemoMode}
       onSelect={handleDemoSignIn}
       disabled={submitting}
     />

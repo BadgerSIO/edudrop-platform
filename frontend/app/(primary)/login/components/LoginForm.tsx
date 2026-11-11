@@ -5,11 +5,11 @@ import { ErrorMessage } from "@hookform/error-message";
 import React, { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import ForgetPassword from "./ForgetPassword";
-import { useAuthContext } from "@/app/context/AuthContext";
 import { useSearchParams } from "next/navigation";
-import Link from "next/link";
 import ActionPillButton from "@/app/sharedComponents/ui/ActionPillButton";
-import DemoCredentialsBox from "@/app/sharedComponents/Auth/DemoCredentialsBox";
+import DemoCredentialsBox, {
+  type DemoRole,
+} from "@/app/sharedComponents/Auth/DemoCredentialsBox";
 import {
   Mail,
   Lock,
@@ -25,8 +25,12 @@ interface FormValues {
   password: string;
 }
 
-const LoginForm = () => {
-  const { signin } = useAuth();
+interface LoginFormProps {
+  initialDemoMode?: boolean;
+}
+
+const LoginForm: React.FC<LoginFormProps> = ({ initialDemoMode = false }) => {
+  const { signin, signinBursar, signinAdmin } = useAuth();
   const searchParams = useSearchParams();
   const emailParam = searchParams.get("email");
   const [showPassword, setShowPassword] = useState(false);
@@ -60,15 +64,28 @@ const LoginForm = () => {
     }
   };
 
-  const handleDemoSignIn = async (credentials: {
+  const handleDemoSignIn = async ({
+    email,
+    password,
+    role,
+  }: {
     email: string;
     password: string;
+    role: DemoRole;
   }) => {
-    setValue("email", credentials.email);
-    setValue("password", credentials.password);
+    if (role === "donar") {
+      setValue("email", email);
+      setValue("password", password);
+    }
     setSubmitting(true);
     try {
-      await signin(credentials);
+      if (role === "bursar") {
+        await signinBursar({ email, password });
+      } else if (role === "admin") {
+        await signinAdmin({ email, password });
+      } else {
+        await signin({ email, password });
+      }
     } finally {
       setSubmitting(false);
     }
@@ -205,6 +222,8 @@ const LoginForm = () => {
 
       <DemoCredentialsBox
         role="donar"
+        allowRoleSwitch
+        initialDemoMode={initialDemoMode}
         onSelect={handleDemoSignIn}
         disabled={submitting}
       />
