@@ -140,7 +140,7 @@ When asked to create a new theme, color scheme, or seasonal/partner re-skin:
 - **Button & Pill Outlines**: For glass buttons and pills on dark backgrounds, use soft opacity borders (`border-white/15` with `hover:border-white/25`) rather than opaque or bright white borders.
 
 ### E. Authentication, Admin Protection & Notifications
-- **Unadvertised Private Portals**: Never expose direct links or navigation buttons to restricted administration or school bursar interfaces (`/admin-login`, `/bursar-login`) on public authentication pages (`/login`, `/register`).
+- **Unadvertised Private Portals**: Never expose direct links or navigation buttons to restricted administration or school bursar routes (`/admin-login`, `/bursar-login`) on public authentication pages (`/login`, `/register`). When `demoMode` is active, `/login` may show only the in-place `DemoCredentialsBox` 1-click role switcher (`Donor`, `Bursar`, `Admin`) without linking to `/bursar-login` or `/admin-login`.
 - **Protected Admin Self-Account Controls**: `/dashboard/profile` is strictly read-only for Admins (no self profile edits or self password changes), and Admins cannot suspend, reset passwords on, or archive their own or other admin accounts in `manage-users`.
 - **Notifications Behavior**: Notification clicks must mark read via `PATCH` (retaining recent history) and navigate immediately; explicit dismissal uses `DELETE`. Never call `DELETE` directly on click.
 
