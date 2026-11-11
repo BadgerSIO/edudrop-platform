@@ -63,16 +63,6 @@ const nextConfig = {
   async redirects() {
     return [
       {
-        source: "/dashboard/settings/:path*",
-        destination: "/dashboard/profile",
-        permanent: false,
-      },
-      {
-        source: "/dashboard/settings",
-        destination: "/dashboard/profile",
-        permanent: false,
-      },
-      {
         source: "/dashboard/update-profile",
         destination: "/dashboard/profile",
         permanent: false,
