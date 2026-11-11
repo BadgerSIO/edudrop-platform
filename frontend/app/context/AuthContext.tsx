@@ -216,7 +216,12 @@ const AuthContext = ({ children }: { children: ReactNode }) => {
           handleRevalidation("bursarInboxCollection"),
         ]);
         await fetchUser();
-        toast.success("Demo database restored to clean seed snapshot");
+        const removedCount = Number(res.data?.data?.removedUploadsCount || 0);
+        toast.success(
+          removedCount > 0
+            ? `Demo database restored and ${removedCount} temporary upload${removedCount === 1 ? "" : "s"} cleaned`
+            : "Demo database restored to clean seed snapshot"
+        );
         return true;
       }
       return false;
