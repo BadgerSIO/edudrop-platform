@@ -45,7 +45,7 @@ const ManageUsers = async () => {
             Users & Access Management
           </h1>
           <p className="mt-1 text-xs text-text-muted">
-            Inspect all registered accounts, manage security access, toggle active status, and audit platform roles.
+            Inspect registered accounts, audit account status, manage credentials, and review platform roles.
           </p>
         </div>
       </div>

@@ -5,19 +5,23 @@ import BentoCard from "@/app/sharedComponents/ui/BentoCard";
 import React from "react";
 
 export const Contact = ({ propData }: { propData: ISchoolInfo }) => {
-  const { schoolName, bursar } = propData || {};
+  const { schoolName, bursar, school } = propData || {};
+
+  const fallbackSchoolBursar =
+    school && typeof school === "object" ? (school as any).bursar : undefined;
+  const resolvedBursar = bursar || fallbackSchoolBursar;
 
   // Safely resolve the bursar string ID
   const bursarId =
-    typeof bursar === "object"
-      ? bursar?._id || bursar?.id || ""
-      : typeof bursar === "string"
-      ? bursar
+    typeof resolvedBursar === "object"
+      ? resolvedBursar?._id || resolvedBursar?.id || ""
+      : typeof resolvedBursar === "string"
+      ? resolvedBursar
       : "";
 
   const bursarName =
-    typeof bursar === "object" && bursar?.name
-      ? `${bursar.name.firstName || ""} ${bursar.name.lastName || ""}`.trim()
+    typeof resolvedBursar === "object" && resolvedBursar?.name
+      ? `${resolvedBursar.name.firstName || ""} ${resolvedBursar.name.lastName || ""}`.trim()
       : "the Campus Bursar";
 
   return (
@@ -41,7 +45,7 @@ export const Contact = ({ propData }: { propData: ISchoolInfo }) => {
       </div>
 
       <div className="mt-8 border-t border-border-subtle/70 pt-8">
-        <ContactForm id={bursarId} />
+        <ContactForm id={bursarId} target="bursar" />
       </div>
     </BentoCard>
   );

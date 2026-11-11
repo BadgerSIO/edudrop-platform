@@ -16,6 +16,7 @@ import { SchoolInfo } from "../schoolInfo/schoolInfo.model";
 import { slugify } from "../../../helper/slugify";
 import { senderMail, transport } from "../../../config/nodemailer";
 import emailTemplate from "../../../shared/emailTemplate";
+import { NotificationService } from "../notification/notification.services";
 
 const generateUniqueSchoolSlug = async (
   baseName: string,
@@ -324,11 +325,21 @@ const updateSchoolStatus = async (
     { $set: { active: newActive, enabled: newActive } }
   );
 
-  // Send status email notification asynchronously
+  // Send status email & in-app notification asynchronously
   if (existingSchool.bursar) {
-    User.findOne({ bursar: existingSchool.bursar }, { email: 1 })
+    User.findOne({ bursar: existingSchool.bursar }, { _id: 1, email: 1 })
       .lean()
       .then((findUser) => {
+        if (findUser?._id) {
+          NotificationService.createNotificationSafe({
+            user: findUser._id,
+            message: `${updatedSchool?.name || existingSchool.name} portal ${
+              newActive ? "activated" : "paused"
+            } by Admin`,
+            link: "/bursar-dashboard/school-profile",
+            read: false,
+          }).catch(console.error);
+        }
         if (findUser?.email) {
           transport
             .sendMail({

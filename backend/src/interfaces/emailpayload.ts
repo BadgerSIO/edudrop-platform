@@ -5,6 +5,7 @@ type IEmailPayload = {
   lastName?: string;
   email?: string;
   phone?: string;
+  topic?: string;
   message?: string;
   username?: string;
   password?: string;

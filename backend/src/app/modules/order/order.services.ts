@@ -16,12 +16,42 @@ import { senderMail, transport } from "../../../config/nodemailer";
 import emailTemplate from "../../../shared/emailTemplate";
 import { INotification } from "../notification/notification.interface";
 import { School } from "../school/school.model";
-import { Notification } from "../notification/notification.model";
+import { NotificationService } from "../notification/notification.services";
 import { Product } from "../product/product.model";
 import crypto from "crypto";
 import generateOrderID from "../../../helper/generateOrderId";
 
-const createOrder = async (payload: IOrder): Promise<IOrder | null> => {
+const escapeRegex = (value: string) =>
+  value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+const buildOrderIdentifierQuery = (idOrCode: string) => {
+  const trimmed = String(idOrCode || "").trim();
+  if (mongoose.Types.ObjectId.isValid(trimmed)) {
+    return {
+      $or: [{ _id: trimmed }, { orderId: trimmed }],
+    };
+  }
+  return {
+    orderId: { $regex: `^${escapeRegex(trimmed)}$`, $options: "i" },
+  };
+};
+
+const createOrder = async (
+  payload: IOrder,
+  currentUser?: Partial<IUser> | null
+): Promise<IOrder | null> => {
+  if (currentUser && currentUser.role !== "donar") {
+    throw new ApiError(
+      httpStatus.FORBIDDEN,
+      "School Bursar and Platform Admin accounts cannot place sponsorship orders. Please sign out and continue as a Donor or Guest."
+    );
+  }
+
+  payload.email = String(payload.email || "").trim().toLowerCase();
+  payload.orderId = payload.orderId
+    ? String(payload.orderId).trim()
+    : generateOrderID();
+
   // Idempotency check: if an order with this orderId or transactionId already exists, return it
   if (payload.orderId) {
     const existingOrder = await Order.findOne({ orderId: payload.orderId });
@@ -79,15 +109,24 @@ const createOrder = async (payload: IOrder): Promise<IOrder | null> => {
 
     let newAccountCredentials: { email: string; password: string } | null = null;
 
-    // Fetch the donor and user by email to prevent duplicate registration
+    // Fetch the donor and user by email (case-insensitive) to prevent duplicate registration
+    // and protect non-donor staff accounts from silent hybrid corruption
+    const emailMatcher = {
+      email: { $regex: `^${escapeRegex(payload.email)}$`, $options: "i" },
+    };
+
+    const existingUser = await User.findOne(emailMatcher).session(session);
+    if (existingUser && existingUser.role !== "donar") {
+      throw new ApiError(
+        httpStatus.FORBIDDEN,
+        "This email belongs to a School Bursar or Platform Admin account and cannot be used for sponsorship checkout. Please sign out and use a Donor email address."
+      );
+    }
+
     let donor = await Donar.findOne(
-      { email: payload.email },
+      emailMatcher,
       { totalDonationAmount: 1 }
     ).session(session);
-
-    const existingUser = await User.findOne({ email: payload.email }).session(
-      session
-    );
 
     if (donor) {
       // Increment the donor's totalDonationAmount by the order's totalAmount
@@ -167,7 +206,12 @@ const createOrder = async (payload: IOrder): Promise<IOrder | null> => {
     const result = await Order.create([payload], { session });
     await session.commitTransaction();
     session.endSession();
-    const orderDoc: Record<string, any> = result[0].toObject();
+
+    const populated = await Order.findById(result[0]._id).populate(
+      "schoolId",
+      "name contactNo address"
+    );
+    const orderDoc: Record<string, any> = (populated || result[0]).toObject();
     if (newAccountCredentials) {
       orderDoc.newAccountCredentials = newAccountCredentials;
     }
@@ -176,11 +220,14 @@ const createOrder = async (payload: IOrder): Promise<IOrder | null> => {
     await session.abortTransaction();
     session.endSession();
 
-    // If an error occurred (e.g. concurrent race condition / WriteConflict), check if the order was created by the concurrent request
-    if (payload.orderId) {
+    // If a transient concurrency error occurred, check if the order was created by a concurrent request
+    if (!(error instanceof ApiError) && payload.orderId) {
       for (let attempt = 0; attempt < 5; attempt++) {
         await new Promise((resolve) => setTimeout(resolve, 300));
-        const existingOrder = await Order.findOne({ orderId: payload.orderId });
+        const existingOrder = await Order.findOne({ orderId: payload.orderId }).populate(
+          "schoolId",
+          "name contactNo address"
+        );
         if (existingOrder) {
           return existingOrder;
         }
@@ -349,11 +396,61 @@ const getAllBursarOrder = async (
     data: result,
   };
 };
-const getSingleOrderById = async (id: string): Promise<IOrder | null> => {
-  const result = await Order.findById(id).populate({
+const getSingleOrderById = async (
+  id: string,
+  currentUser?: Partial<IUser> | null
+): Promise<IOrder | null> => {
+  const result = await Order.findOne(buildOrderIdentifierQuery(id)).populate({
     path: "schoolId",
     select: "name contactNo address",
   });
+
+  if (!result) {
+    throw new ApiError(httpStatus.NOT_FOUND, "Order not found");
+  }
+
+  if (currentUser && currentUser.role !== "admin") {
+    if (currentUser.role === "donar") {
+      const ownsByEmail =
+        result.email?.toLowerCase() === currentUser.email?.toLowerCase();
+      const ownsByDonorId =
+        currentUser.donar &&
+        result.user &&
+        String(result.user) === String(currentUser.donar);
+
+      if (!ownsByEmail && !ownsByDonorId) {
+        throw new ApiError(
+          httpStatus.FORBIDDEN,
+          "Forbidden: You do not have access to this order"
+        );
+      }
+    } else if (currentUser.role === "bursar") {
+      const bursar = await Bursar.findOne({ email: currentUser.email })
+        .select("school")
+        .lean();
+      const orderSchoolId =
+        typeof result.schoolId === "object" && result.schoolId !== null
+          ? (result.schoolId as any)._id
+          : result.schoolId;
+
+      if (
+        !bursar?.school ||
+        !orderSchoolId ||
+        String(bursar.school) !== String(orderSchoolId)
+      ) {
+        throw new ApiError(
+          httpStatus.FORBIDDEN,
+          "Forbidden: This order is not assigned to your school"
+        );
+      }
+    } else {
+      throw new ApiError(
+        httpStatus.FORBIDDEN,
+        "Forbidden: Unauthorized role"
+      );
+    }
+  }
+
   return result;
 };
 
@@ -362,23 +459,34 @@ const updateOrderStatusById = async (
   email: string,
   payload: Partial<IOrder>
 ): Promise<IOrder | null> => {
-  const existingOrder = await Order.findOne({ _id: id })
-    .select("orderStatus payMonthly orderId")
+  const existingOrder = await Order.findOne(buildOrderIdentifierQuery(id))
+    .select("orderStatus payMonthly orderId schoolId")
     .lean();
 
   if (!existingOrder) {
-    throw new Error("Order not found");
+    throw new ApiError(httpStatus.NOT_FOUND, "Order not found");
   }
+
   const user = await User.findOne({ email }).select("role").lean();
-  if (
-    !user ||
-    (user.role !== "admin" && user.role !== "bursar") ||
-    (user.role === "bursar" &&
-      payload?.orderStatus !== "received" &&
-      existingOrder.orderStatus !== "on the way")
-  ) {
-    throw new ApiError(httpStatus.UNAUTHORIZED, "Unauthorized request");
+  if (!user || (user.role !== "admin" && user.role !== "bursar")) {
+    throw new ApiError(httpStatus.FORBIDDEN, "Forbidden: Unauthorized request");
   }
+
+  if (user.role === "bursar") {
+    const bursar = await Bursar.findOne({ email }).select("school").lean();
+    if (
+      !bursar?.school ||
+      String(bursar.school) !== String(existingOrder.schoolId) ||
+      payload?.orderStatus !== "received" ||
+      existingOrder.orderStatus !== "on the way"
+    ) {
+      throw new ApiError(
+        httpStatus.FORBIDDEN,
+        "Forbidden: Bursars can only confirm delivery received on their own school's in-transit orders"
+      );
+    }
+  }
+
   let payMonthly = existingOrder.payMonthly;
 
   if (payMonthly === "yes" && payload.orderStatus === "received") {
@@ -430,84 +538,89 @@ const updateOrderStatusById = async (
   }
 
   const result = await Order.findOneAndUpdate(
-    { _id: id },
+    { _id: existingOrder._id },
     { orderStatus: payload?.orderStatus },
     {
       new: true,
       runValidators: true,
     }
   );
-  //notification
+  // Non-blocking order status notifications & email
   if (result) {
-    const findDonar = await User.findOne(
-      { donar: result.user },
-      { _id: 1 }
-    ).lean();
-    if (!findDonar) {
-      throw new ApiError(httpStatus.NOT_FOUND, "User not found Noti");
-    }
-    let notificationPayloadDonar: INotification = {
-      user: findDonar?._id,
-      message: `Order Status changed to ${payload.orderStatus}`,
-      link: `/donar-dashboard/my-orders/${result?._id}`,
-      read: false,
-    };
-    const notifyDonar = await Notification.create(notificationPayloadDonar);
-    let getEmail;
-    if (user.role === "admin") {
-      const findBursar = await School.findById(
-        { _id: result.schoolId },
-        { bursar: 1 }
-      ).lean();
-      const findBursarUser = await User.findOne(
-        { bursar: findBursar?.bursar },
-        {
-          _id: 1,
-          email: 1,
+    try {
+      const orderLabel = result.orderId || String(result._id).slice(-6);
+      const routeKey = result.orderId || String(result._id);
+      const findDonar = result.user
+        ? await User.findOne({ donar: result.user }, { _id: 1 }).lean()
+        : null;
+
+      if (findDonar?._id) {
+        await NotificationService.createNotificationSafe({
+          user: findDonar._id,
+          message: `Order ${orderLabel} status changed to ${payload.orderStatus}`,
+          link: `/donar-dashboard/my-orders/${routeKey}`,
+          read: false,
+        });
+      }
+
+      let counterpartyEmail: string | undefined;
+      if (user.role === "admin") {
+        const findSchool = result.schoolId
+          ? await School.findById(result.schoolId, { bursar: 1 }).lean()
+          : null;
+        const findBursarUser = findSchool?.bursar
+          ? await User.findOne(
+              { bursar: findSchool.bursar },
+              { _id: 1, email: 1 }
+            ).lean()
+          : null;
+
+        if (findBursarUser?._id) {
+          counterpartyEmail = findBursarUser.email;
+          await NotificationService.createNotificationSafe({
+            user: findBursarUser._id,
+            message: `Order ${orderLabel} status: ${payload.orderStatus}`,
+            link: `/bursar-dashboard/my-orders/${routeKey}`,
+            read: false,
+          });
         }
-      ).lean();
-
-      if (!findBursarUser) {
-        throw new ApiError(httpStatus.NOT_FOUND, "User not found Noti");
+      } else {
+        const findAdmin = await User.findOne(
+          { role: "admin" },
+          { _id: 1, email: 1 }
+        ).lean();
+        if (findAdmin?._id) {
+          counterpartyEmail = findAdmin.email;
+          await NotificationService.createNotificationSafe({
+            user: findAdmin._id,
+            message: `Order ${orderLabel} status changed to ${payload?.orderStatus}`,
+            link: `/dashboard/orders/${routeKey}`,
+            read: false,
+          });
+        }
       }
-      getEmail = findBursarUser?.email;
-      let notificationPayload: INotification = {
-        user: findBursarUser?._id,
-        message: `Order status ${payload.orderStatus}`,
-        link: `/bursar-dashboard/my-orders/${result?._id}`,
-        read: false,
-      };
 
-      const notifyBursar = await Notification.create(notificationPayload);
-    } else {
-      const findAdmin = await User.findOne(
-        { role: "admin" },
-        { _id: 1, email: 1 }
-      ).lean();
-      getEmail = findAdmin?.email;
-      if (!findAdmin) {
-        throw new ApiError(httpStatus.NOT_FOUND, "User not found Noti");
+      const mailRecipients = [counterpartyEmail, result.email].filter(
+        (addr): addr is string => Boolean(addr)
+      );
+      if (mailRecipients.length > 0) {
+        const emailPayload = {
+          orderId: result.orderId,
+          orderStatus: result.orderStatus,
+        };
+        await transport
+          .sendMail({
+            from: `${senderMail}`,
+            to: mailRecipients,
+            subject: "Order status changed",
+            text: "Order status changed",
+            html: emailTemplate("orderStatus", emailPayload),
+          })
+          .catch(console.error);
       }
-      let notificationPayloadAdmin: INotification = {
-        user: findAdmin?._id,
-        message: `Order status changed to ${payload?.orderStatus}`,
-        link: `/dashboard/orders/${result?._id}`,
-        read: false,
-      };
-      const notifyAdmin = await Notification.create(notificationPayloadAdmin);
+    } catch (notifyErr) {
+      console.error("Non-critical order status notification error:", notifyErr);
     }
-
-    let emailPayload = {
-      orderId: result?.orderId,
-      orderStatus: result?.orderStatus,
-    };
-    const info = await transport.sendMail({
-      from: `${senderMail}`, // sender address
-      to: [getEmail as string, result?.email], // list of receivers
-      subject: "Order status changed", // Subject line
-      text: "Order status changed", // plain text body
-      html: emailTemplate("orderStatus", emailPayload),
-    });
   }
 
   return result;
@@ -517,53 +630,86 @@ const updateOrderPaymentById = async (
   email: string,
   payload: Partial<IOrder>
 ): Promise<IOrder | null> => {
-  const existingOrder = await Order.findOne({ _id: id })
-    .select("orderStatus payMonthly")
+  const existingOrder = await Order.findOne(buildOrderIdentifierQuery(id))
+    .select("orderStatus payMonthly email orderId")
     .lean();
   if (!existingOrder) {
-    throw new Error("Order not found");
+    throw new ApiError(httpStatus.NOT_FOUND, "Order not found");
   }
-  const user = await User.findOne({ email }).select("role").lean();
-  if (!user) {
-    throw new ApiError(httpStatus.UNAUTHORIZED, "Unauthorized request 3");
+  const user = await User.findOne({ email }).select("role email").lean();
+  if (
+    !user ||
+    (user.role !== "admin" &&
+      !(
+        user.role === "donar" &&
+        existingOrder.email?.toLowerCase() === user.email?.toLowerCase()
+      ))
+  ) {
+    throw new ApiError(
+      httpStatus.FORBIDDEN,
+      "Forbidden: Only the owning donor or an admin can update order payment"
+    );
   }
 
-  const result = await Order.findOneAndUpdate({ _id: id }, payload, {
-    new: true,
-    runValidators: true,
-  });
-  if (result) {
-    const findAdmin = await User.findOne(
-      { role: "admin" },
-      { _id: 1, email: 1 }
-    ).lean();
-    if (!findAdmin) {
-      throw new ApiError(httpStatus.NOT_FOUND, "User not found Noti");
+  const updateFields: Partial<IOrder> = {};
+  if (payload.card !== undefined) updateFields.card = payload.card;
+  if (payload.transactionId !== undefined)
+    updateFields.transactionId = payload.transactionId;
+  if (payload.paymentStatus !== undefined)
+    updateFields.paymentStatus = payload.paymentStatus;
+  if (payload.orderId && !existingOrder.orderId)
+    updateFields.orderId = payload.orderId;
+
+  const result = await Order.findOneAndUpdate(
+    { _id: existingOrder._id },
+    updateFields,
+    {
+      new: true,
+      runValidators: true,
     }
-    let notificationPayloadAdmin: INotification = {
-      user: findAdmin?._id,
-      message: `Payment made for order`,
-      link: `/dashboard/orders/${result?._id}`,
-      read: false,
-    };
-    const notifyAdmin = await Notification.create(notificationPayloadAdmin);
-    let emailPayload = {
-      orderId: result?.orderId,
-      paymentStatus: result?.paymentStatus,
-    };
-    const info = await transport.sendMail({
-      from: `${senderMail}`, // sender address
-      to: findAdmin?.email, // list of receivers
-      subject: "Payment status changed", // Subject line
-      text: "Payment status changed", // plain text body
-      html: emailTemplate("paymentStatus", emailPayload),
-    });
+  ).populate("schoolId", "name contactNo address");
+  if (result) {
+    try {
+      const orderLabel = result.orderId || String(result._id).slice(-6);
+      const routeKey = result.orderId || String(result._id);
+      const findAdmin = await User.findOne(
+        { role: "admin" },
+        { _id: 1, email: 1 }
+      ).lean();
+
+      if (findAdmin?._id) {
+        await NotificationService.createNotificationSafe({
+          user: findAdmin._id,
+          message: `Payment received for order ${orderLabel}`,
+          link: `/dashboard/orders/${routeKey}`,
+          read: false,
+        });
+      }
+
+      if (findAdmin?.email) {
+        const emailPayload = {
+          orderId: result.orderId,
+          paymentStatus: result.paymentStatus,
+        };
+        await transport
+          .sendMail({
+            from: `${senderMail}`,
+            to: findAdmin.email,
+            subject: "Payment status changed",
+            text: "Payment status changed",
+            html: emailTemplate("paymentStatus", emailPayload),
+          })
+          .catch(console.error);
+      }
+    } catch (notifyErr) {
+      console.error("Non-critical payment notification error:", notifyErr);
+    }
   }
   return result;
 };
 
 const deleteOrderById = async (id: string): Promise<IOrder | null> => {
-  const result = await Order.findByIdAndDelete(id);
+  const result = await Order.findOneAndDelete(buildOrderIdentifierQuery(id));
   return result as unknown as IOrder | null; // Explicitly cast to IOrder or null
 };
 

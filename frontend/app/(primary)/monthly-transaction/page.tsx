@@ -9,13 +9,15 @@ import toast from "react-hot-toast";
 import BentoCard from "@/app/sharedComponents/ui/BentoCard";
 import ActionPillButton from "@/app/sharedComponents/ui/ActionPillButton";
 import EduDropLoader from "@/app/sharedComponents/Loders/EduDropLoader";
+import { IOrder } from "@/app/types/Order";
+import { generateOrderInvoice } from "@/app/utility/generateOrderInvoice";
 import {
   CheckCircle2,
+  Download,
   XCircle,
   Repeat,
   Calendar,
   Hash,
-  ArrowRight,
 } from "lucide-react";
 
 const MonthlyTransactionContent = () => {
@@ -23,6 +25,7 @@ const MonthlyTransactionContent = () => {
   const searchParams = useSearchParams();
   const [executed, setExecuted] = useState(false);
   const [updating, setUpdating] = useState(false);
+  const [renewedOrder, setRenewedOrder] = useState<IOrder | null>(null);
 
   let payloadId: any = null;
   try {
@@ -70,6 +73,9 @@ const MonthlyTransactionContent = () => {
         );
 
         if (response.status === 200) {
+          if (response.data?.data) {
+            setRenewedOrder(response.data.data);
+          }
           await deleteCookie("paymentIntent");
           await handleRevalidation("orderInfo");
           await handleRevalidation("orderCollection");
@@ -158,13 +164,32 @@ const MonthlyTransactionContent = () => {
 
           {/* Actions */}
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+            {isSuccess && renewedOrder && (
+              <button
+                type="button"
+                onClick={() =>
+                  generateOrderInvoice(
+                    { ...renewedOrder, paymentStatus: true },
+                    { audience: "donor" }
+                  )
+                }
+                disabled={updating}
+                className="inline-flex items-center gap-2 rounded-full bg-surface-forest px-5 py-2.5 text-xs font-bold text-white shadow-sm transition-all hover:bg-surface-forest-light active:scale-[0.98] disabled:opacity-60"
+              >
+                <Download className="h-3.5 w-3.5 text-brand-lime" />
+                Download PDF Receipt
+              </button>
+            )}
             <ActionPillButton
               variant="lime"
-              href="/donar-dashboard/my-orders"
+              href={
+                orderId && orderId !== "N/A"
+                  ? `/donar-dashboard/my-orders/${orderId}`
+                  : "/donar-dashboard/my-orders"
+              }
               size="md"
             >
-              Donor Dashboard
-              <ArrowRight className="h-4 w-4 ml-1" />
+              View Order in Dashboard
             </ActionPillButton>
             <ActionPillButton
               variant="outline-dark"

@@ -27,17 +27,22 @@ export async function getDonarOrders(
     }
   }
 
-  const res = await fetch(url, {
-    headers: {
-      Authorization: `Bearer ${jwt}`,
-    },
-    next: { tags: ["orderCollection"] },
-  });
+  try {
+    const res = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+      },
+      next: { tags: ["orderCollection"] },
+      cache: "no-store",
+    });
 
-  if (!res.ok) {
-    throw new Error("Failed to fetch data");
+    if (!res.ok) {
+      return { data: [] };
+    }
+    return res.json();
+  } catch {
+    return { data: [] };
   }
-  return res.json();
 }
 const MyOrderTable = async () => {
   const all = await getDonarOrders({}, "createdAt", "desc");

@@ -27,7 +27,12 @@ async function getBursarInboxList() {
 
 const SidebarWrapper = async () => {
   const data = await getBursarInboxList();
-  return <Sidebar propdata={data?.data} />;
+  return (
+    <Sidebar
+      propdata={data?.data}
+      unreadCount={data?.additionalData?.unreadCount}
+    />
+  );
 };
 
 export default SidebarWrapper;

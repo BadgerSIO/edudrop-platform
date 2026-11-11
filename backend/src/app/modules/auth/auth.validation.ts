@@ -49,8 +49,19 @@ const changePasswordZodSchema = z.object({
       path: ["newPassword"],
     }),
 });
+const ownerUnlockZodSchema = z.object({
+  body: z.object({
+    passkey: z
+      .string({
+        required_error: "Owner passkey is required",
+      })
+      .min(1, "Owner passkey is required"),
+  }),
+});
+
 export const AuthValidation = {
   loginZodSchema,
   signupZodSchema,
   changePasswordZodSchema,
+  ownerUnlockZodSchema,
 };

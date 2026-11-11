@@ -1,100 +1,107 @@
 import multer from "multer";
 import path from "path";
-import fs from "fs";
+import { Request, RequestHandler } from "express";
 import ApiError from "../../error/ApiError";
 import httpStatus from "http-status";
+import { processUploadedImages } from "./imageProcessor";
 
-const ALLOWED_MIME_TYPES = [
+const ALLOWED_MIME_TYPES = new Set([
   "image/jpeg",
   "image/png",
   "image/webp",
   "image/avif",
-  "image/svg+xml",
-];
+]);
 
-const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
+const ALLOWED_EXTENSIONS = new Set([".jpg", ".jpeg", ".png", ".webp", ".avif"]);
 
-const ensureDirectoryExists = (dirPath: string) => {
-  if (!fs.existsSync(dirPath)) {
-    fs.mkdirSync(dirPath, { recursive: true });
-  }
-};
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB raw upload cap (re-encoded to lightweight WebP)
+const ALLOWED_SCHOOL_MULTI_FIELD =
+  /^(schoolLogo|featuredImage|heroBackgroundImage|sectionOneImage|gallery(\[\d+\].*)?)$/;
 
-const sanitizeFileName = (originalName: string) => {
-  const ext = path.extname(originalName).toLowerCase();
-  const baseName = path
-    .basename(originalName, ext)
-    .replace(/[^a-zA-Z0-9-_]/g, "-")
-    .replace(/-+/g, "-")
-    .slice(0, 50);
-  const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-  return `${uniqueSuffix}-${baseName || "upload"}${ext}`;
-};
+const memoryStorage = multer.memoryStorage();
 
-const generateStorage = (destination: string) =>
-  multer.diskStorage({
-    destination: function (req, file, cb) {
-      const uploadPath = path.join(__dirname, `../../../uploads/${destination}`);
-      ensureDirectoryExists(uploadPath);
-      cb(null, uploadPath);
-    },
-    filename: function (req, file, cb) {
-      cb(null, sanitizeFileName(file.originalname));
-    },
-  });
+const createImageFileFilter = (allowedFieldPattern?: RegExp) => {
+  return (
+    _req: Request,
+    file: Express.Multer.File,
+    cb: multer.FileFilterCallback
+  ) => {
+    if (allowedFieldPattern && !allowedFieldPattern.test(file.fieldname)) {
+      return cb(
+        new ApiError(
+          httpStatus.BAD_REQUEST,
+          `Unexpected upload field: ${file.fieldname}`
+        )
+      );
+    }
 
-const fileFilter = (
-  req: any,
-  file: Express.Multer.File,
-  cb: multer.FileFilterCallback
-) => {
-  if (ALLOWED_MIME_TYPES.includes(file.mimetype)) {
-    cb(null, true);
-  } else {
-    cb(
+    const ext = path.extname(file.originalname || "").toLowerCase();
+    const mimeAllowed = ALLOWED_MIME_TYPES.has(file.mimetype);
+    const extAllowed = ext === "" || ALLOWED_EXTENSIONS.has(ext);
+
+    if (mimeAllowed && extAllowed) {
+      return cb(null, true);
+    }
+
+    return cb(
       new ApiError(
         httpStatus.BAD_REQUEST,
-        `Unsupported file format: ${file.mimetype}. Allowed: WebP, PNG, JPEG, AVIF, SVG`
+        `Unsupported file format (${file.mimetype || ext}). Allowed formats: JPEG, PNG, WebP, AVIF.`
       )
     );
-  }
+  };
 };
 
-// Storage configurations
-const schoolImageStorage = generateStorage("school");
-const productImageStorage = generateStorage("products");
-const usersImageStorage = generateStorage("users");
-const cmsImageStorage = generateStorage("cms");
+const usersImageUpload: RequestHandler[] = [
+  multer({
+    storage: memoryStorage,
+    limits: { fileSize: MAX_FILE_SIZE, files: 1 },
+    fileFilter: createImageFileFilter(),
+  }).single("profileImage"),
+  processUploadedImages("avatar"),
+];
 
-const usersImageUpload = multer({
-  storage: usersImageStorage,
-  limits: { fileSize: MAX_FILE_SIZE },
-  fileFilter,
-}).single("profileImage");
+const productUpload: RequestHandler[] = [
+  multer({
+    storage: memoryStorage,
+    limits: { fileSize: MAX_FILE_SIZE, files: 1 },
+    fileFilter: createImageFileFilter(),
+  }).single("productImage"),
+  processUploadedImages("product"),
+];
 
-const productUpload = multer({
-  storage: productImageStorage,
-  limits: { fileSize: MAX_FILE_SIZE },
-  fileFilter,
-}).single("productImage");
+const schoolImageUpload: RequestHandler[] = [
+  multer({
+    storage: memoryStorage,
+    limits: { fileSize: MAX_FILE_SIZE, files: 12 },
+    fileFilter: createImageFileFilter(ALLOWED_SCHOOL_MULTI_FIELD),
+  }).any(),
+  processUploadedImages((_req, file) =>
+    file.fieldname === "schoolLogo" ? "schoolLogo" : "schoolMedia"
+  ),
+];
 
-const schoolImageUpload = multer({
-  storage: schoolImageStorage,
-  limits: { fileSize: MAX_FILE_SIZE },
-  fileFilter,
-}).any();
+const schoolSingleUpload: RequestHandler[] = [
+  multer({
+    storage: memoryStorage,
+    limits: { fileSize: MAX_FILE_SIZE, files: 1 },
+    fileFilter: createImageFileFilter(),
+  }).single("image"),
+  processUploadedImages((req) =>
+    req.body?.type === "logo" || req.query?.type === "logo"
+      ? "schoolLogo"
+      : "schoolMedia"
+  ),
+];
 
-const schoolSingleUpload = multer({
-  storage: schoolImageStorage,
-  limits: { fileSize: MAX_FILE_SIZE },
-  fileFilter,
-}).single("image");
-
-const cmsImageUpload = multer({
-  storage: cmsImageStorage,
-  limits: { fileSize: MAX_FILE_SIZE },
-  fileFilter,
-}).single("image");
+const cmsImageUpload: RequestHandler[] = [
+  multer({
+    storage: memoryStorage,
+    limits: { fileSize: MAX_FILE_SIZE, files: 1 },
+    fileFilter: createImageFileFilter(),
+  }).single("image"),
+  processUploadedImages("cms"),
+];
 
 export {
   schoolImageUpload,

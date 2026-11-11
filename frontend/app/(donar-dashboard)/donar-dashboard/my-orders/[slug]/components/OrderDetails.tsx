@@ -5,9 +5,11 @@ import ProductCardCheckout from "@/app/(primary)/checkout/components/ProductCard
 import makePayment from "@/app/utility/makePayment";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-import { CreditCard, ShieldCheck } from "lucide-react";
+import { CreditCard, Download, ShieldCheck } from "lucide-react";
 import { ActionPillButton } from "@/app/sharedComponents/ui/ActionPillButton";
 import OrderTimeline from "@/app/sharedComponents/OrderTimeline";
+import OrderReferenceHeader from "@/app/sharedComponents/OrderReferenceHeader";
+import { generateOrderInvoice } from "@/app/utility/generateOrderInvoice";
 
 const OrderDetails = ({ order }: { order: IOrder }) => {
   const router = useRouter();
@@ -34,6 +36,8 @@ const OrderDetails = ({ order }: { order: IOrder }) => {
 
   return (
     <div className="space-y-6">
+      <OrderReferenceHeader order={order} audience="donor" />
+
       {/* Payment Banner / Action Card */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-2xl border border-border-subtle bg-white p-5 sm:p-6 shadow-bento">
         <div className="flex items-center gap-3">
@@ -64,7 +68,16 @@ const OrderDetails = ({ order }: { order: IOrder }) => {
           </div>
         </div>
 
-        {!order?.paymentStatus && (
+        {order?.paymentStatus ? (
+          <button
+            type="button"
+            onClick={() => generateOrderInvoice(order, { audience: "donor" })}
+            className="inline-flex items-center gap-2 rounded-full bg-surface-forest px-5 py-2.5 text-xs font-bold text-white shadow-sm transition-all hover:bg-surface-forest-light active:scale-[0.98]"
+          >
+            <Download className="h-4 w-4 text-brand-lime" />
+            Download Invoice
+          </button>
+        ) : (
           <ActionPillButton onClick={handlePayment} variant="lime" size="sm">
             Complete Payment Now
           </ActionPillButton>

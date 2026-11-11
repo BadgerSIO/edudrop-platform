@@ -1,6 +1,5 @@
 "use client";
 import React, { useEffect } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import NavLink from "./NavLink";
 import UserMenu from "./UserMenu";
@@ -10,13 +9,15 @@ import { Menu, ShoppingBag, X, LogIn } from "lucide-react";
 import { useAuthContext } from "../context/AuthContext";
 import { useNavbarContext } from "../context/NavContext";
 import ActionPillButton from "./ui/ActionPillButton";
+import { isStaffRole } from "./RoleCheckoutGuard";
 import { cn } from "@/lib/utils";
+import BrandLogo from "./ui/BrandLogo";
 
 const navItems = [
   { href: "/", text: "Home" },
   { href: "/schools", text: "Schools" },
   { href: "/products", text: "Products" },
-  { href: "/#contact", text: "Contact" },
+  { href: "/contact", text: "Contact" },
 ];
 
 export const Navbar = () => {
@@ -65,7 +66,11 @@ export const Navbar = () => {
 
   useEffect(() => {
     setIsOpen(false);
-  }, [pathname, setIsOpen]);
+    const frameId = requestAnimationFrame(() => {
+      setIsScrolling(window.scrollY > 30);
+    });
+    return () => cancelAnimationFrame(frameId);
+  }, [pathname, setIsOpen, setIsScrolling]);
 
   return (
     <>
@@ -84,16 +89,7 @@ export const Navbar = () => {
             aria-label="EduDrop Foundation Home"
             className="flex items-center gap-3 transition-opacity hover:opacity-90"
           >
-            <div className="rounded-full bg-white px-3.5 py-1.5 shadow-sm">
-              <Image
-                width={86}
-                height={36}
-                src="/logo.webp"
-                alt="EduDrop Foundation logo"
-                priority
-                className="h-7 w-auto object-contain"
-              />
-            </div>
+            <BrandLogo variant="on-dark" size="sm" />
           </Link>
 
           {/* Desktop Primary Navigation Links */}
@@ -107,20 +103,22 @@ export const Navbar = () => {
 
           {/* Right Action Cluster */}
           <div className="flex items-center gap-3">
-            {/* Cart Trigger */}
-            <button
-              type="button"
-              onClick={() => setIsCartOpen(true)}
-              aria-label={`Open shopping cart (${distinctProductCount} items)`}
-              className="relative flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/10 text-white transition-all hover:bg-white/20 hover:border-white/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-lime cursor-pointer"
-            >
-              <ShoppingBag className="h-5 w-5" />
-              {distinctProductCount > 0 && (
-                <span className="absolute -right-1.5 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-brand-lime text-xs font-bold text-surface-forest shadow-sm animate-in zoom-in-50 duration-200">
-                  {distinctProductCount}
-                </span>
-              )}
-            </button>
+            {/* Cart Trigger (hidden for Bursar/Admin unless stale items remain in local cart) */}
+            {(!isStaffRole(data?.role) || distinctProductCount > 0) && (
+              <button
+                type="button"
+                onClick={() => setIsCartOpen(true)}
+                aria-label={`Open shopping cart (${distinctProductCount} items)`}
+                className="relative flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/10 text-white transition-all hover:bg-white/20 hover:border-white/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-lime cursor-pointer"
+              >
+                <ShoppingBag className="h-5 w-5" />
+                {distinctProductCount > 0 && (
+                  <span className="absolute -right-1.5 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-brand-lime text-xs font-bold text-surface-forest shadow-sm animate-in zoom-in-50 duration-200">
+                    {distinctProductCount}
+                  </span>
+                )}
+              </button>
+            )}
 
             {/* User Account / Profile Menu or Sign In */}
             {loading ? (
@@ -180,13 +178,13 @@ export const Navbar = () => {
           >
             {/* Drawer Header */}
             <div className="flex items-center justify-between border-b border-border-subtle pb-4">
-              <Image
-                width={80}
-                height={32}
-                src="/logo.webp"
-                alt="EduDrop Foundation"
-                className="h-6 w-auto object-contain"
-              />
+              <Link
+                href="/"
+                onClick={() => setIsOpen(false)}
+                aria-label="EduDrop Foundation Home"
+              >
+                <BrandLogo variant="on-light" size="sm" showTagline />
+              </Link>
               <button
                 type="button"
                 onClick={() => setIsOpen(false)}

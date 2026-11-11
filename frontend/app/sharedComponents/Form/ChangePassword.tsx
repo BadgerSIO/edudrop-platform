@@ -72,7 +72,7 @@ const ChangePassword = ({ role: _role }: { role?: string }) => {
   return (
     <section
       id="changePass"
-      className="rounded-3xl border border-border-subtle bg-white p-6 sm:p-8 shadow-bento"
+      className="scroll-mt-24 rounded-3xl border border-border-subtle bg-white p-6 sm:p-8 shadow-bento"
     >
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border-subtle/70 pb-5">

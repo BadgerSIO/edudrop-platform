@@ -6,6 +6,7 @@ export type ISubmissions = {
   lastName: string;
   email: string;
   phone?: string;
+  topic?: string;
   message: string;
   seen: boolean;
   status?: "unread" | "read" | "replied" | "archived";
@@ -24,6 +25,7 @@ export type ISubmissionsFilters = {
   lastName?: string;
   phone?: string;
   email?: string;
+  topic?: string;
   seen?: boolean | string;
   status?: string;
   isDeleted?: boolean | string;

@@ -9,6 +9,7 @@ import { useAuthContext } from "@/app/context/AuthContext";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import ActionPillButton from "@/app/sharedComponents/ui/ActionPillButton";
+import DemoCredentialsBox from "@/app/sharedComponents/Auth/DemoCredentialsBox";
 import {
   Mail,
   Lock,
@@ -54,6 +55,20 @@ const LoginForm = () => {
     setSubmitting(true);
     try {
       await signin({ email: data.email, password: data.password });
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleDemoSignIn = async (credentials: {
+    email: string;
+    password: string;
+  }) => {
+    setValue("email", credentials.email);
+    setValue("password", credentials.password);
+    setSubmitting(true);
+    try {
+      await signin(credentials);
     } finally {
       setSubmitting(false);
     }
@@ -187,6 +202,12 @@ const LoginForm = () => {
           </ActionPillButton>
         </div>
       </form>
+
+      <DemoCredentialsBox
+        role="donar"
+        onSelect={handleDemoSignIn}
+        disabled={submitting}
+      />
     </div>
   );
 };

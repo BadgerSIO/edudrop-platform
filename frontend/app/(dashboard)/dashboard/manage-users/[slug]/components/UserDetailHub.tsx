@@ -1,18 +1,13 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import {
-  User as UserIcon,
   Mail,
-  Phone,
-  MapPin,
   Calendar,
   Shield,
   GraduationCap,
-  HeartHandshake,
   KeyRound,
   Lock,
   ArrowLeft,
@@ -22,47 +17,59 @@ import {
   ExternalLink,
   Sparkles,
   CheckCircle2,
-  AlertCircle,
-  Copy,
+  Ban,
 } from "lucide-react";
 import { IUser } from "@/app/types/User";
-import { SERVERURL } from "@/lib/constants";
+import { handleBuildImage } from "@/app/utility/handleBuildImage";
 import { dateConverter } from "@/app/utility/dateConverter";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import CustomAlertDialouge from "@/app/sharedComponents/CustomAlertDialouge";
 import useUser from "@/app/hooks/useUser";
 import { generatePassword } from "@/app/utility/passwordGenerator";
 import toast from "react-hot-toast";
+import { AuthenticationContext } from "@/app/context/AuthContext";
+import StatusBadge from "@/app/sharedComponents/ui/StatusBadge";
+import StatusChangeDialog from "@/app/sharedComponents/ui/StatusChangeDialog";
+import {
+  getUserStatusDescriptor,
+  resolveAccountStatus,
+} from "@/app/utility/statusHelpers";
 
 interface UserDetailHubProps {
   user: IUser;
 }
 
 export default function UserDetailHub({ user }: UserDetailHubProps) {
-  const router = useRouter();
+  const { data: currentUser } = useContext(AuthenticationContext);
   const { handleUserStatus, handleResetPassword, handleDeleteUser, loadingUser } =
     useUser();
 
   const [activeTab, setActiveTab] = useState("profile");
   const [newPassword, setNewPassword] = useState("");
   const [resetting, setResetting] = useState(false);
+  const [statusModalOpen, setStatusModalOpen] = useState(false);
+
+  const isSelf = Boolean(
+    currentUser &&
+      (currentUser.email === user.email || currentUser._id === user._id)
+  );
+  const isProtectedAdmin = isSelf || user.role === "admin";
 
   const profile = user.profile;
   const firstName = profile?.name?.firstName || "";
   const lastName = profile?.name?.lastName || "";
   const fullName = `${firstName} ${lastName}`.trim() || user.email.split("@")[0];
   const image = profile?.profileImage;
-  const fullImageUrl = image
-    ? image.startsWith("http")
-      ? image
-      : `${SERVERURL}${image}`
-    : null;
+  const fullImageUrl = image ? handleBuildImage(image, "") || null : null;
 
   const initials =
     (firstName[0] || "") + (lastName[0] || "") ||
     user.email.substring(0, 2).toUpperCase();
 
-  const isActive = user.status === "active";
+  const resolvedStatus = resolveAccountStatus(user);
+  const statusDescriptor = getUserStatusDescriptor(resolvedStatus);
+  const isActive = resolvedStatus === "active";
+  const targetStatus: "active" | "suspended" = isActive ? "suspended" : "active";
 
   const handleGeneratePassword = () => {
     const pass = generatePassword();
@@ -101,6 +108,7 @@ export default function UserDetailHub({ user }: UserDetailHubProps) {
                     src={fullImageUrl}
                     alt={fullName}
                     fill
+                    sizes="56px"
                     className="object-cover"
                   />
                 ) : (
@@ -108,24 +116,23 @@ export default function UserDetailHub({ user }: UserDetailHubProps) {
                 )}
               </div>
               <div>
-                <div className="flex items-center gap-2">
+                <div className="flex flex-wrap items-center gap-2">
                   <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-text-ink">
                     {fullName}
                   </h1>
-                  <span
-                    className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-semibold ${
-                      isActive
-                        ? "border border-surface-forest/20 bg-surface-forest/10 text-surface-forest"
-                        : "border border-red-200 bg-red-50 text-red-700"
-                    }`}
-                  >
-                    <span
-                      className={`h-1.5 w-1.5 rounded-full ${
-                        isActive ? "bg-surface-forest" : "bg-red-500"
-                      }`}
-                    />
-                    {isActive ? "Active Account" : "Suspended"}
-                  </span>
+                  {isSelf && (
+                    <span className="rounded-md bg-surface-forest/10 px-2 py-0.5 text-xs font-semibold text-surface-forest">
+                      You
+                    </span>
+                  )}
+                  <StatusBadge
+                    label={
+                      resolvedStatus === "active"
+                        ? "Active Account"
+                        : statusDescriptor.label
+                    }
+                    tone={statusDescriptor.tone}
+                  />
                 </div>
                 <div className="flex flex-wrap items-center gap-4 text-xs text-text-muted mt-1">
                   <span className="flex items-center gap-1">
@@ -141,27 +148,67 @@ export default function UserDetailHub({ user }: UserDetailHubProps) {
           </div>
 
           <div className="flex flex-wrap items-center gap-2.5 self-start sm:self-auto">
-            <button
-              type="button"
-              onClick={() => handleUserStatus(user._id, user.status)}
-              disabled={loadingUser}
-              className={`rounded-xl px-3.5 py-2 text-xs font-semibold shadow-sm transition-all ${
-                isActive
-                  ? "border border-red-200 bg-red-50 text-red-700 hover:bg-red-100"
-                  : "border border-surface-forest/20 bg-surface-forest/10 text-surface-forest hover:bg-surface-forest/20"
-              }`}
-            >
-              {isActive ? "Suspend Account" : "Activate Account"}
-            </button>
+            {isProtectedAdmin ? (
+              <span className="inline-flex items-center gap-1.5 rounded-xl border border-border-subtle bg-surface-bento/40 px-3.5 py-2 text-xs font-semibold text-text-muted">
+                <Lock className="h-3.5 w-3.5" />
+                Protected Admin Account
+              </span>
+            ) : (
+              <>
+                <button
+                  type="button"
+                  onClick={() => setStatusModalOpen(true)}
+                  disabled={loadingUser}
+                  className={`inline-flex items-center gap-1.5 rounded-xl px-3.5 py-2 text-xs font-semibold shadow-sm transition-all ${
+                    isActive
+                      ? "border border-amber-200 bg-amber-50 text-amber-800 hover:bg-amber-100"
+                      : "border border-surface-forest/20 bg-surface-forest/10 text-surface-forest hover:bg-surface-forest/20"
+                  }`}
+                >
+                  {isActive ? (
+                    <Ban className="h-3.5 w-3.5" />
+                  ) : (
+                    <CheckCircle2 className="h-3.5 w-3.5" />
+                  )}
+                  <span>
+                    {isActive ? "Suspend Account..." : "Activate Account..."}
+                  </span>
+                </button>
 
-            <CustomAlertDialouge
-              triggerText="Archive Account"
-              triggerClass="rounded-xl border border-red-200 bg-white px-3.5 py-2 text-xs font-semibold text-red-600 shadow-sm hover:bg-red-50 transition-colors"
-              onConfirm={() => handleDeleteUser(user._id)}
-              alertDescription={`This will archive the account for ${user.email} and revoke login access while preserving historic orders and donor records.`}
-            />
+                <CustomAlertDialouge
+                  triggerText="Archive Account"
+                  triggerClass="rounded-xl border border-red-200 bg-white px-3.5 py-2 text-xs font-semibold text-red-600 shadow-sm hover:bg-red-50 transition-colors"
+                  onConfirm={() => handleDeleteUser(user._id)}
+                  alertDescription={`This will archive the account for ${user.email} and revoke login access while preserving historic orders and donor records.`}
+                />
+              </>
+            )}
           </div>
         </div>
+
+        <StatusChangeDialog
+          open={statusModalOpen}
+          onOpenChange={setStatusModalOpen}
+          title="Confirm Account Status Change"
+          entityName={fullName}
+          entitySubtitle={user.email}
+          entityMetaBadge={user.role === "donar" ? "Donor" : user.role}
+          currentStatus={statusDescriptor}
+          targetStatus={getUserStatusDescriptor(targetStatus)}
+          impactDescription={
+            targetStatus === "suspended"
+              ? "Suspending this account immediately revokes sign-in access across EduDrop. Past donations, receipts, and order histories remain preserved."
+              : "Activating this account immediately restores normal sign-in and portal permissions for this user."
+          }
+          confirmLabel={
+            targetStatus === "suspended"
+              ? "Confirm Suspension"
+              : "Restore Active Access"
+          }
+          confirmTone={targetStatus === "suspended" ? "amber" : "forest"}
+          loading={loadingUser}
+          onConfirm={() => handleUserStatus(user._id, targetStatus)}
+        />
 
         {/* Tabbed Navigation */}
         <div className="pt-4">
@@ -362,7 +409,7 @@ export default function UserDetailHub({ user }: UserDetailHubProps) {
                                 </td>
                                 <td className="p-3 text-right">
                                   <Link
-                                    href={`/dashboard/orders/${ord._id}`}
+                                    href={`/dashboard/orders/${ord.orderId || ord._id}`}
                                     className="inline-flex items-center gap-1 text-surface-forest hover:underline font-semibold"
                                   >
                                     <span>Inspect</span>
@@ -441,72 +488,88 @@ export default function UserDetailHub({ user }: UserDetailHubProps) {
 
             {/* TAB 3: Security & Credentials */}
             <TabsContent value="security" className="pt-6 space-y-6">
-              {/* Reset Password Card */}
-              <div className="rounded-xl border border-border-subtle bg-white p-6 shadow-sm space-y-4">
-                <div className="flex items-center gap-2 pb-3 border-b border-border-subtle">
-                  <KeyRound className="h-5 w-5 text-surface-forest" />
-                  <div>
-                    <h3 className="text-sm font-bold uppercase tracking-wider text-text-ink">
-                      Administrative Password Reset
+              {isProtectedAdmin ? (
+                <div className="rounded-xl border border-border-subtle bg-surface-bento/25 p-6 space-y-2">
+                  <div className="flex items-center gap-2 text-text-ink">
+                    <Lock className="h-4 w-4 text-surface-forest" />
+                    <h3 className="text-sm font-bold uppercase tracking-wider">
+                      Protected Administrative Account
                     </h3>
-                    <p className="text-xs text-text-muted">
-                      Assign a new secure password directly to this user account.
-                    </p>
                   </div>
+                  <p className="text-xs text-text-muted leading-relaxed">
+                    Administrative credentials, suspension controls, and account archiving are locked in the web dashboard to prevent accidental privilege loss or self-lockout.
+                  </p>
                 </div>
-
-                <form onSubmit={onResetPasswordSubmit} className="space-y-4 max-w-lg">
-                  <div>
-                    <div className="flex items-center justify-between mb-1.5">
-                      <label className="text-xs font-bold uppercase tracking-wider text-text-ink">
-                        New Password
-                      </label>
-                      <button
-                        type="button"
-                        onClick={handleGeneratePassword}
-                        className="inline-flex items-center gap-1 text-xs font-semibold text-surface-forest hover:underline"
-                      >
-                        <Sparkles className="h-3 w-3 text-brand-lime fill-brand-lime" />
-                        Generate Strong Password
-                      </button>
+              ) : (
+                <>
+                  {/* Reset Password Card */}
+                  <div className="rounded-xl border border-border-subtle bg-white p-6 shadow-sm space-y-4">
+                    <div className="flex items-center gap-2 pb-3 border-b border-border-subtle">
+                      <KeyRound className="h-5 w-5 text-surface-forest" />
+                      <div>
+                        <h3 className="text-sm font-bold uppercase tracking-wider text-text-ink">
+                          Administrative Password Reset
+                        </h3>
+                        <p className="text-xs text-text-muted">
+                          Assign a new secure password directly to this user account.
+                        </p>
+                      </div>
                     </div>
-                    <input
-                      type="text"
-                      value={newPassword}
-                      onChange={(e) => setNewPassword(e.target.value)}
-                      placeholder="Min. 8 characters"
-                      className="w-full rounded-xl border border-border-subtle bg-surface-bento/20 px-4 py-3 font-mono text-sm text-text-ink focus:border-surface-forest focus:bg-white focus:outline-none transition-all"
-                    />
+
+                    <form onSubmit={onResetPasswordSubmit} className="space-y-4 max-w-lg">
+                      <div>
+                        <div className="flex items-center justify-between mb-1.5">
+                          <label className="text-xs font-bold uppercase tracking-wider text-text-ink">
+                            New Password
+                          </label>
+                          <button
+                            type="button"
+                            onClick={handleGeneratePassword}
+                            className="inline-flex items-center gap-1 text-xs font-semibold text-surface-forest hover:underline"
+                          >
+                            <Sparkles className="h-3 w-3 text-brand-lime fill-brand-lime" />
+                            Generate Strong Password
+                          </button>
+                        </div>
+                        <input
+                          type="text"
+                          value={newPassword}
+                          onChange={(e) => setNewPassword(e.target.value)}
+                          placeholder="Min. 8 characters"
+                          className="w-full rounded-xl border border-border-subtle bg-surface-bento/20 px-4 py-3 font-mono text-sm text-text-ink focus:border-surface-forest focus:bg-white focus:outline-none transition-all"
+                        />
+                      </div>
+
+                      <button
+                        type="submit"
+                        disabled={resetting || newPassword.length < 8}
+                        className="inline-flex items-center gap-2 rounded-xl bg-surface-forest px-5 py-2.5 text-xs font-semibold text-white shadow hover:bg-surface-forest-light transition-all disabled:opacity-50"
+                      >
+                        <Lock className="h-3.5 w-3.5" />
+                        <span>{resetting ? "Applying..." : "Reset Account Password"}</span>
+                      </button>
+                    </form>
                   </div>
 
-                  <button
-                    type="submit"
-                    disabled={resetting || newPassword.length < 8}
-                    className="inline-flex items-center gap-2 rounded-xl bg-surface-forest px-5 py-2.5 text-xs font-semibold text-white shadow hover:bg-surface-forest-light transition-all disabled:opacity-50"
-                  >
-                    <Lock className="h-3.5 w-3.5" />
-                    <span>{resetting ? "Applying..." : "Reset Account Password"}</span>
-                  </button>
-                </form>
-              </div>
-
-              {/* Danger Zone: Archiving */}
-              <div className="rounded-xl border border-red-200 bg-red-50/40 p-6 shadow-sm space-y-3">
-                <h3 className="text-sm font-bold uppercase tracking-wider text-red-700">
-                  Account Lifecycle & Archiving
-                </h3>
-                <p className="text-xs text-red-600/90 leading-relaxed">
-                  Archiving an account revokes authentication access immediately. Historic donations, receipts, and order histories are safely preserved in compliance with audit standards.
-                </p>
-                <div className="pt-2">
-                  <CustomAlertDialouge
-                    triggerText="Archive User Account"
-                    triggerClass="rounded-xl bg-red-600 px-4 py-2 text-xs font-semibold text-white shadow hover:bg-red-700 transition-colors"
-                    onConfirm={() => handleDeleteUser(user._id)}
-                    alertDescription={`Are you sure you want to archive ${user.email}? This action can only be reversed by a database administrator.`}
-                  />
-                </div>
-              </div>
+                  {/* Danger Zone: Archiving */}
+                  <div className="rounded-xl border border-red-200 bg-red-50/40 p-6 shadow-sm space-y-3">
+                    <h3 className="text-sm font-bold uppercase tracking-wider text-red-700">
+                      Account Lifecycle & Archiving
+                    </h3>
+                    <p className="text-xs text-red-600/90 leading-relaxed">
+                      Archiving an account revokes authentication access immediately. Historic donations, receipts, and order histories are safely preserved in compliance with audit standards.
+                    </p>
+                    <div className="pt-2">
+                      <CustomAlertDialouge
+                        triggerText="Archive User Account"
+                        triggerClass="rounded-xl bg-red-600 px-4 py-2 text-xs font-semibold text-white shadow hover:bg-red-700 transition-colors"
+                        onConfirm={() => handleDeleteUser(user._id)}
+                        alertDescription={`Are you sure you want to archive ${user.email}? This action can only be reversed by a database administrator.`}
+                      />
+                    </div>
+                  </div>
+                </>
+              )}
             </TabsContent>
           </Tabs>
         </div>

@@ -12,8 +12,8 @@ import { Notification } from "../notification/notification.model";
 const OrderSchema = new Schema<IOrder>(
   {
     card: { type: String },
-    transactionId: { type: String },
-    orderId: { type: String },
+    transactionId: { type: String, trim: true, index: true },
+    orderId: { type: String, trim: true, unique: true, sparse: true },
     previousOrderId: { type: String },
     user: { type: Schema.Types.ObjectId, ref: "Donar" },
     email: { type: String, required: true },
@@ -53,43 +53,69 @@ const OrderSchema = new Schema<IOrder>(
 );
 OrderSchema.pre("save", async function (next) {
   const order = this;
+  if (!order.isNew) {
+    return next();
+  }
   try {
     const findBursar = await School.findById(
       { _id: order.schoolId },
       { bursar: 1 }
-    );
-    const findBursarUser = await User.findOne(
-      { bursar: findBursar?.bursar },
-      {
-        _id: 1,
-        email: 1,
-      }
     ).lean();
 
-    const findAdmin = await User.findOne(
-      { role: "admin" },
-      { _id: 1, email: 1 }
-    ).lean();
+    const [findBursarUser, findAdmin, findDonarUser] = await Promise.all([
+      findBursar?.bursar
+        ? User.findOne(
+            { bursar: findBursar.bursar },
+            { _id: 1, email: 1 }
+          ).lean()
+        : Promise.resolve(null),
+      User.findOne({ role: "admin" }, { _id: 1, email: 1 }).lean(),
+      order.user
+        ? User.findOne({ donar: order.user }, { _id: 1 }).lean()
+        : Promise.resolve(null),
+    ]);
+
+    const orderLabel = order.orderId || "Sponsorship";
+    const routeKey = order.orderId || order._id;
+    const notificationPromises: Promise<any>[] = [];
 
     if (findBursarUser) {
       const notificationPayload: INotification = {
         user: findBursarUser._id,
-        message: `New Order placed: ${order.orderId || "Sponsorship"}`,
-        link: `/bursar-dashboard/my-orders`,
+        message: `New Order placed: ${orderLabel}`,
+        link: `/bursar-dashboard/my-orders/${routeKey}`,
         read: false,
       };
-      await Notification.create(notificationPayload).catch(console.error);
+      notificationPromises.push(
+        Notification.create(notificationPayload).catch(console.error)
+      );
     }
 
     if (findAdmin) {
       const notificationPayloadAdmin: INotification = {
         user: findAdmin._id,
-        message: `New Order placed: ${order.orderId || "Sponsorship"}`,
-        link: `/dashboard/orders`,
+        message: `New Order placed: ${orderLabel}`,
+        link: `/dashboard/orders/${routeKey}`,
         read: false,
       };
-      await Notification.create(notificationPayloadAdmin).catch(console.error);
+      notificationPromises.push(
+        Notification.create(notificationPayloadAdmin).catch(console.error)
+      );
     }
+
+    if (findDonarUser) {
+      const notificationPayloadDonar: INotification = {
+        user: findDonarUser._id,
+        message: `Sponsorship order received: ${orderLabel}`,
+        link: `/donar-dashboard/my-orders/${routeKey}`,
+        read: false,
+      };
+      notificationPromises.push(
+        Notification.create(notificationPayloadDonar).catch(console.error)
+      );
+    }
+
+    await Promise.all(notificationPromises);
 
     const recipients = [order.email];
     if (findAdmin?.email) recipients.push(findAdmin.email);

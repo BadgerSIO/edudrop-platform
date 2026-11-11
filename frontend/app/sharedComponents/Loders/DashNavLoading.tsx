@@ -2,7 +2,7 @@ import React from "react";
 
 const DashNavLoading = () => {
   return (
-    <header className="z-[90] col-start-2 row-start-1 h-20 border-b border-border-subtle bg-white/85 backdrop-blur-md px-6 sm:px-10 lg:px-12">
+    <header className="z-40 col-start-2 row-start-1 h-20 border-b border-border-subtle bg-white/85 backdrop-blur-md px-6 sm:px-10 lg:px-12">
       <div className="mx-auto flex h-full w-full items-center justify-between">
         <div className="flex items-center gap-6">
           <div className="edudrop-shimmer h-8 w-20 rounded-full" />

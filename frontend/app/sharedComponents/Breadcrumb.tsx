@@ -5,6 +5,17 @@ import React from "react";
 import { ChevronRight, Home } from "lucide-react";
 
 function formatSegment(str: string): string {
+  // Preserve business order codes such as "ORDER-5f809549" instead of stripping hyphens
+  const orderMatch = str.match(/^order-([a-z0-9]+)$/i);
+  if (orderMatch) {
+    return `ORDER-${orderMatch[1]}`;
+  }
+
+  // Fallback for legacy 24-hex ObjectIds so Breadcrumbs never dump raw database PKs
+  if (/^[a-f\d]{24}$/i.test(str)) {
+    return `#${str.slice(-6).toUpperCase()}`;
+  }
+
   return str
     .replace(/-/g, " ")
     .replace(/\b\w/g, (char) => char.toUpperCase());

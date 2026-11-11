@@ -6,6 +6,7 @@ const NotificationSchema = new Schema<INotification>(
     user: {
       type: Schema.Types.ObjectId,
       ref: "User",
+      required: true,
     },
     message: {
       type: String,
@@ -28,6 +29,10 @@ const NotificationSchema = new Schema<INotification>(
     },
   }
 );
+
+NotificationSchema.index({ user: 1, read: 1, createdAt: -1 });
+NotificationSchema.index({ user: 1, createdAt: -1 });
+
 export const Notification = model<INotification, NotificationModel>(
   "Notification",
   NotificationSchema

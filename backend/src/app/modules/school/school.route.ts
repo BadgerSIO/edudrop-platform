@@ -12,6 +12,7 @@ const router = express.Router();
 router.post(
   "/upload-image",
   verifyJWT,
+  requireRole("admin", "bursar"),
   schoolSingleUpload,
   SchoolController.uploadImage
 );

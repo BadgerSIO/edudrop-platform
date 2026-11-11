@@ -17,7 +17,7 @@ import EduDropLoader from "@/app/sharedComponents/Loders/EduDropLoader";
 import {
   Check,
   Copy,
-  ArrowRight,
+  Download,
   UserCheck,
   CheckCircle2,
   PackageCheck,
@@ -27,6 +27,7 @@ import {
   CreditCard,
   Hash,
 } from "lucide-react";
+import { generateOrderInvoice } from "@/app/utility/generateOrderInvoice";
 
 interface ICredentials {
   email: string;
@@ -38,6 +39,7 @@ const TransactionContent = () => {
   const executedOrderIdRef = useRef<string | null>(null);
   const { cartProducts, captureCount, setCaptureCount } = useNavbarContext();
   const [orderLoading, setOrderLoading] = useState(false);
+  const [orderError, setOrderError] = useState<string | null>(null);
   const [createdCredentials, setCreatedCredentials] =
     useState<ICredentials | null>(null);
   const [copied, setCopied] = useState(false);
@@ -61,14 +63,33 @@ const TransactionContent = () => {
     const maxAge = 60 * 10;
     await setCookie("paymentIntent", "true", maxAge);
     try {
-      const guestEmail = await getCookie("guestEmail");
+      const [guestEmail, jwt] = await Promise.all([
+        getCookie("guestEmail"),
+        getCookie("jwt"),
+      ]);
       setOrderLoading(true);
+      setOrderError(null);
       const response = await axios.post(
         `${SERVERURLAPI}/order/create`,
         orderPayload,
+        {
+          headers: jwt ? { Authorization: `Bearer ${jwt}` } : {},
+        },
       );
       if (response.status === 200) {
-        const creds = response.data?.data?.newAccountCredentials;
+        const createdOrder = response.data?.data;
+        if (createdOrder) {
+          setShowOrder((prev) => ({
+            ...(prev || ({} as IOrder)),
+            ...createdOrder,
+            products:
+              Array.isArray(createdOrder?.products) && createdOrder.products.length > 0
+                ? createdOrder.products
+                : prev?.products || [],
+            paymentStatus: true,
+          }));
+        }
+        const creds = createdOrder?.newAccountCredentials;
         if (creds) {
           setCreatedCredentials(creds);
         }
@@ -86,11 +107,17 @@ const TransactionContent = () => {
         setCaptureCount(!captureCount);
         localStorage.setItem("orderMade", "true");
       } else {
+        setOrderError("Failed to create sponsorship order.");
         toast.error("Failed to create order");
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Order creation error:", error);
-      toast.error(`Failed to create Order: ${error}`);
+      const message =
+        error?.response?.data?.message ||
+        error?.message ||
+        "Failed to complete order";
+      setOrderError(message);
+      toast.error(message);
     } finally {
       setOrderLoading(false);
     }
@@ -138,6 +165,34 @@ const TransactionContent = () => {
   const card = showOrder?.card || searchParams.get("card") || "(VISA) ... 4242";
   const totalAmount = showOrder?.totalAmount || 0;
   const products = showOrder?.products || [];
+
+  if (orderError) {
+    return (
+      <div className="min-h-screen bg-surface-canvas py-12 sm:py-16">
+        <div className="mx-auto w-full max-w-[680px] px-5 sm:px-8">
+          <BentoCard
+            variant="white"
+            className="border-red-200/80 p-8 sm:p-10 text-center shadow-bento space-y-5"
+          >
+            <h1 className="font-display text-2xl font-extrabold text-text-ink sm:text-3xl">
+              Unable to Process Sponsorship Order
+            </h1>
+            <p className="text-sm text-text-body leading-relaxed">
+              {orderError}
+            </p>
+            <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+              <ActionPillButton variant="dark" href="/checkout" size="md">
+                Return to Checkout
+              </ActionPillButton>
+              <ActionPillButton variant="outline-dark" href="/products" size="md">
+                Browse Supplies
+              </ActionPillButton>
+            </div>
+          </BentoCard>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-surface-canvas py-12 sm:py-16">
@@ -268,8 +323,8 @@ const TransactionContent = () => {
             </div>
           )}
 
-          {/* Total Row */}
-          <div className="border-t border-border-subtle/70 pt-4 flex items-baseline justify-between">
+          {/* Total Row & Receipt Action */}
+          <div className="border-t border-border-subtle/70 pt-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <span className="text-xs font-bold uppercase tracking-wider text-text-body">
                 Total Direct Contribution
@@ -278,9 +333,26 @@ const TransactionContent = () => {
                 Official 501(c)(3) tax receipt emailed
               </p>
             </div>
-            <span className="font-display text-2xl font-extrabold text-surface-forest sm:text-3xl">
-              ${totalAmount ? totalAmount.toFixed(2) : "0.00"}
-            </span>
+            <div className="flex flex-wrap items-center justify-between sm:justify-end gap-4">
+              <span className="font-display text-2xl font-extrabold text-surface-forest sm:text-3xl">
+                ${totalAmount ? totalAmount.toFixed(2) : "0.00"}
+              </span>
+              {showOrder && (
+                <button
+                  type="button"
+                  onClick={() =>
+                    generateOrderInvoice(
+                      { ...showOrder, paymentStatus: true },
+                      { audience: "donor" }
+                    )
+                  }
+                  className="inline-flex items-center gap-2 rounded-full bg-surface-forest px-4 py-2 text-xs font-bold text-white shadow-sm transition-all hover:bg-surface-forest-light active:scale-[0.98]"
+                >
+                  <Download className="h-3.5 w-3.5 text-brand-lime" />
+                  Download PDF Receipt
+                </button>
+              )}
+            </div>
           </div>
         </BentoCard>
 
@@ -348,7 +420,6 @@ const TransactionContent = () => {
                 size="md"
               >
                 Log In to Donor Dashboard
-                <ArrowRight className="h-4 w-4" />
               </ActionPillButton>
               <ActionPillButton
                 variant="outline-glass"
@@ -423,11 +494,15 @@ const TransactionContent = () => {
           <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
             <ActionPillButton
               variant="dark"
-              href="/donar-dashboard/my-orders"
+              href={
+                orderId && orderId !== "N/A"
+                  ? `/donar-dashboard/my-orders/${orderId}`
+                  : "/donar-dashboard/my-orders"
+              }
               size="lg"
             >
-              <PackageCheck className="h-4 w-4 mr-1.5" />
-              View My Orders in Dashboard
+              <PackageCheck className="h-4 w-4 shrink-0" />
+              <span>View My Orders in Dashboard</span>
             </ActionPillButton>
             <ActionPillButton
               variant="outline-dark"

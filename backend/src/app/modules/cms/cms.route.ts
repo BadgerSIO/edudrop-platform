@@ -18,6 +18,13 @@ router.post(
   cmsImageUpload,
   CMSController.uploadMedia
 );
+router.post(
+  "/upload-image",
+  verifyJWT,
+  verifyAdmin,
+  cmsImageUpload,
+  CMSController.uploadMedia
+);
 
 // Works management
 router.post("/works", verifyJWT, verifyAdmin, CMSController.addOurWork);

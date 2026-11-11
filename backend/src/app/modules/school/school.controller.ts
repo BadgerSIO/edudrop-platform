@@ -7,6 +7,8 @@ import { ISchool } from "./school.interface";
 import pick from "../../../shared/pick";
 import { paginationFields } from "../../../constants/pagination";
 import { schoolFilterableFields } from "./school.constants";
+import { SchoolInfo } from "../schoolInfo/schoolInfo.model";
+import { cleanupUnsavedTemporaryUpload } from "../../../helper/mediaCleanupHelper";
 
 const uploadImage: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
@@ -24,6 +26,26 @@ const uploadImage: RequestHandler = catchAsync(
     }
 
     const imageUrl = `/uploads/school/${file.filename}`;
+    const previousTemporaryUrl = req.body?.previousTemporaryUrl;
+    if (previousTemporaryUrl && previousTemporaryUrl !== imageUrl) {
+      await cleanupUnsavedTemporaryUpload(
+        previousTemporaryUrl,
+        "school",
+        async (url) => {
+          const exists = await SchoolInfo.exists({
+            $or: [
+              { schoolLogo: url },
+              { featuredImage: url },
+              { heroBackgroundImage: url },
+              { sectionOneImage: url },
+              { "gallery.imageUrl": url },
+            ],
+          });
+          return Boolean(exists);
+        }
+      );
+    }
+
     sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,

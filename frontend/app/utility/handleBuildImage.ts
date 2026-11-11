@@ -7,16 +7,23 @@ export const handleBuildImage = (
   if (!profileImage) {
     return fallback;
   }
-  if (profileImage.startsWith("http://") || profileImage.startsWith("https://")) {
-    return profileImage;
+  const trimmed = profileImage.trim();
+  if (!trimmed) {
+    return fallback;
   }
-  if (profileImage.startsWith("/uploads") || profileImage.startsWith("/images")) {
-    return `${SERVERURL}${profileImage}`;
+  if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
+    return trimmed;
   }
-  if (profileImage.startsWith("/")) {
-    return profileImage;
+
+  const baseUrl = (SERVERURL || "").replace(/\/+$/, "");
+
+  if (trimmed.startsWith("/uploads") || trimmed.startsWith("/images")) {
+    return baseUrl ? `${baseUrl}${trimmed}` : fallback;
   }
-  return `${SERVERURL}/${profileImage}`;
+  if (trimmed.startsWith("/")) {
+    return trimmed;
+  }
+  return baseUrl ? `${baseUrl}/${trimmed}` : fallback;
 };
 
 export default handleBuildImage;

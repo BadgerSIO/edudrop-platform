@@ -12,6 +12,20 @@ import { Order } from "../order/order.model";
 import { IUser, IUserFilters } from "./user.interface";
 import { User } from "./user.model";
 
+const resolveNormalizedUserStatus = (user: {
+  status?: string;
+  isDeleted?: boolean;
+}): "active" | "suspended" | "archived" => {
+  if (
+    user.status === "active" ||
+    user.status === "suspended" ||
+    user.status === "archived"
+  ) {
+    return user.status;
+  }
+  return user.isDeleted ? "archived" : "active";
+};
+
 const getAllUsers = async (
   filters: IUserFilters,
   paginationOptions: IPaginationOptions
@@ -42,9 +56,18 @@ const getAllUsers = async (
     andConditions.push({ role });
   }
 
-  // Status filter
+  // Status filter (treat missing legacy status on non-deleted accounts as active)
   if (status && status !== "all") {
-    andConditions.push({ status });
+    if (status === "active") {
+      andConditions.push({
+        $or: [
+          { status: "active" },
+          { status: { $exists: false }, isDeleted: { $ne: true } },
+        ],
+      });
+    } else {
+      andConditions.push({ status });
+    }
   }
 
   // Search across email and linked profile names/phone numbers
@@ -137,7 +160,7 @@ const getAllUsers = async (
       User.countDocuments({ status: "suspended", isDeleted: { $ne: true } }),
     ]);
 
-  // Normalize profile reference so frontend can access uniform shape
+  // Normalize profile & status so `.lean()` never leaks `status: undefined` on legacy/seeded records
   const normalizedData: any[] = rawUsers.map((user: any) => {
     let profile = null;
     if (user.role === "donar") profile = user.donar;
@@ -146,6 +169,7 @@ const getAllUsers = async (
 
     return {
       ...user,
+      status: resolveNormalizedUserStatus(user),
       profile,
     };
   });
@@ -228,6 +252,7 @@ const getSingleUser = async (id: string): Promise<any | null> => {
 
   return {
     ...user,
+    status: resolveNormalizedUserStatus(user),
     profile,
     recentOrders,
     donationStats,
@@ -244,10 +269,10 @@ const updateUserStatus = async (
     throw new ApiError(httpStatus.NOT_FOUND, "User account not found");
   }
 
-  if (user.email === adminEmail) {
+  if (user.email === adminEmail || user.role === "admin") {
     throw new ApiError(
       httpStatus.BAD_REQUEST,
-      "You cannot suspend your own administrative account"
+      "Administrative accounts cannot be suspended via status toggle"
     );
   }
 

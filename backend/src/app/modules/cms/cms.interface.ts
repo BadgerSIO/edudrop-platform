@@ -52,6 +52,7 @@ export interface IContactInfoCMS {
   phone: string;
   email: string;
   location: string;
+  linkedin?: string;
   facebook?: string;
   instagram?: string;
   youtube?: string;

@@ -1,5 +1,5 @@
 import httpStatus from "http-status";
-import { SortOrder } from "mongoose";
+import mongoose, { SortOrder } from "mongoose";
 import { paginationHelper } from "../../../helper/paginationHelper";
 import { IGenericResponse } from "../../../interfaces/common";
 import { IPaginationOptions } from "../../../interfaces/paginationOptions";
@@ -7,6 +7,8 @@ import { schoolInboxSearchableFields } from "./schoolInbox.constants";
 import { ISchoolInbox, ISchoolInboxFilters } from "./schoolInbox.interface";
 import { SchoolInbox } from "./schoolInbox.model";
 import { Bursar } from "../bursar/bursar.model";
+import { User } from "../user/user.model";
+import { Notification } from "../notification/notification.model";
 import { transport } from "../../../config/nodemailer";
 import emailTemplate from "../../../shared/emailTemplate";
 import ApiError from "../../../error/ApiError";
@@ -14,8 +16,14 @@ import ApiError from "../../../error/ApiError";
 const createSchoolInbox = async (
   payload: ISchoolInbox
 ): Promise<ISchoolInbox | null> => {
-  const findBursar = await Bursar.findById(payload?.bursar)
+  const rawBursarId = payload?.bursar ? String(payload.bursar) : "";
+  if (!rawBursarId || !mongoose.Types.ObjectId.isValid(rawBursarId)) {
+    throw new ApiError(httpStatus.BAD_REQUEST, "Valid target school bursar ID is required");
+  }
+
+  const findBursar = await Bursar.findById(rawBursarId)
     .select({
+      _id: 1,
       email: 1,
     })
     .lean();
@@ -24,25 +32,50 @@ const createSchoolInbox = async (
     throw new ApiError(httpStatus.NOT_FOUND, "Target school bursar not found");
   }
 
-  payload.seen = false;
-  payload.status = "unread";
-  payload.isDeleted = false;
+  const inboxData: ISchoolInbox = {
+    bursar: findBursar._id,
+    firstName: String(payload.firstName || "").trim(),
+    lastName: String(payload.lastName || "").trim(),
+    email: String(payload.email || "").trim(),
+    phone: payload.phone ? String(payload.phone).trim() : undefined,
+    message: String(payload.message || "").trim(),
+    seen: false,
+    status: "unread",
+    isDeleted: false,
+  };
 
   // Non-blocking try-catch for SMTP notification
   try {
     const info = await transport.sendMail({
-      from: `"From ${payload.firstName}" <${payload.email}>`,
+      from: `"From ${inboxData.firstName}" <${inboxData.email}>`,
       to: findBursar.email,
-      subject: `Campus Inquiry from ${payload.firstName} ${payload.lastName}`,
-      text: payload.message,
-      html: emailTemplate("contactForm", payload),
+      subject: `Campus Inquiry from ${inboxData.firstName} ${inboxData.lastName}`,
+      text: inboxData.message,
+      html: emailTemplate("contactForm", inboxData),
     });
-    payload.messageId = info.messageId;
+    inboxData.messageId = info.messageId;
   } catch (error) {
     console.error("Failed to dispatch bursar inquiry email:", error);
   }
 
-  const result = await SchoolInbox.create(payload);
+  const result = await SchoolInbox.create(inboxData);
+
+  if (result) {
+    User.findOne({ bursar: findBursar._id }, { _id: 1 })
+      .lean()
+      .then((bursarUser) => {
+        if (bursarUser?._id) {
+          Notification.create({
+            user: bursarUser._id,
+            message: `New campus inquiry from ${inboxData.firstName} ${inboxData.lastName}`,
+            link: `/bursar-dashboard/inbox/${result._id}`,
+            read: false,
+          }).catch(console.error);
+        }
+      })
+      .catch(console.error);
+  }
+
   return result;
 };
 

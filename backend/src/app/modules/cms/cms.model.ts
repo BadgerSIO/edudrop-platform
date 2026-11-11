@@ -86,10 +86,14 @@ const CMSSchema = new Schema<ISiteContentCMS>(
         type: String,
         default: "450 Education Way, Suite 200, Austin, TX 78701",
       },
-      facebook: { type: String, default: "https://www.facebook.com/edudrop" },
-      instagram: { type: String, default: "https://www.instagram.com/edudrop" },
-      youtube: { type: String, default: "https://www.youtube.com/@edudrop" },
-      tiktok: { type: String, default: "https://www.tiktok.com/@edudrop" },
+      linkedin: {
+        type: String,
+        default: "https://www.linkedin.com/in/saad-ibne-omar/",
+      },
+      facebook: { type: String, default: "" },
+      instagram: { type: String, default: "" },
+      youtube: { type: String, default: "" },
+      tiktok: { type: String, default: "" },
     },
     seo: {
       metaTitle: { type: String, default: "EduDrop — School Donation & Hydration Platform" },

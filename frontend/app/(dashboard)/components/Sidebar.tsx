@@ -8,18 +8,34 @@ import {
   Users,
   Inbox,
   Globe,
+  User,
   LogOut,
   ChevronDown,
 } from "lucide-react";
-import Image from "next/image";
+import BrandLogo from "@/app/sharedComponents/ui/BrandLogo";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { ISubmissions } from "@/app/types/submission";
+import useUnreadInboxCount from "@/app/hooks/useUnreadInboxCount";
 
-const Sidebar = ({ propdata: data = [] }: { propdata?: ISubmissions[] }) => {
+const Sidebar = ({
+  propdata: data = [],
+  unreadCount,
+}: {
+  propdata?: ISubmissions[];
+  unreadCount?: number;
+}) => {
   const { signout } = useAuth();
   const pathname = usePathname();
+
+  const initialUnseenCount =
+    typeof unreadCount === "number"
+      ? unreadCount
+      : Array.isArray(data)
+        ? data.filter((item: ISubmissions) => item.seen === false).length
+        : 0;
+  const liveUnseenCount = useUnreadInboxCount("submissions", initialUnseenCount);
 
   const isProductsActive =
     pathname.startsWith("/dashboard/manage-categories") ||
@@ -38,9 +54,7 @@ const Sidebar = ({ propdata: data = [] }: { propdata?: ISubmissions[] }) => {
     if (isSchoolsActive) setSchoolsDropdown(true);
   }, [pathname, isProductsActive, isSchoolsActive]);
 
-  const unseenData = Array.isArray(data)
-    ? data.filter((item: ISubmissions) => item.seen === false)
-    : [];
+  const isProfileActive = pathname.startsWith("/dashboard/profile");
 
   return (
     <aside className="relative z-30 col-start-1 row-span-3 w-[72px] min-w-[72px] max-w-[72px] lg:w-[260px] lg:min-w-[260px] lg:max-w-[260px] shrink-0 border-r border-border-subtle bg-white">
@@ -49,15 +63,12 @@ const Sidebar = ({ propdata: data = [] }: { propdata?: ISubmissions[] }) => {
         <div className="space-y-6">
           {/* Logo & Portal Badge */}
           <div className="flex flex-col items-center lg:items-start px-1 pt-2">
-            <Link href="/" className="inline-block transition-opacity hover:opacity-85">
-              <Image
-                src="/logo.webp"
-                alt="EduDrop Logo"
-                width={120}
-                height={40}
-                className="h-6 sm:h-7 lg:h-8 w-auto object-contain"
-                priority
-              />
+            <Link
+              href="/"
+              aria-label="EduDrop Foundation Home"
+              className="inline-flex items-center transition-opacity hover:opacity-85"
+            >
+              <BrandLogo variant="on-light" size="sm" showTagline compactBelowLg />
             </Link>
             <div className="mt-2.5 hidden lg:inline-flex items-center gap-1.5 rounded-full border border-border-subtle bg-surface-bento/80 px-2.5 py-0.5 text-[11px] font-semibold text-text-muted">
               <span className="h-1.5 w-1.5 rounded-full bg-brand-forest shrink-0" />
@@ -277,9 +288,9 @@ const Sidebar = ({ propdata: data = [] }: { propdata?: ISubmissions[] }) => {
                 >
                   <Inbox className="h-5 w-5 shrink-0" />
                   <span className="hidden lg:inline truncate">Inbox</span>
-                  {unseenData.length > 0 && (
+                  {liveUnseenCount > 0 && (
                     <span className="lg:ml-auto inline-flex items-center justify-center rounded-full bg-brand-lime px-1.5 py-0.5 text-[11px] font-bold text-surface-forest">
-                      {unseenData.length}
+                      {liveUnseenCount}
                     </span>
                   )}
                 </Link>
@@ -307,8 +318,24 @@ const Sidebar = ({ propdata: data = [] }: { propdata?: ISubmissions[] }) => {
           </nav>
         </div>
 
-        {/* Bottom Section - Logout */}
-        <div className="pt-4 pb-12 border-t border-border-subtle">
+        {/* Bottom Section - Profile & Logout */}
+        <div className="pt-4 pb-12 border-t border-border-subtle space-y-1.5">
+          <Link
+            href="/dashboard/profile"
+            className={`group flex items-center justify-center gap-3 rounded-xl px-2.5 py-2.5 text-sm font-medium transition-all lg:justify-start lg:px-3.5 ${
+              isProfileActive
+                ? "bg-surface-forest font-semibold text-white shadow-sm"
+                : "text-text-body hover:bg-surface-bento/70 hover:text-text-ink"
+            }`}
+            title="My Profile"
+          >
+            <User className="h-5 w-5 shrink-0" />
+            <span className="hidden lg:inline truncate">My Profile</span>
+            {isProfileActive && (
+              <span className="ml-auto hidden h-1.5 w-1.5 rounded-full bg-brand-lime lg:block shrink-0" />
+            )}
+          </Link>
+
           <button
             type="button"
             onClick={signout}

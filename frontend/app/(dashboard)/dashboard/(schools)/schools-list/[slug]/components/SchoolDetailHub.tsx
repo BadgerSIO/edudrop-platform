@@ -30,9 +30,14 @@ import {
 } from "lucide-react";
 import { ISchool } from "@/app/types/School";
 import { ISchoolInfo, ICampusNeed } from "@/app/types/SchoolInfo";
-import { SERVERURL, SERVERURLAPI } from "@/lib/constants";
+import { SERVERURLAPI } from "@/lib/constants";
+import { handleBuildImage } from "@/app/utility/handleBuildImage";
 import { getCookie } from "@/app/utility/handleCookie";
 import { handleRevalidation } from "@/app/utility/handleRevalidation";
+import {
+  IMAGE_ACCEPT_ATTR,
+  validateImageFile,
+} from "@/app/utility/validateImageFile";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import CustomAlertDialouge from "@/app/sharedComponents/CustomAlertDialouge";
 import useSchool from "@/app/hooks/useSchool";
@@ -102,11 +107,24 @@ export default function SchoolDetailHub({
   // Single Image Uploader Helper
   const handleUploadFile = async (
     file: File,
-    onSuccess: (url: string) => void
+    onSuccess: (url: string) => void,
+    options?: { type?: "logo" | "media"; previousTemporaryUrl?: string }
   ) => {
+    const validation = validateImageFile(file);
+    if (!validation.valid) {
+      toast.error(validation.error);
+      return;
+    }
+
     try {
       const jwt = await getCookie("jwt");
       const formData = new FormData();
+      if (options?.type) {
+        formData.append("type", options.type);
+      }
+      if (options?.previousTemporaryUrl) {
+        formData.append("previousTemporaryUrl", options.previousTemporaryUrl);
+      }
       formData.append("image", file);
 
       const res = await axios.post(`${SERVERURLAPI}/school/upload-image`, formData, {
@@ -224,16 +242,15 @@ export default function SchoolDetailHub({
     title,
     imageUrl,
     onChange,
+    uploadType = "media",
   }: {
     title: string;
     imageUrl: string;
     onChange: (url: string) => void;
+    uploadType?: "logo" | "media";
   }) => {
     const fileRef = React.useRef<HTMLInputElement>(null);
-    let fullUrl = "";
-    if (imageUrl) {
-      fullUrl = imageUrl.startsWith("http") ? imageUrl : `${SERVERURL}${imageUrl}`;
-    }
+    const fullUrl = imageUrl ? handleBuildImage(imageUrl, "") : "";
 
     return (
       <div className="rounded-xl border border-border-subtle bg-surface-bento/20 p-3.5 space-y-2">
@@ -243,11 +260,17 @@ export default function SchoolDetailHub({
         <input
           type="file"
           ref={fileRef}
-          accept="image/*"
+          accept={IMAGE_ACCEPT_ATTR}
           className="hidden"
           onChange={(e) => {
             const f = e.target.files?.[0];
-            if (f) handleUploadFile(f, onChange);
+            if (f) {
+              handleUploadFile(f, onChange, {
+                type: uploadType,
+                previousTemporaryUrl: imageUrl,
+              });
+            }
+            e.target.value = "";
           }}
         />
 
@@ -257,6 +280,7 @@ export default function SchoolDetailHub({
               src={fullUrl}
               alt={title}
               fill
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
               className="object-contain p-2"
             />
             <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
@@ -311,7 +335,7 @@ export default function SchoolDetailHub({
               <div className="relative flex h-14 w-14 items-center justify-center rounded-2xl border border-border-subtle bg-surface-bento/30 overflow-hidden flex-shrink-0">
                 {schoolLogo ? (
                   <Image
-                    src={schoolLogo.startsWith("http") ? schoolLogo : `${SERVERURL}${schoolLogo}`}
+                    src={handleBuildImage(schoolLogo, "/home/s1.webp")}
                     alt="Logo"
                     fill
                     className="object-contain p-1.5"
@@ -626,7 +650,7 @@ export default function SchoolDetailHub({
 
               {/* Media Upload Grid */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <ImageBox title="Campus Logo" imageUrl={schoolLogo} onChange={setSchoolLogo} />
+                <ImageBox title="Campus Logo" imageUrl={schoolLogo} onChange={setSchoolLogo} uploadType="logo" />
                 <ImageBox title="Featured Card Image" imageUrl={featuredImage} onChange={setFeaturedImage} />
                 <ImageBox title="Hero Background" imageUrl={heroBackgroundImage} onChange={setHeroBackgroundImage} />
                 <ImageBox title="Mission Section Image" imageUrl={sectionOneImage} onChange={setSectionOneImage} />
@@ -882,15 +906,16 @@ export default function SchoolDetailHub({
                     <span>Upload New Photo</span>
                     <input
                       type="file"
-                      accept="image/*"
+                      accept={IMAGE_ACCEPT_ATTR}
                       className="hidden"
                       onChange={(e) => {
                         const f = e.target.files?.[0];
                         if (f) {
                           handleUploadFile(f, (url) => {
-                            setGallery([...gallery, { imageUrl: url, title: "" }]);
+                            setGallery((prev) => [...prev, { imageUrl: url, title: "" }]);
                           });
                         }
+                        e.target.value = "";
                       }}
                     />
                   </label>
@@ -904,9 +929,10 @@ export default function SchoolDetailHub({
                     >
                       <div className="relative aspect-video w-full rounded-lg overflow-hidden border border-border-subtle bg-surface-bento/20">
                         <Image
-                          src={photo.imageUrl.startsWith("http") ? photo.imageUrl : `${SERVERURL}${photo.imageUrl}`}
+                          src={handleBuildImage(photo.imageUrl, "/home/w1.webp")}
                           alt="Campus photo"
                           fill
+                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                           className="object-cover"
                         />
                         <button

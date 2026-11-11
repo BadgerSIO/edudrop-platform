@@ -1,14 +1,7 @@
 export const notificationFilterableFields = [
   "searchTerms",
-  "email",
-  "firstName",
-  "lastName",
-  "phone",
-  "seen",
+  "read",
+  "user",
 ];
-export const notificationSearchableFields = [
-  "email",
-  "firstName",
-  "lastName",
-  "phone",
-];
+
+export const notificationSearchableFields = ["message", "link"];

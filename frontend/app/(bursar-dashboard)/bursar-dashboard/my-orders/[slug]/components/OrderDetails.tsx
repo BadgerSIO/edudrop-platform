@@ -11,7 +11,9 @@ import { handleRevalidation } from "@/app/utility/handleRevalidation";
 import { getCookie } from "@/app/utility/handleCookie";
 import CustomAlertDialouge from "@/app/sharedComponents/CustomAlertDialouge";
 import OrderTimeline from "@/app/sharedComponents/OrderTimeline";
-import { Loader2 } from "lucide-react";
+import OrderReferenceHeader from "@/app/sharedComponents/OrderReferenceHeader";
+import { Download, Loader2 } from "lucide-react";
+import { generateOrderInvoice } from "@/app/utility/generateOrderInvoice";
 
 const OrderDetails = ({ order }: { order: IOrder }) => {
   const router = useRouter();
@@ -46,7 +48,7 @@ const OrderDetails = ({ order }: { order: IOrder }) => {
     try {
       const jwt = await getCookie("jwt");
       const response = await axios.patch(
-        `${SERVERURLAPI}/order/status/${order?._id}`,
+        `${SERVERURLAPI}/order/status/${order?.orderId || order?._id}`,
         { orderStatus: "received" },
         {
           headers: jwt
@@ -79,32 +81,46 @@ const OrderDetails = ({ order }: { order: IOrder }) => {
 
   return (
     <div className="space-y-6">
+      <OrderReferenceHeader order={order} audience="bursar" />
+
       {/* Progress Timeline Card */}
       <div className="dash-card-enter rounded-2xl border border-border-subtle bg-white p-6 shadow-bento">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
           <h3 className="text-xs font-semibold uppercase tracking-wider text-text-muted">
             Supply Shipment Progress
           </h3>
-          {currentStatus === "on the way" && (
-            <CustomAlertDialouge
-              disableTrigger={statusLoading}
-              triggerText={
-                statusLoading ? (
-                  <span className="inline-flex items-center gap-1.5">
-                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                    Updating...
-                  </span>
-                ) : (
-                  "Confirm Delivery Received"
-                )
-              }
-              triggerClass={`inline-flex items-center gap-2 rounded-xl bg-surface-forest px-4 py-2 text-xs font-bold text-white shadow-sm transition-all active:scale-[0.98] motion-reduce:active:scale-100 hover:bg-surface-forest-light ${
-                statusLoading ? "cursor-not-allowed opacity-60" : ""
-              }`}
-              onConfirm={handleOrderStatus}
-              alertDescription="Confirm that these sponsored school supplies have arrived safely on campus?"
-            />
-          )}
+          <div className="flex flex-wrap items-center gap-2.5">
+            {order?.paymentStatus && (
+              <button
+                type="button"
+                onClick={() => generateOrderInvoice(order, { audience: "bursar" })}
+                className="inline-flex items-center gap-1.5 rounded-xl border border-border-subtle bg-white px-3.5 py-2 text-xs font-semibold text-text-ink shadow-sm transition-all hover:bg-surface-bento hover:border-surface-forest/30 active:scale-[0.98]"
+              >
+                <Download className="h-3.5 w-3.5 text-surface-forest" />
+                Download Campus Receipt
+              </button>
+            )}
+            {currentStatus === "on the way" && (
+              <CustomAlertDialouge
+                disableTrigger={statusLoading}
+                triggerText={
+                  statusLoading ? (
+                    <span className="inline-flex items-center gap-1.5">
+                      <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                      Updating...
+                    </span>
+                  ) : (
+                    "Confirm Delivery Received"
+                  )
+                }
+                triggerClass={`inline-flex items-center gap-2 rounded-xl bg-surface-forest px-4 py-2 text-xs font-bold text-white shadow-sm transition-all active:scale-[0.98] motion-reduce:active:scale-100 hover:bg-surface-forest-light ${
+                  statusLoading ? "cursor-not-allowed opacity-60" : ""
+                }`}
+                onConfirm={handleOrderStatus}
+                alertDescription="Confirm that these sponsored school supplies have arrived safely on campus?"
+              />
+            )}
+          </div>
         </div>
 
         <OrderTimeline currentStatus={currentStatus} />
