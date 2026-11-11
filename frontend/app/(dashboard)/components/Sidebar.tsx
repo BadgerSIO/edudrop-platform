@@ -9,6 +9,7 @@ import {
   Inbox,
   Globe,
   User,
+  Settings,
   LogOut,
   ChevronDown,
 } from "lucide-react";
@@ -54,6 +55,7 @@ const Sidebar = ({
     if (isSchoolsActive) setSchoolsDropdown(true);
   }, [pathname, isProductsActive, isSchoolsActive]);
 
+  const isSettingsActive = pathname.startsWith("/dashboard/settings");
   const isProfileActive = pathname.startsWith("/dashboard/profile");
 
   return (
@@ -318,8 +320,24 @@ const Sidebar = ({
           </nav>
         </div>
 
-        {/* Bottom Section - Profile & Logout */}
+        {/* Bottom Section - Settings, Profile & Logout */}
         <div className="pt-4 pb-12 border-t border-border-subtle space-y-1.5">
+          <Link
+            href="/dashboard/settings"
+            className={`group flex items-center justify-center gap-3 rounded-xl px-2.5 py-2.5 text-sm font-medium transition-all lg:justify-start lg:px-3.5 ${
+              isSettingsActive
+                ? "bg-surface-forest font-semibold text-white shadow-sm"
+                : "text-text-body hover:bg-surface-bento/70 hover:text-text-ink"
+            }`}
+            title="Platform Settings"
+          >
+            <Settings className="h-5 w-5 shrink-0" aria-hidden="true" />
+            <span className="hidden lg:inline truncate">Settings</span>
+            {isSettingsActive && (
+              <span className="ml-auto hidden h-1.5 w-1.5 rounded-full bg-brand-lime lg:block shrink-0" />
+            )}
+          </Link>
+
           <Link
             href="/dashboard/profile"
             className={`group flex items-center justify-center gap-3 rounded-xl px-2.5 py-2.5 text-sm font-medium transition-all lg:justify-start lg:px-3.5 ${
