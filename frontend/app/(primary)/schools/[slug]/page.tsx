@@ -14,6 +14,7 @@ async function getSingleSchoolInfoBySlug(slug: string) {
     `${SERVERURLAPI}/school-info/single-optimized/${slug}`,
     {
       next: { tags: ["schoolInfoCollection"] },
+      cache: "no-store",
     }
   );
   if (!res.ok) {

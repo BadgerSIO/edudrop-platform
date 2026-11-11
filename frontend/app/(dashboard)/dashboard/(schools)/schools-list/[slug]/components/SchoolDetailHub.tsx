@@ -30,7 +30,8 @@ import {
 } from "lucide-react";
 import { ISchool } from "@/app/types/School";
 import { ISchoolInfo, ICampusNeed } from "@/app/types/SchoolInfo";
-import { SERVERURL, SERVERURLAPI } from "@/lib/constants";
+import { SERVERURLAPI } from "@/lib/constants";
+import { handleBuildImage } from "@/app/utility/handleBuildImage";
 import { getCookie } from "@/app/utility/handleCookie";
 import { handleRevalidation } from "@/app/utility/handleRevalidation";
 import {
@@ -249,10 +250,7 @@ export default function SchoolDetailHub({
     uploadType?: "logo" | "media";
   }) => {
     const fileRef = React.useRef<HTMLInputElement>(null);
-    let fullUrl = "";
-    if (imageUrl) {
-      fullUrl = imageUrl.startsWith("http") ? imageUrl : `${SERVERURL}${imageUrl}`;
-    }
+    const fullUrl = imageUrl ? handleBuildImage(imageUrl, "") : "";
 
     return (
       <div className="rounded-xl border border-border-subtle bg-surface-bento/20 p-3.5 space-y-2">
@@ -337,7 +335,7 @@ export default function SchoolDetailHub({
               <div className="relative flex h-14 w-14 items-center justify-center rounded-2xl border border-border-subtle bg-surface-bento/30 overflow-hidden flex-shrink-0">
                 {schoolLogo ? (
                   <Image
-                    src={schoolLogo.startsWith("http") ? schoolLogo : `${SERVERURL}${schoolLogo}`}
+                    src={handleBuildImage(schoolLogo, "/home/s1.webp")}
                     alt="Logo"
                     fill
                     className="object-contain p-1.5"
@@ -931,7 +929,7 @@ export default function SchoolDetailHub({
                     >
                       <div className="relative aspect-video w-full rounded-lg overflow-hidden border border-border-subtle bg-surface-bento/20">
                         <Image
-                          src={photo.imageUrl.startsWith("http") ? photo.imageUrl : `${SERVERURL}${photo.imageUrl}`}
+                          src={handleBuildImage(photo.imageUrl, "/home/w1.webp")}
                           alt="Campus photo"
                           fill
                           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"

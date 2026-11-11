@@ -7,6 +7,7 @@ async function getSingleSchoolBySlug(slug: string) {
   try {
     const res = await fetch(`${SERVERURLAPI}/school/${slug}`, {
       next: { tags: ["schoolSinglebyslugCollection"] },
+      cache: "no-store",
     });
     if (!res.ok) {
       return null;

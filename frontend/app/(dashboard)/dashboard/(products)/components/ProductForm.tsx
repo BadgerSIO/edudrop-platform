@@ -24,7 +24,8 @@ import {
   Tag,
 } from "lucide-react";
 import { ICategory, IProduct } from "@/app/types/Product";
-import { SERVERURL, SERVERURLAPI } from "@/lib/constants";
+import { SERVERURLAPI } from "@/lib/constants";
+import { handleBuildImage } from "@/app/utility/handleBuildImage";
 import { slugify } from "@/app/utility/slugify";
 import { getCookie } from "@/app/utility/handleCookie";
 import { handleRevalidation } from "@/app/utility/handleRevalidation";
@@ -72,12 +73,8 @@ export default function ProductForm({
   const [slugLocked, setSlugLocked] = useState(isEdit ? true : false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(() => {
-    if (initialData?.productImage) {
-      return initialData.productImage.startsWith("http")
-        ? initialData.productImage
-        : `${SERVERURL}${initialData.productImage}`;
-    }
-    return null;
+    const resolved = handleBuildImage(initialData?.productImage, "");
+    return resolved || null;
   });
 
   // Extract initial category ID

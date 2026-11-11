@@ -22,15 +22,19 @@ export async function getAllProductsOptimized(
     }
   }
 
-  const res = await fetch(url, {
-    next: { tags: ["productsCollection"] },
-    cache: "no-store",
-  });
+  try {
+    const res = await fetch(url, {
+      next: { tags: ["productsCollection"] },
+      cache: "no-store",
+    });
 
-  if (!res.ok) {
-    throw new Error("Failed to fetch data");
+    if (!res.ok) {
+      return { data: [] };
+    }
+    return res.json();
+  } catch {
+    return { data: [] };
   }
-  return res.json();
 }
 
 export const ProductsTab = async () => {

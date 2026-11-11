@@ -15,10 +15,19 @@ const buildRemotePatterns = () => {
     },
   ];
 
-  const envUrl = process.env.NEXT_PUBLIC_SERVER_URL;
-  if (envUrl) {
+  const envUrls = [
+    process.env.NEXT_PUBLIC_EDUDROP_SERVER_URL,
+    process.env.NEXT_PUBLIC_SERVER_URL,
+    ...(process.env.NEXT_PUBLIC_MEDIA_DOMAINS || "")
+      .split(",")
+      .map((s) => s.trim())
+      .filter(Boolean),
+  ].filter(Boolean);
+
+  for (const rawUrl of envUrls) {
     try {
-      const parsed = new URL(envUrl);
+      const normalized = rawUrl.includes("://") ? rawUrl : `https://${rawUrl}`;
+      const parsed = new URL(normalized);
       const protocol = parsed.protocol.replace(":", "");
       if (protocol === "http" || protocol === "https") {
         const exists = patterns.some(
@@ -37,7 +46,7 @@ const buildRemotePatterns = () => {
         }
       }
     } catch {
-      // Ignore invalid NEXT_PUBLIC_SERVER_URL during config evaluation
+      // Ignore invalid URL entries during config evaluation
     }
   }
 
@@ -46,7 +55,7 @@ const buildRemotePatterns = () => {
 
 const nextConfig = {
   images: {
-    dangerouslyAllowLocalIP: true,
+    dangerouslyAllowLocalIP: process.env.NODE_ENV === "development",
     formats: ["image/avif", "image/webp"],
     minimumCacheTTL: 31536000,
     remotePatterns: buildRemotePatterns(),

@@ -10,9 +10,25 @@ const resolveDemoMode = (): boolean => {
   return process.env.NODE_ENV === "production";
 };
 
+const parseOriginList = (...rawValues: Array<string | undefined>): string[] => {
+  const origins = new Set<string>();
+  for (const raw of rawValues) {
+    if (!raw) continue;
+    for (const entry of raw.split(",")) {
+      const cleaned = entry.trim().replace(/\/+$/, "");
+      if (cleaned) {
+        origins.add(cleaned);
+      }
+    }
+  }
+  return Array.from(origins);
+};
+
 export default {
   env: process.env.NODE_ENV,
-  frontend: process.env.FRONTEND,
+  frontend: process.env.FRONTEND?.trim().replace(/\/+$/, ""),
+  corsOrigins: parseOriginList(process.env.FRONTEND, process.env.CORS_ORIGINS),
+  allowVercelPreviews: process.env.ALLOW_VERCEL_PREVIEWS === "true",
   port: process.env.PORT,
   databaseUrl: process.env.DATABASE_URL,
   bcrypt_salt: process.env.BCRYPT_SALT,
@@ -23,6 +39,7 @@ export default {
       ? parsedResetMinutes
       : 30,
   ownerBypassKey: process.env.OWNER_BYPASS_KEY?.trim() || "",
+  cronSecret: process.env.CRON_SECRET?.trim() || "",
   smtp: {
     host: process.env.SMTP_HOST,
     port: Number(process.env.SMTP_PORT) || 465,

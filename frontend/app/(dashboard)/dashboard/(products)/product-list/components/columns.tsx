@@ -15,7 +15,8 @@ import {
   ShieldAlert,
 } from "lucide-react";
 import { ICategory, IProduct } from "@/app/types/Product";
-import { SERVERURL, SERVERURLAPI } from "@/lib/constants";
+import { SERVERURLAPI } from "@/lib/constants";
+import { handleBuildImage } from "@/app/utility/handleBuildImage";
 import { handleRevalidation } from "@/app/utility/handleRevalidation";
 import { getCookie } from "@/app/utility/handleCookie";
 import { Button } from "@/components/ui/button";
@@ -266,12 +267,7 @@ export const columns: ColumnDef<IProduct>[] = [
     header: "Asset",
     cell: ({ row }) => {
       const productImage = row.original.productImage;
-      let buildUrl = "/placeholder90.webp";
-      if (productImage) {
-        buildUrl = productImage.startsWith("http")
-          ? productImage
-          : `${SERVERURL}${productImage}`;
-      }
+      const buildUrl = handleBuildImage(productImage, "/placeholder90.webp");
       return (
         <div className="relative h-11 w-11 rounded-xl border border-border-subtle bg-surface-bento/20 p-1 overflow-hidden flex items-center justify-center">
           <Image

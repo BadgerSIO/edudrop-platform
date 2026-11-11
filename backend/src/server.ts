@@ -32,9 +32,39 @@ process.on("unhandledRejection", (reason, promise) => {
   }
 });
 
+function validateStartupConfig() {
+  if (!config.databaseUrl) {
+    throw new Error("DATABASE_URL is required");
+  }
+
+  if (
+    !config.jwt_secret ||
+    (config.env === "production" &&
+      (config.jwt_secret === "change-me" || config.jwt_secret.length < 16))
+  ) {
+    throw new Error(
+      "JWT_SECRET must be configured with at least 16 characters (and not 'change-me') in production"
+    );
+  }
+
+  if (
+    config.env === "production" &&
+    config.corsOrigins.length === 0 &&
+    !config.allowVercelPreviews
+  ) {
+    console.warn(
+      "[Config Warning] FRONTEND/CORS_ORIGINS is empty in production; browser CORS requests will be rejected unless ALLOW_VERCEL_PREVIEWS=true."
+    );
+  }
+}
+
 async function bootstrap() {
   try {
-    await mongoose.connect(config.databaseUrl as string);
+    validateStartupConfig();
+    await mongoose.connect(config.databaseUrl as string, {
+      serverSelectionTimeoutMS: 10000,
+      socketTimeoutMS: 45000,
+    });
     console.log("Database connected");
 
     if (config.demoMode) {
@@ -58,8 +88,9 @@ async function bootstrap() {
       demoResetTimer.unref();
     }
 
-    server = app.listen(config.port, () => {
-      console.log(`App listening on port ${config.port}`);
+    const port = config.port || 5000;
+    server = app.listen(port, () => {
+      console.log(`App listening on port ${port}`);
     });
 
     process.on("SIGTERM", () => {
@@ -77,7 +108,8 @@ async function bootstrap() {
       }
     });
   } catch (error) {
-    console.log("Error during bootstrap:", error);
+    console.error("Error during bootstrap:", error);
+    process.exit(1);
   }
 }
 
