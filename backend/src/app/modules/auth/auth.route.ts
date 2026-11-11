@@ -13,6 +13,7 @@ router.post(
   AuthController.ownerUnlock
 );
 router.post("/demo-reset", AuthController.demoReset);
+router.post("/cleanup-uploads", AuthController.cleanupUploads);
 router.post("/forget-password-user", AuthController.forgetPassword);
 router.post("/reset-password-user", AuthController.resetPassword);
 router.post(

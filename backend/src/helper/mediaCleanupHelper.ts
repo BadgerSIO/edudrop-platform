@@ -1,17 +1,69 @@
 import fs from "fs";
 import path from "path";
-import { isProtectedSeedUpload } from "./seedHelper";
 
 export type UploadSubdir = "users" | "school" | "products" | "cms";
 
-const VALID_SUBDIRS = new Set<UploadSubdir>([
+export const VALID_UPLOAD_SUBDIRS: readonly UploadSubdir[] = [
   "users",
   "school",
   "products",
   "cms",
-]);
+];
+
+const VALID_SUBDIRS = new Set<UploadSubdir>(VALID_UPLOAD_SUBDIRS);
 
 export const UPLOADS_ROOT = path.resolve(__dirname, "../../uploads");
+const SEED_DIR = path.resolve(__dirname, "../../seed");
+
+let cachedSeedUploads: ReadonlySet<string> | null = null;
+
+/**
+ * Scans `backend/seed/*.json` and returns all referenced `/uploads/...` URLs
+ * so seeded .webp assets on disk are never accidentally unlinked.
+ */
+export const getProtectedSeedUploads = (options?: {
+  refresh?: boolean;
+}): ReadonlySet<string> => {
+  if (cachedSeedUploads && !options?.refresh) {
+    return cachedSeedUploads;
+  }
+
+  const protectedUrls = new Set<string>();
+  if (!fs.existsSync(SEED_DIR)) {
+    cachedSeedUploads = protectedUrls;
+    return cachedSeedUploads;
+  }
+
+  const files = fs
+    .readdirSync(SEED_DIR)
+    .filter((file) => file.endsWith(".json"));
+
+  for (const file of files) {
+    const raw = fs.readFileSync(path.join(SEED_DIR, file), "utf-8");
+    const matches = raw.matchAll(/"(\/uploads\/[^"]+)"/g);
+    for (const match of matches) {
+      if (match[1]) {
+        protectedUrls.add(match[1].trim());
+      }
+    }
+  }
+
+  cachedSeedUploads = protectedUrls;
+  return cachedSeedUploads;
+};
+
+/**
+ * Checks whether a relative upload path belongs to a protected seed asset.
+ */
+export const isProtectedSeedUpload = (
+  relativePath?: string | null
+): boolean => {
+  if (!relativePath || typeof relativePath !== "string") {
+    return false;
+  }
+  const clean = `/${relativePath.trim().replace(/^\/+/, "")}`;
+  return getProtectedSeedUploads().has(clean);
+};
 
 export const ensureUploadDirExists = (subdir?: UploadSubdir): string => {
   const targetDir = subdir ? path.join(UPLOADS_ROOT, subdir) : UPLOADS_ROOT;
@@ -166,4 +218,69 @@ export const cleanupUnsavedTemporaryUpload = async (
   } catch (err) {
     console.error("Failed to cleanup unsaved temporary upload:", err);
   }
+};
+
+export interface OrphanPurgeResult {
+  dryRun: boolean;
+  removedUploadsCount: number;
+  freedBytes: number;
+  deletedUrls: string[];
+}
+
+/**
+ * Walks managed upload subdirectories and unlinks (or previews when `dryRun` is true)
+ * files not present in `allowUrls` whose modification time predates or equals `maxMtimeMs`.
+ */
+export const purgeOrphanedDiskUploads = async (options: {
+  allowUrls: ReadonlySet<string>;
+  maxMtimeMs: number;
+  dryRun?: boolean;
+}): Promise<OrphanPurgeResult> => {
+  const dryRun = Boolean(options.dryRun);
+  let removedUploadsCount = 0;
+  let freedBytes = 0;
+  const deletedUrls: string[] = [];
+
+  for (const subdir of VALID_UPLOAD_SUBDIRS) {
+    const dirPath = path.join(UPLOADS_ROOT, subdir);
+    if (!fs.existsSync(dirPath)) {
+      continue;
+    }
+
+    const entries = await fs.promises.readdir(dirPath, { withFileTypes: true });
+    for (const entry of entries) {
+      if (!entry.isFile() || entry.name.startsWith(".")) {
+        continue;
+      }
+
+      const uploadUrl = `/uploads/${subdir}/${entry.name}`;
+      if (options.allowUrls.has(uploadUrl)) {
+        continue;
+      }
+
+      const resolvedTarget = resolveSafeUploadPath(uploadUrl, subdir);
+      if (!resolvedTarget) {
+        continue;
+      }
+
+      try {
+        const stat = await fs.promises.stat(resolvedTarget);
+        if (stat.mtimeMs > options.maxMtimeMs) {
+          continue;
+        }
+        if (!dryRun) {
+          await fs.promises.unlink(resolvedTarget);
+        }
+        removedUploadsCount += 1;
+        freedBytes += stat.size;
+        deletedUrls.push(uploadUrl);
+      } catch (err: any) {
+        if (err?.code !== "ENOENT") {
+          console.error("Failed to purge orphaned upload:", uploadUrl, err);
+        }
+      }
+    }
+  }
+
+  return { dryRun, removedUploadsCount, freedBytes, deletedUrls };
 };

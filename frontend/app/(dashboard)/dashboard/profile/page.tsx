@@ -3,6 +3,7 @@ import { Metadata } from "next";
 import DashTitle from "@/app/sharedComponents/DashTitle";
 import CardFullLoading from "@/app/sharedComponents/Loders/CardFullLoading";
 import AdminProfileCard from "./components/AdminProfileCard";
+import AdminStorageCleanupCard from "./components/AdminStorageCleanupCard";
 
 export const metadata: Metadata = {
   title: "Admin Profile | EduDrop Console",
@@ -23,6 +24,8 @@ const AdminProfilePage = () => {
       <Suspense fallback={<CardFullLoading />}>
         <AdminProfileCard />
       </Suspense>
+
+      <AdminStorageCleanupCard />
     </div>
   );
 };

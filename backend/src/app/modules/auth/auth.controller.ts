@@ -7,7 +7,10 @@ import * as jose from "jose";
 import config from "../../../config";
 import ApiError from "../../../error/ApiError";
 import { User } from "../user/user.model";
-import { resetDatabaseToSeed } from "../../../helper/seedHelper";
+import {
+  resetDatabaseToSeed,
+  sweepOrphanedLiveUploads,
+} from "../../../helper/seedHelper";
 import {
   checkOwnerUnlockRateLimit,
   clearOwnerUnlockFailures,
@@ -182,6 +185,29 @@ const ownerUnlock = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const requireAdminBearer = async (req: Request) => {
+  const bearer = req.headers["authorization"];
+  const jwtToken =
+    typeof bearer === "string" && bearer.startsWith("Bearer ")
+      ? bearer.split(" ")[1]
+      : "";
+  if (!jwtToken) {
+    throw new ApiError(httpStatus.UNAUTHORIZED, "Unauthorized");
+  }
+
+  const secret = new TextEncoder().encode(config.jwt_secret);
+  const { payload } = await jose.jwtVerify(jwtToken, secret);
+  const email = payload.email as string;
+  const caller = email ? await User.findOne({ email }).lean() : null;
+  if (!caller || caller.role !== "admin") {
+    throw new ApiError(
+      httpStatus.FORBIDDEN,
+      "Forbidden: Admin access required"
+    );
+  }
+  return caller;
+};
+
 const demoReset = catchAsync(async (req: Request, res: Response) => {
   const ownerToken = extractOwnerBypassToken(req);
   const hasOwnerBypass = await verifyOwnerBypassToken(ownerToken);
@@ -195,34 +221,65 @@ const demoReset = catchAsync(async (req: Request, res: Response) => {
       );
     }
 
-    const bearer = req.headers["authorization"];
-    const jwtToken =
-      typeof bearer === "string" && bearer.startsWith("Bearer ")
-        ? bearer.split(" ")[1]
-        : "";
-    if (!jwtToken) {
-      throw new ApiError(httpStatus.UNAUTHORIZED, "Unauthorized");
-    }
-
-    const secret = new TextEncoder().encode(config.jwt_secret);
-    const { payload } = await jose.jwtVerify(jwtToken, secret);
-    const email = payload.email as string;
-    const caller = email ? await User.findOne({ email }).lean() : null;
-    if (!caller || caller.role !== "admin") {
-      throw new ApiError(
-        httpStatus.FORBIDDEN,
-        "Forbidden: Admin access required"
-      );
-    }
+    await requireAdminBearer(req);
   }
 
-  await resetDatabaseToSeed({ silent: true });
+  const resetSummary = await resetDatabaseToSeed({ silent: true });
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: "Demo database restored to clean seed snapshot",
-    data: { resetAt: new Date().toISOString() },
+    data: {
+      resetAt: new Date().toISOString(),
+      removedUploadsCount: resetSummary.removedUploadsCount,
+      freedBytes: resetSummary.freedBytes,
+    },
+  });
+});
+
+const cleanupUploads = catchAsync(async (req: Request, res: Response) => {
+  const ownerToken = extractOwnerBypassToken(req);
+  const hasOwnerBypass = await verifyOwnerBypassToken(ownerToken);
+  const hasCronBypass = verifyCronSecret(req);
+
+  if (!hasCronBypass) {
+    if (config.demoMode && !hasOwnerBypass) {
+      throw new ApiError(
+        httpStatus.FORBIDDEN,
+        "Demo Mode: Storage cleanup requires Owner Mode unlock or Reset Demo DB."
+      );
+    }
+    await requireAdminBearer(req);
+  }
+
+  const rawMinAgeHours = req.body?.minAgeHours ?? req.query?.minAgeHours;
+  const parsedHours = Number(rawMinAgeHours);
+  const minAgeHours =
+    rawMinAgeHours !== undefined && Number.isFinite(parsedHours)
+      ? Math.min(8760, Math.max(0, parsedHours))
+      : 24;
+  const dryRun =
+    req.body?.dryRun === true ||
+    req.body?.dryRun === "true" ||
+    req.query?.dryRun === "true";
+
+  const result = await sweepOrphanedLiveUploads({
+    minAgeMs: minAgeHours * 60 * 60 * 1000,
+    dryRun,
+  });
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: dryRun
+      ? `Dry run complete: found ${result.removedUploadsCount} unreferenced upload(s)`
+      : `Cleaned ${result.removedUploadsCount} unreferenced upload(s)`,
+    data: {
+      cleanedAt: new Date().toISOString(),
+      minAgeHours,
+      ...result,
+    },
   });
 });
 
@@ -240,4 +297,5 @@ export const AuthController = {
   getDemoStatus,
   ownerUnlock,
   demoReset,
+  cleanupUploads,
 };

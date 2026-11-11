@@ -2,11 +2,27 @@ import { Server } from "http";
 import mongoose from "mongoose";
 import app from "./app";
 import config from "./config";
-import { resetDatabaseToSeed } from "./helper/seedHelper";
+import {
+  DEFAULT_ORPHAN_GRACE_MS,
+  resetDatabaseToSeed,
+  sweepOrphanedLiveUploads,
+} from "./helper/seedHelper";
 
 let server: Server;
 let demoResetTimer: NodeJS.Timeout | null = null;
+let orphanCleanupTimer: NodeJS.Timeout | null = null;
 let isShuttingDown = false;
+
+const clearBackgroundTimers = () => {
+  if (demoResetTimer) {
+    clearInterval(demoResetTimer);
+    demoResetTimer = null;
+  }
+  if (orphanCleanupTimer) {
+    clearInterval(orphanCleanupTimer);
+    orphanCleanupTimer = null;
+  }
+};
 
 process.on("unhandledRejection", (reason, promise) => {
   console.log("Unhandled Promise Rejection:", reason);
@@ -17,10 +33,7 @@ process.on("unhandledRejection", (reason, promise) => {
     // If the server is not already shutting down and the error is not a duplicate order ID,
     // initiate a graceful shutdown.
     isShuttingDown = true;
-    if (demoResetTimer) {
-      clearInterval(demoResetTimer);
-      demoResetTimer = null;
-    }
+    clearBackgroundTimers();
     if (server) {
       server.close(() => {
         console.log("Server closed gracefully");
@@ -68,17 +81,25 @@ async function bootstrap() {
     console.log("Database connected");
 
     if (config.demoMode) {
-      await resetDatabaseToSeed({ silent: true });
+      const initSummary = await resetDatabaseToSeed({ silent: true });
       console.log(
-        `Demo Mode enabled: seeded clean baseline (auto-reset every ${config.demoResetIntervalMinutes}m)`
+        `Demo Mode enabled: seeded clean baseline (auto-reset every ${config.demoResetIntervalMinutes}m${
+          initSummary.removedUploadsCount > 0
+            ? `, purged ${initSummary.removedUploadsCount} orphaned upload(s)`
+            : ""
+        })`
       );
 
       const intervalMs = config.demoResetIntervalMinutes * 60 * 1000;
       demoResetTimer = setInterval(() => {
         resetDatabaseToSeed({ silent: true })
-          .then(() => {
+          .then((summary) => {
             console.log(
-              `[Demo Mode] Auto-reset completed at ${new Date().toISOString()}`
+              `[Demo Mode] Auto-reset completed at ${new Date().toISOString()}${
+                summary.removedUploadsCount > 0
+                  ? ` (purged ${summary.removedUploadsCount} orphaned upload(s))`
+                  : ""
+              }`
             );
           })
           .catch((err) => {
@@ -86,6 +107,21 @@ async function bootstrap() {
           });
       }, intervalMs);
       demoResetTimer.unref();
+    } else {
+      orphanCleanupTimer = setInterval(() => {
+        sweepOrphanedLiveUploads({ minAgeMs: DEFAULT_ORPHAN_GRACE_MS })
+          .then((summary) => {
+            if (summary.removedUploadsCount > 0) {
+              console.log(
+                `[Storage GC] Swept ${summary.removedUploadsCount} orphaned upload(s) (${Math.round(summary.freedBytes / 1024)} KB)`
+              );
+            }
+          })
+          .catch((err) => {
+            console.error("[Storage GC] Periodic sweep failed:", err);
+          });
+      }, DEFAULT_ORPHAN_GRACE_MS);
+      orphanCleanupTimer.unref();
     }
 
     const port = config.port || 5000;
@@ -97,10 +133,7 @@ async function bootstrap() {
       console.log("SIGTERM IS RECEIVED");
       if (!isShuttingDown) {
         isShuttingDown = true;
-        if (demoResetTimer) {
-          clearInterval(demoResetTimer);
-          demoResetTimer = null;
-        }
+        clearBackgroundTimers();
         server.close(() => {
           console.log("Server closed gracefully");
           process.exit(0);
