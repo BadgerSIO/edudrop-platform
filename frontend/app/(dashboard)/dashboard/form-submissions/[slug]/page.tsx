@@ -1,30 +1,27 @@
 import React from "react";
 import { SERVERURLAPI } from "@/lib/constants";
 import { getCookie } from "@/app/utility/handleCookie";
+import { safeFetchJson } from "@/app/utility/safeFetchJson";
 import InboxDetailHub from "@/app/sharedComponents/inbox/InboxDetailHub";
 import { AlertCircle } from "lucide-react";
 import Link from "next/link";
 
 async function getSubmissionDataById(id: string) {
-  try {
-    const jwt = await getCookie("jwt");
-    if (!jwt) {
-      return null;
-    }
-    const res = await fetch(`${SERVERURLAPI}/submissions/${id}`, {
+  const jwt = await getCookie("jwt");
+  if (!jwt) {
+    return null;
+  }
+  return safeFetchJson<{ data?: any } | null>(
+    `${SERVERURLAPI}/submissions/${id}`,
+    {
       headers: {
         Authorization: `Bearer ${jwt}`,
       },
       next: { tags: ["singleSubmission", "SubmissionDataCollection"] },
       cache: "no-store",
-    });
-    if (!res.ok) {
-      return null;
-    }
-    return res.json();
-  } catch {
-    return null;
-  }
+    },
+    null
+  );
 }
 
 const SubmissionDetails = async ({

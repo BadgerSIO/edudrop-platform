@@ -2,22 +2,19 @@ import { SERVERURLAPI } from "@/lib/constants";
 import React from "react";
 import OrderDetails from "./components/OrderDetails";
 import { getCookie } from "@/app/utility/handleCookie";
+import { safeFetchJson } from "@/app/utility/safeFetchJson";
 
 async function getSingleOrderById(id: string) {
-  try {
-    const jwt = await getCookie("jwt");
-    const res = await fetch(`${SERVERURLAPI}/order/${id}`, {
+  const jwt = await getCookie("jwt");
+  return safeFetchJson<{ data?: any } | null>(
+    `${SERVERURLAPI}/order/${id}`,
+    {
       headers: jwt ? { Authorization: `Bearer ${jwt}` } : {},
       next: { tags: ["orderInfo"] },
       cache: "no-store",
-    });
-    if (!res.ok) {
-      return null;
-    }
-    return res.json();
-  } catch {
-    return null;
-  }
+    },
+    null
+  );
 }
 
 const SingleDonarOrder = async ({ params }: { params: Promise<{ slug: string }> }) => {

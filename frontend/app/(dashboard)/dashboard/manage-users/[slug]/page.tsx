@@ -1,6 +1,7 @@
 import React from "react";
 import { SERVERURLAPI } from "@/lib/constants";
 import { getCookie } from "@/app/utility/handleCookie";
+import { safeFetchJson } from "@/app/utility/safeFetchJson";
 import UserDetailHub from "./components/UserDetailHub";
 import { AlertCircle } from "lucide-react";
 import Link from "next/link";
@@ -10,20 +11,16 @@ async function getSingleUser(id: string) {
   if (!jwt) {
     return null;
   }
-  try {
-    const res = await fetch(`${SERVERURLAPI}/user/${id}`, {
+  return safeFetchJson<{ data?: any } | null>(
+    `${SERVERURLAPI}/user/${id}`,
+    {
       headers: {
         Authorization: `Bearer ${jwt}`,
       },
       cache: "no-store",
-    });
-    if (!res.ok) {
-      return null;
-    }
-    return res.json();
-  } catch {
-    return null;
-  }
+    },
+    null
+  );
 }
 
 const ManageUserSingle = async ({

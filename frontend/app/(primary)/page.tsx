@@ -13,18 +13,15 @@ import {
   contactInfoData as defaultContactInfoData,
 } from "./data/staticHomeData";
 import { SERVERURLAPI } from "@/lib/constants";
+import { safeFetchJson } from "../utility/safeFetchJson";
 
 async function getCMSData() {
-  try {
-    const res = await fetch(`${SERVERURLAPI}/cms`, {
-      cache: "no-store",
-    });
-    if (!res.ok) return null;
-    const json = await res.json();
-    return json?.data;
-  } catch {
-    return null;
-  }
+  const json = await safeFetchJson<{ data?: any } | null>(
+    `${SERVERURLAPI}/cms`,
+    { cache: "no-store" },
+    null
+  );
+  return json?.data ?? null;
 }
 
 export default async function Home() {

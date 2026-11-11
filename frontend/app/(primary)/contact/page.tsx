@@ -1,6 +1,7 @@
 import React, { Suspense } from "react";
 import { Metadata } from "next";
 import { SERVERURLAPI } from "@/lib/constants";
+import { safeFetchJson } from "@/app/utility/safeFetchJson";
 import { contactInfoData as defaultContactInfoData } from "../data/staticHomeData";
 import { IContactInfo } from "@/app/types/ContactInfo";
 import CommonLoader from "@/app/sharedComponents/Loders/CommonLoader";
@@ -15,16 +16,12 @@ export const metadata: Metadata = {
 };
 
 async function getContactInfo(): Promise<IContactInfo> {
-  try {
-    const res = await fetch(`${SERVERURLAPI}/cms`, {
-      cache: "no-store",
-    });
-    if (!res.ok) return defaultContactInfoData;
-    const json = await res.json();
-    return json?.data?.contactInfo || defaultContactInfoData;
-  } catch {
-    return defaultContactInfoData;
-  }
+  const json = await safeFetchJson<{ data?: { contactInfo?: IContactInfo } } | null>(
+    `${SERVERURLAPI}/cms`,
+    { cache: "no-store" },
+    null
+  );
+  return json?.data?.contactInfo || defaultContactInfoData;
 }
 
 export default async function ContactPage() {

@@ -5,27 +5,24 @@ import TotalSchools from "./DashInfoCards/TotalSchools";
 import TotalDonar from "./DashInfoCards/TotalDonar";
 import { getCookie } from "@/app/utility/handleCookie";
 import { SERVERURLAPI } from "@/lib/constants";
+import { safeFetchJson } from "@/app/utility/safeFetchJson";
 
 export async function getCounts() {
   const jwt = await getCookie("jwt");
   if (!jwt) {
     return null;
   }
-  try {
-    const res = await fetch(`${SERVERURLAPI}/edudrop-admin/get-counts`, {
+  return safeFetchJson<{ data?: any } | null>(
+    `${SERVERURLAPI}/edudrop-admin/get-counts`,
+    {
       headers: {
         Authorization: `Bearer ${jwt}`,
       },
       next: { tags: ["getCounts"] },
       cache: "no-store",
-    });
-    if (!res.ok) {
-      return null;
-    }
-    return res.json();
-  } catch {
-    return null;
-  }
+    },
+    null
+  );
 }
 
 const DashInfoCards = async () => {
