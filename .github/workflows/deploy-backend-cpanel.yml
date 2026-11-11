@@ -14,7 +14,7 @@ concurrency:
 
 jobs:
   build-and-deploy:
-    environment: production # Use the exact name configured in Settings → Environments
+    environment: edudropprod # Use the exact name configured in Settings → Environments
     name: Build TypeScript & Deploy to cPanel
     runs-on: ubuntu-latest
 
