@@ -10,6 +10,7 @@ import { Submissions } from "./submissions.model";
 import { transport } from "../../../config/nodemailer";
 import { User } from "../user/user.model";
 import emailTemplate from "../../../shared/emailTemplate";
+import { NotificationService } from "../notification/notification.services";
 
 const createSubmissions = async (
   payload: ISubmissions
@@ -26,14 +27,15 @@ const createSubmissions = async (
     isDeleted: false,
   };
 
+  let adminUser: { _id: any; email: string } | null = null;
   // Non-blocking try-catch for admin SMTP notification
   try {
-    const admin = await User.findOne({ role: "admin" }, { email: 1 }).lean();
-    if (admin) {
+    adminUser = await User.findOne({ role: "admin" }, { _id: 1, email: 1 }).lean();
+    if (adminUser) {
       const topicTag = submissionData.topic ? ` [${submissionData.topic}]` : "";
       const info = await transport.sendMail({
         from: `"EduDrop Platform Inquiry" <${submissionData.email}>`,
-        to: admin.email,
+        to: adminUser.email,
         subject: `Platform Inquiry${topicTag} from ${submissionData.firstName} ${submissionData.lastName}`,
         text: submissionData.message,
         html: emailTemplate("contactForm", submissionData),
@@ -45,6 +47,18 @@ const createSubmissions = async (
   }
 
   const result = await Submissions.create(submissionData);
+
+  if (result && adminUser?._id) {
+    const senderName = `${submissionData.firstName} ${submissionData.lastName}`.trim() || submissionData.email;
+    const topicPrefix = submissionData.topic ? `[${submissionData.topic}] ` : "";
+    NotificationService.createNotificationSafe({
+      user: adminUser._id,
+      message: `${topicPrefix}New inquiry from ${senderName}`,
+      link: `/dashboard/form-submissions/${result._id}`,
+      read: false,
+    }).catch(console.error);
+  }
+
   return result;
 };
 

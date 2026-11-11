@@ -6,6 +6,7 @@ import BentoCard from "@/app/sharedComponents/ui/BentoCard";
 import SectionEyebrow from "@/app/sharedComponents/ui/SectionEyebrow";
 import ActionPillButton from "@/app/sharedComponents/ui/ActionPillButton";
 import Reveal from "@/app/sharedComponents/ui/Reveal";
+import SocialLinkPills from "@/app/sharedComponents/ui/SocialLinkPills";
 import { Mail, MapPin, Phone, ShieldCheck } from "lucide-react";
 
 const Contact = ({ data }: { data: IContactInfo }) => {
@@ -120,6 +121,8 @@ const Contact = ({ data }: { data: IContactInfo }) => {
                   </div>
                 </div>
               </div>
+
+              <SocialLinkPills contactInfo={data} heading="Social Links" />
             </BentoCard>
           </Reveal>
 

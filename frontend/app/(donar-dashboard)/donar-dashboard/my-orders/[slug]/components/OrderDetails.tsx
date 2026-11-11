@@ -8,6 +8,7 @@ import toast from "react-hot-toast";
 import { CreditCard, Download, ShieldCheck } from "lucide-react";
 import { ActionPillButton } from "@/app/sharedComponents/ui/ActionPillButton";
 import OrderTimeline from "@/app/sharedComponents/OrderTimeline";
+import OrderReferenceHeader from "@/app/sharedComponents/OrderReferenceHeader";
 import { generateOrderInvoice } from "@/app/utility/generateOrderInvoice";
 
 const OrderDetails = ({ order }: { order: IOrder }) => {
@@ -35,6 +36,8 @@ const OrderDetails = ({ order }: { order: IOrder }) => {
 
   return (
     <div className="space-y-6">
+      <OrderReferenceHeader order={order} audience="donor" />
+
       {/* Payment Banner / Action Card */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-2xl border border-border-subtle bg-white p-5 sm:p-6 shadow-bento">
         <div className="flex items-center gap-3">

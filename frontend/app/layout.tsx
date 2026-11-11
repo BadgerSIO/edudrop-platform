@@ -11,6 +11,8 @@ export const metadata: Metadata = {
   title: "EduDrop — Every Drop Counts for Education",
   description:
     "Sponsor clean spring water, hydration dispensers, and essential classroom supplies directly for partner schools through the EduDrop Foundation.",
+  authors: [{ name: "Saad Ibne Omar", url: "https://www.saadportfolio.xyz/" }],
+  creator: "Saad Ibne Omar",
 };
 
 export default function RootLayout({

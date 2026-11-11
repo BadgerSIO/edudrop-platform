@@ -38,6 +38,8 @@ Our design system uses a **3-tier token architecture** (Primitive RGB Channels â
 - **Micro-Typography (Labels & Eyebrows)**:
   - Form labels & metadata headers: `text-xs font-semibold uppercase tracking-wider text-text-ink`
   - Supporting descriptions: `text-sm sm:text-base leading-relaxed text-text-body`
+- **Copywriting & Messaging Tone**:
+  - Use easy-to-understand, precise, and short sentences for public and dashboard UI copy. Avoid overly warm, chatty, or filler phrasing.
 
 ---
 
@@ -83,6 +85,11 @@ Always import and compose these primitives from `app/sharedComponents/ui/` inste
    - Pill-shaped category/section tag (`variant?: "light" | "dark" | "lime"`).
 5. **[`FloatingPillTags`](file:///home/saad/Downloads/projects/naptech/sips/frontend/app/sharedComponents/ui/FloatingPillTags.tsx)**:
    - Frosted glass or solid pill tags overlaid on photography.
+6. **[`BrandLogo`](file:///home/saad/Downloads/projects/naptech/sips/frontend/app/sharedComponents/ui/BrandLogo.tsx)**:
+   - Surface-aware brand lockup (`variant="on-dark"` for `#0A3C28` Navbar/Footer/Auth surfaces without white capsule wrappers; `variant="on-light"` for white/Bento surfaces; `compactBelowLg` in sidebars). Verify >= 4.5:1 contrast against the underlying surface.
+7. **[`StatusBadge`](file:///home/saad/Downloads/projects/naptech/sips/frontend/app/sharedComponents/ui/StatusBadge.tsx) & [`StatusChangeDialog`](file:///home/saad/Downloads/projects/naptech/sips/frontend/app/sharedComponents/ui/StatusChangeDialog.tsx)**:
+   - Table `Status` columns must render a strictly read-only `<StatusBadge>` (`<span>`, never a 1-click mutating toggle button).
+   - Trigger status changes explicitly from row `â‹®` Actions menus or detail headers via `<StatusChangeDialog>` (displaying `Current Status -> Target Status` + impact), with modal open state lifted *outside* `<DropdownMenuContent>`.
 
 ---
 
@@ -110,23 +117,32 @@ When asked to create a new theme, color scheme, or seasonal/partner re-skin:
 ### A. Next.js 16 Image Optimization & Local Media
 - **Localhost Media SSRF Protection**: In local development where the frontend consumes media served by the Express backend on `localhost` or `127.0.0.1`, `next.config.js` **must** include `images.dangerouslyAllowLocalIP: true` alongside `remotePatterns`.
 - **Remote Patterns**: Ensure `remotePatterns` entries include `protocol: "http"`, `hostname: "localhost"`, `port: "5000"`, and `pathname: "/**"`.
+- **Upload Validation, Optimization & URLs**: Validate raster uploads client-side via [`validateImageFile`](file:///home/saad/Downloads/projects/naptech/sips/frontend/app/utility/validateImageFile.ts) (`JPEG`, `PNG`, `WebP`, `AVIF` <= 5MB; never allow `.svg` in user/school/product uploads), resolve backend media paths via [`handleBuildImage`](file:///home/saad/Downloads/projects/naptech/sips/frontend/app/utility/handleBuildImage.ts), and pass explicit `sizes` on every `<Image fill />`.
 
 ### B. Next.js 16 Asynchronous APIs
 - **Dynamic Route `params`**: In Next.js 15+, dynamic route `params` (and `searchParams`) in Page components, Layouts, and `generateMetadata` are asynchronous Promises (`params: Promise<{ slug: string }>`). Never access `params.slug` synchronously. Always unwrap using `const { slug } = await params;`.
 - **Asynchronous Cookies**: Next.js 16 treats `cookies()` as asynchronous. Always `await cookies()` before calling `.get()`, `.set()`, or `.delete()` in server actions or route handlers.
 - **Cache Tag Revalidation**: When calling `revalidateTag(tag, profile)`, always pass the profile argument (e.g., `revalidateTag(tag, "default")`) to satisfy the two-argument signature.
+- **Router Cache, Prefetching & Read-on-GET Routes**:
+  - Never let `DataTable` or `<Link>` prefetch routes whose Server Components trigger read/state side effects (pass `enablePrefetch={false}` on `<DataTable>` and `prefetch={false}` on links in inbox directories).
+  - Layout Server Components (such as sidebar wrappers) do not re-run on child navigation or browser Back (`popstate`). Synchronize persistent counters (inbox unread counts, bell notifications) via custom events + `cache: "no-store"` endpoints and `router.refresh()` on dirty return.
 
 ### C. Tailwind CSS v4 & Cascade Layers Invariants
 - **Layer Encapsulation**: Never place global CSS element selectors (e.g., `*`, `body`, `html`) unlayered in `globals.css`.
 - **Cascade Priority**: In CSS Cascade Layers, unlayered styles override layered styles (`@layer utilities`). All global resets (such as default `border-color: hsl(var(--border))`) must strictly reside inside `@layer base { ... }` so utility classes like `border-white/10`, `border-transparent`, and `border-border-subtle` take effect.
+- **Interactive Cursors & Anti-Flicker Dropdowns**:
+  - Keep `@layer base` cursor rules (`button:not(:disabled), [role="button"]:not([aria-disabled="true"]), summary { cursor: pointer; }`) intact.
+  - Style Radix dropdown panels with compositor-safe `.dropdown-menu-panel` (avoid `zoom-in-*`), explicit resting `bg-white`, scoped `group/<name>` wrappers, synchronized `hover:`, `focus:`, and `data-[highlighted]:` colors, and avoid `transition-all` on animated child icons inside menu items.
 
 ### D. Dark Header & Hero Visual Continuity
 - **Header Rest State**: When the navbar header sits atop a dark background (`bg-surface-forest`), keep the header border transparent (`border-b border-transparent`) at rest to prevent jarring boundary lines cutting across the hero.
 - **Header Scrolled State**: Transition to subtle frosted glass borders (`border-b border-white/10` with `backdrop-blur-md`) only when scrolling over light-themed page sections.
 - **Button & Pill Outlines**: For glass buttons and pills on dark backgrounds, use soft opacity borders (`border-white/15` with `hover:border-white/25`) rather than opaque or bright white borders.
 
-### E. Authentication & Administrative Portal Privacy
+### E. Authentication, Admin Protection & Notifications
 - **Unadvertised Private Portals**: Never expose direct links or navigation buttons to restricted administration or school bursar interfaces (`/admin-login`, `/bursar-login`) on public authentication pages (`/login`, `/register`).
+- **Protected Admin Self-Account Controls**: `/dashboard/profile` is strictly read-only for Admins (no self profile edits or self password changes), and Admins cannot suspend, reset passwords on, or archive their own or other admin accounts in `manage-users`.
+- **Notifications Behavior**: Notification clicks must mark read via `PATCH` (retaining recent history) and navigate immediately; explicit dismissal uses `DELETE`. Never call `DELETE` directly on click.
 
 ### F. Banned Legacy Patterns
 - Do **not** use legacy cyan/navy hex classes (`#64CDF4`, `#02263C`, `#0E76BC`, `#EDFAFF`) in any new or redesigned UI.

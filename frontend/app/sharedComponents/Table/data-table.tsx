@@ -32,7 +32,10 @@ interface DataTableProps<TData, TValue> {
   variant?: "card" | "embedded";
 }
 
-export function DataTable<TData extends { _id: string; slug?: string }, TValue>({
+export function DataTable<
+  TData extends { _id: string; slug?: string; orderId?: string },
+  TValue
+>({
   columns,
   data = [],
   searchPlaceholder = "Search records...",
@@ -46,24 +49,24 @@ export function DataTable<TData extends { _id: string; slug?: string }, TValue>(
   const pathname = usePathname();
 
   const handleRouting = (rowItem: any) => {
+    const targetKey = rowItem?.orderId || rowItem?.slug || rowItem?._id;
     if (pathname === "/dashboard") {
-      router.push(`${pathname}/orders/${rowItem?._id}`);
-    } else if (
-      pathname === "/dashboard/product-list" ||
-      pathname === "/dashboard/schools-list"
-    ) {
-      router.push(`${pathname}/${rowItem?.slug || rowItem?._id}`);
+      router.push(`${pathname}/orders/${targetKey}`);
     } else {
-      router.push(`${pathname}/${rowItem?._id}`);
+      router.push(`${pathname}/${targetKey}`);
     }
   };
 
   useEffect(() => {
     if (!enablePrefetch || !data?.length) return;
     data.forEach((row) => {
-      const idOrSlug = row.slug || row._id;
-      if (idOrSlug) {
-        router.prefetch(`${pathname}/${idOrSlug}`);
+      const targetKey = row.orderId || row.slug || row._id;
+      if (targetKey) {
+        const dest =
+          pathname === "/dashboard"
+            ? `${pathname}/orders/${targetKey}`
+            : `${pathname}/${targetKey}`;
+        router.prefetch(dest);
       }
     });
   }, [data, enablePrefetch, pathname, router]);
@@ -77,6 +80,35 @@ export function DataTable<TData extends { _id: string; slug?: string }, TValue>(
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     onGlobalFilterChange: setGlobalFilter,
+    globalFilterFn: (row, _columnId, filterValue) => {
+      const term = String(filterValue || "").trim().toLowerCase();
+      if (!term) return true;
+
+      const orig = row.original as Record<string, any>;
+      const haystackParts: unknown[] = [
+        orig?.orderId,
+        orig?.transactionId,
+        orig?.email,
+        orig?.name?.firstName,
+        orig?.name?.lastName,
+        orig?.title,
+        orig?.name,
+        orig?.slug,
+        orig?.schoolId?.name,
+        orig?.school?.name,
+        orig?.orderStatus,
+        orig?.subject,
+        ...row.getAllCells().map((cell) => cell.getValue()),
+      ];
+
+      if (Array.isArray(orig?.products)) {
+        orig.products.forEach((p: any) => haystackParts.push(p?.title));
+      }
+
+      return haystackParts.some(
+        (val) => typeof val === "string" && val.toLowerCase().includes(term)
+      );
+    },
     state: {
       sorting,
       globalFilter,

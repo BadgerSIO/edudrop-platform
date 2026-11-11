@@ -867,41 +867,61 @@ export default function SiteContentCMSPage() {
                 />
               </div>
 
-              <div>
-                <label className="text-xs font-semibold text-text-ink">Facebook URL</label>
-                <input
-                  type="text"
-                  value={content?.contactInfo?.facebook ?? ""}
-                  onChange={(e) =>
-                    setContent({
-                      ...content,
-                      contactInfo: {
-                        ...content.contactInfo,
-                        facebook: e.target.value,
-                      },
-                    })
-                  }
-                  className="mt-1 w-full rounded-lg border border-border-subtle p-2.5 text-xs text-text-ink outline-none"
-                />
-              </div>
-
-              <div>
-                <label className="text-xs font-semibold text-text-ink">Instagram URL</label>
-                <input
-                  type="text"
-                  value={content?.contactInfo?.instagram ?? ""}
-                  onChange={(e) =>
-                    setContent({
-                      ...content,
-                      contactInfo: {
-                        ...content.contactInfo,
-                        instagram: e.target.value,
-                      },
-                    })
-                  }
-                  className="mt-1 w-full rounded-lg border border-border-subtle p-2.5 text-xs text-text-ink outline-none"
-                />
-              </div>
+              {[
+                {
+                  key: "linkedin" as const,
+                  label: "LinkedIn URL",
+                  placeholder: "https://www.linkedin.com/in/saad-ibne-omar/",
+                },
+                {
+                  key: "facebook" as const,
+                  label: "Facebook URL",
+                  placeholder: "https://www.facebook.com/...",
+                },
+                {
+                  key: "instagram" as const,
+                  label: "Instagram URL",
+                  placeholder: "https://www.instagram.com/...",
+                },
+                {
+                  key: "youtube" as const,
+                  label: "YouTube URL",
+                  placeholder: "https://www.youtube.com/...",
+                },
+                {
+                  key: "tiktok" as const,
+                  label: "TikTok URL",
+                  placeholder: "https://www.tiktok.com/...",
+                },
+              ].map((socialField) => {
+                const inputId = `cms-contact-${socialField.key}`;
+                return (
+                  <div key={socialField.key}>
+                    <label
+                      htmlFor={inputId}
+                      className="text-xs font-semibold text-text-ink"
+                    >
+                      {socialField.label}
+                    </label>
+                    <input
+                      id={inputId}
+                      type="url"
+                      placeholder={socialField.placeholder}
+                      value={content?.contactInfo?.[socialField.key] ?? ""}
+                      onChange={(e) =>
+                        setContent({
+                          ...content,
+                          contactInfo: {
+                            ...content.contactInfo,
+                            [socialField.key]: e.target.value,
+                          },
+                        })
+                      }
+                      className="mt-1 w-full rounded-lg border border-border-subtle p-2.5 text-xs text-text-ink outline-none focus:border-surface-forest"
+                    />
+                  </div>
+                );
+              })}
             </div>
 
             {/* SEO Section */}

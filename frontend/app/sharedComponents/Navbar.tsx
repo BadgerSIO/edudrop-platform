@@ -9,6 +9,7 @@ import { Menu, ShoppingBag, X, LogIn } from "lucide-react";
 import { useAuthContext } from "../context/AuthContext";
 import { useNavbarContext } from "../context/NavContext";
 import ActionPillButton from "./ui/ActionPillButton";
+import { isStaffRole } from "./RoleCheckoutGuard";
 import { cn } from "@/lib/utils";
 import BrandLogo from "./ui/BrandLogo";
 
@@ -102,20 +103,22 @@ export const Navbar = () => {
 
           {/* Right Action Cluster */}
           <div className="flex items-center gap-3">
-            {/* Cart Trigger */}
-            <button
-              type="button"
-              onClick={() => setIsCartOpen(true)}
-              aria-label={`Open shopping cart (${distinctProductCount} items)`}
-              className="relative flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/10 text-white transition-all hover:bg-white/20 hover:border-white/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-lime cursor-pointer"
-            >
-              <ShoppingBag className="h-5 w-5" />
-              {distinctProductCount > 0 && (
-                <span className="absolute -right-1.5 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-brand-lime text-xs font-bold text-surface-forest shadow-sm animate-in zoom-in-50 duration-200">
-                  {distinctProductCount}
-                </span>
-              )}
-            </button>
+            {/* Cart Trigger (hidden for Bursar/Admin unless stale items remain in local cart) */}
+            {(!isStaffRole(data?.role) || distinctProductCount > 0) && (
+              <button
+                type="button"
+                onClick={() => setIsCartOpen(true)}
+                aria-label={`Open shopping cart (${distinctProductCount} items)`}
+                className="relative flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/10 text-white transition-all hover:bg-white/20 hover:border-white/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-lime cursor-pointer"
+              >
+                <ShoppingBag className="h-5 w-5" />
+                {distinctProductCount > 0 && (
+                  <span className="absolute -right-1.5 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-brand-lime text-xs font-bold text-surface-forest shadow-sm animate-in zoom-in-50 duration-200">
+                    {distinctProductCount}
+                  </span>
+                )}
+              </button>
+            )}
 
             {/* User Account / Profile Menu or Sign In */}
             {loading ? (

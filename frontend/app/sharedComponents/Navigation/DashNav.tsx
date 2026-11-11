@@ -9,12 +9,23 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { AlignRight, LayoutDashboard, LogOut, Settings, User, X } from "lucide-react";
-import { usePathname } from "next/navigation";
+import {
+  AlignRight,
+  KeyRound,
+  LayoutDashboard,
+  Lock,
+  LogOut,
+  RotateCcw,
+  Settings,
+  User,
+  X,
+} from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
 import { useAuthContext } from "@/app/context/AuthContext";
 import useAuth from "@/app/hooks/useAuth";
 import { SERVERURL } from "@/lib/constants";
 import Notifications from "./Notifications";
+import OwnerUnlockModal from "./OwnerUnlockModal";
 
 const navItems = [
   { href: "/", text: "Home" },
@@ -24,10 +35,33 @@ const navItems = [
 
 const DashNav = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { data, loading } = useAuthContext();
+  const [unlockModalOpen, setUnlockModalOpen] = useState(false);
+  const [resetting, setResetting] = useState(false);
+  const {
+    data,
+    loading,
+    demoStatus,
+    unlockOwnerMode,
+    lockOwnerMode,
+    resetDemoDatabase,
+  } = useAuthContext();
   const pathname = usePathname();
+  const router = useRouter();
   const { signout } = useAuth();
   const [profileImageUrl, setProfileImageUrl] = useState("/user-avatar.webp");
+
+  const handleResetDemo = async () => {
+    if (resetting) return;
+    setResetting(true);
+    try {
+      const ok = await resetDemoDatabase();
+      if (ok) {
+        router.refresh();
+      }
+    } finally {
+      setResetting(false);
+    }
+  };
 
   useEffect(() => {
     let buildUrl = "/user-avatar.webp";
@@ -82,7 +116,7 @@ const DashNav = () => {
         : `${data?.admin?.name?.firstName || ""} ${data?.admin?.name?.lastName || ""}`.trim() || "Platform Administrator";
 
   return (
-    <header className="z-[90] col-start-2 row-start-1 h-20 border-b border-border-subtle bg-white/85 backdrop-blur-md px-6 sm:px-10 lg:px-12">
+    <header className="z-40 col-start-2 row-start-1 h-20 border-b border-border-subtle bg-white/85 backdrop-blur-md px-6 sm:px-10 lg:px-12">
       <div className="mx-auto flex h-full w-full items-center justify-between">
         {/* Left Cluster: Mobile Toggle + Nav Links */}
         <div className="flex items-center gap-4 sm:gap-6">
@@ -125,6 +159,57 @@ const DashNav = () => {
 
         {/* Right utility cluster with generous breathing room */}
         <div className="flex items-center gap-4 sm:gap-6">
+          {demoStatus?.demoMode && (
+            demoStatus.ownerBypassActive ? (
+              <div className="hidden md:flex items-center gap-1.5 rounded-full border border-surface-forest/25 bg-surface-forest px-2.5 py-1 text-[11px] font-bold text-white shadow-xs">
+                <span className="h-2 w-2 rounded-full bg-brand-lime" />
+                <span>Owner Mode Active</span>
+                <button
+                  type="button"
+                  disabled={resetting}
+                  onClick={handleResetDemo}
+                  title="Restore all collections back to the clean seed snapshot"
+                  className="ml-1 inline-flex items-center gap-1 rounded-full bg-white/15 px-2.5 py-0.5 text-[10px] font-semibold text-brand-lime hover:bg-white/25 disabled:opacity-60 transition-colors cursor-pointer"
+                >
+                  <RotateCcw
+                    className={`h-3 w-3 ${resetting ? "animate-spin" : ""}`}
+                  />
+                  <span>{resetting ? "Resetting..." : "Reset Demo DB"}</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={lockOwnerMode}
+                  title="Re-enable Demo Mode restrictions"
+                  className="inline-flex items-center gap-1 rounded-full bg-white/10 px-2 py-0.5 text-[10px] font-semibold text-white/90 hover:bg-white/20 transition-colors cursor-pointer"
+                >
+                  <Lock className="h-3 w-3" />
+                  <span>Lock</span>
+                </button>
+              </div>
+            ) : demoStatus.ownerUnlockConfigured ? (
+              <button
+                type="button"
+                onClick={() => setUnlockModalOpen(true)}
+                title="Public portfolio demo: edits to core schools, products, uploads, and passwords are locked. Site owner: click to unlock."
+                className="hidden md:inline-flex items-center gap-1.5 rounded-full border border-surface-forest/20 bg-surface-bento px-3 py-1.5 text-[11px] font-bold text-surface-forest hover:border-surface-forest/40 hover:bg-surface-bento/80 transition-colors cursor-pointer select-none"
+              >
+                <span className="h-2 w-2 rounded-full bg-brand-lime ring-2 ring-surface-forest/25" />
+                <span>
+                  Public Demo · Auto-Resets {demoStatus.resetIntervalMinutes}m
+                </span>
+              </button>
+            ) : (
+              <div
+                title="Public portfolio demo: interactive orders and inbox toggles work normally; edits to core schools, products, uploads, and passwords are locked."
+                className="hidden md:inline-flex items-center gap-1.5 rounded-full border border-surface-forest/20 bg-surface-bento px-3 py-1.5 text-[11px] font-bold text-surface-forest select-none"
+              >
+                <span className="h-2 w-2 rounded-full bg-brand-lime ring-2 ring-surface-forest/25" />
+                <span>
+                  Public Demo · Auto-Resets {demoStatus.resetIntervalMinutes}m
+                </span>
+              </div>
+            )
+          )}
           <Notifications />
 
           <div className="hidden sm:block h-7 w-px bg-border-subtle/80" />
@@ -209,6 +294,36 @@ const DashNav = () => {
                     </Link>
                   </DropdownMenuItem>
                 )}
+                {demoStatus?.demoMode && demoStatus.ownerBypassActive && (
+                  <>
+                    <DropdownMenuItem
+                      onClick={handleResetDemo}
+                      disabled={resetting}
+                      className={dropdownNavLinkClass}
+                    >
+                      <RotateCcw className="h-4 w-4" />
+                      <span>{resetting ? "Resetting Demo DB..." : "Reset Demo DB Now"}</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={lockOwnerMode}
+                      className={dropdownNavLinkClass}
+                    >
+                      <Lock className="h-4 w-4" />
+                      <span>Lock Demo Mode</span>
+                    </DropdownMenuItem>
+                  </>
+                )}
+                {demoStatus?.demoMode &&
+                  !demoStatus.ownerBypassActive &&
+                  demoStatus.ownerUnlockConfigured && (
+                    <DropdownMenuItem
+                      onClick={() => setUnlockModalOpen(true)}
+                      className={dropdownNavLinkClass}
+                    >
+                      <KeyRound className="h-4 w-4" />
+                      <span>Owner Mode Unlock</span>
+                    </DropdownMenuItem>
+                  )}
                 <DropdownMenuItem
                   onClick={signout}
                   className="flex cursor-pointer items-center gap-2.5 rounded-xl bg-white px-3 py-2 text-xs font-semibold text-red-600 transition-colors duration-150 ease-out hover:bg-red-50 hover:text-red-700 focus:bg-red-50 focus:text-red-700 data-[highlighted]:bg-red-50 data-[highlighted]:text-red-700"
@@ -264,6 +379,12 @@ const DashNav = () => {
           </div>
         </div>
       )}
+
+      <OwnerUnlockModal
+        open={unlockModalOpen}
+        onOpenChange={setUnlockModalOpen}
+        onUnlock={unlockOwnerMode}
+      />
     </header>
   );
 };

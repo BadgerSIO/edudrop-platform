@@ -2,6 +2,8 @@
 import React, { Dispatch, SetStateAction, useEffect, useRef } from "react";
 import CartProductCard from "./CartProductCard";
 import { useNavbarContext } from "../context/NavContext";
+import { useAuthContext } from "../context/AuthContext";
+import RoleCheckoutGuard, { isStaffRole } from "./RoleCheckoutGuard";
 import { X, ShoppingBag, ShieldCheck } from "lucide-react";
 import ActionPillButton from "./ui/ActionPillButton";
 
@@ -19,6 +21,8 @@ const Cart = ({
     captureCount,
     setCaptureCount,
   } = useNavbarContext();
+  const { data: userData } = useAuthContext();
+  const staffBlocked = isStaffRole(userData?.role);
 
   const removeFromCart = (slug: string) => {
     setCaptureCount(!captureCount);
@@ -72,7 +76,8 @@ const Cart = ({
               Sponsorship Cart
             </h2>
             <span className="rounded-full bg-brand-lime px-2.5 py-1 text-xs font-bold text-surface-forest">
-              {cartProducts ? cartProducts.length : 0} items
+              {cartProducts ? cartProducts.length : 0}{" "}
+              {cartProducts?.length === 1 ? "item" : "items"}
             </span>
           </div>
           <button
@@ -86,7 +91,7 @@ const Cart = ({
         </div>
 
         {/* Product Items List */}
-        <div className="flex-1 overflow-y-auto p-6">
+        <div className="flex-1 overflow-y-auto overscroll-contain p-6">
           {hasItems ? (
             <ul className="space-y-4">
               {cartProducts.map((product) => (
@@ -139,17 +144,26 @@ const Cart = ({
               </span>
             </div>
 
-            {/* Checkout Action */}
-            <div onClick={() => setIsCartOpen(false)}>
-              <ActionPillButton
-                variant="lime"
-                href="/checkout"
-                size="lg"
-                className="w-full justify-between"
-              >
-                Proceed to Sponsorship Checkout
-              </ActionPillButton>
-            </div>
+            {/* Checkout Action (guarded for Staff roles) */}
+            {staffBlocked ? (
+              <RoleCheckoutGuard
+                variant="banner"
+                compact
+                redirectTo="/checkout"
+                onSwitchComplete={() => setIsCartOpen(false)}
+              />
+            ) : (
+              <div onClick={() => setIsCartOpen(false)}>
+                <ActionPillButton
+                  variant="lime"
+                  href="/checkout"
+                  size="lg"
+                  className="w-full justify-between"
+                >
+                  Proceed to Sponsorship Checkout
+                </ActionPillButton>
+              </div>
+            )}
           </div>
         )}
       </div>

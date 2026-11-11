@@ -11,6 +11,7 @@ import { handleRevalidation } from "@/app/utility/handleRevalidation";
 import { getCookie } from "@/app/utility/handleCookie";
 import CustomAlertDialouge from "@/app/sharedComponents/CustomAlertDialouge";
 import OrderTimeline from "@/app/sharedComponents/OrderTimeline";
+import OrderReferenceHeader from "@/app/sharedComponents/OrderReferenceHeader";
 import { Download, Loader2 } from "lucide-react";
 import { generateOrderInvoice } from "@/app/utility/generateOrderInvoice";
 
@@ -47,7 +48,7 @@ const OrderDetails = ({ order }: { order: IOrder }) => {
     try {
       const jwt = await getCookie("jwt");
       const response = await axios.patch(
-        `${SERVERURLAPI}/order/status/${order?._id}`,
+        `${SERVERURLAPI}/order/status/${order?.orderId || order?._id}`,
         { orderStatus: "received" },
         {
           headers: jwt
@@ -80,6 +81,8 @@ const OrderDetails = ({ order }: { order: IOrder }) => {
 
   return (
     <div className="space-y-6">
+      <OrderReferenceHeader order={order} audience="bursar" />
+
       {/* Progress Timeline Card */}
       <div className="dash-card-enter rounded-2xl border border-border-subtle bg-white p-6 shadow-bento">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">

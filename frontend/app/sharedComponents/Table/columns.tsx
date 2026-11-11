@@ -42,12 +42,35 @@ const InvoiceActionCell = ({ order }: { order: IOrder }) => {
 
 export const columns: ColumnDef<IOrder>[] = [
   {
-    accessorKey: "_id",
-    header: "Products",
+    accessorKey: "orderId",
+    header: () => (
+      <span className="text-xs font-semibold uppercase tracking-wider text-text-muted">
+        Order ID
+      </span>
+    ),
+    cell: ({ row }) => {
+      const displayId =
+        row.original.orderId ||
+        (row.original._id ? `ORD-${row.original._id.slice(-8).toUpperCase()}` : "N/A");
+      return (
+        <span className="inline-flex items-center rounded-lg border border-border-subtle bg-surface-bento/60 px-2.5 py-1 font-mono text-xs font-bold text-text-ink whitespace-nowrap">
+          {displayId}
+        </span>
+      );
+    },
+  },
+  {
+    id: "products",
+    accessorFn: (row) => row.products?.map((p) => p.title).join(", ") || "",
+    header: () => (
+      <span className="text-xs font-semibold uppercase tracking-wider text-text-muted">
+        Products
+      </span>
+    ),
     cell: ({ row }) => {
       const products = row.original.products;
       return (
-        <div className="flex flex-col gap-1 max-w-[280px]">
+        <div className="flex flex-col gap-1 max-w-[260px]">
           {products?.map((product) => (
             <span
               key={product?._id}

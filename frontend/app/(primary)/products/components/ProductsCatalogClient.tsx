@@ -3,6 +3,7 @@ import React, { useMemo, useRef, useState } from "react";
 import { ICategory, IProduct, isICategory } from "@/app/types/Product";
 import ProductCard from "@/app/sharedComponents/ProductCard";
 import ProductSearchFilter from "./ProductSearchFilter";
+import RoleCheckoutGuard from "@/app/sharedComponents/RoleCheckoutGuard";
 import { runViewTransition, toViewTransitionName } from "@/app/utility/viewTransition";
 import { SearchX } from "lucide-react";
 
@@ -59,6 +60,8 @@ export const ProductsCatalogClient: React.FC<ProductsCatalogClientProps> = ({
 
   return (
     <div ref={containerRef} tabIndex={-1} className="w-full focus:outline-none">
+      <RoleCheckoutGuard variant="banner" redirectTo="/products" className="mb-6" />
+
       {/* Unified Bento Search & Category Filter Toolbar */}
       <ProductSearchFilter
         searchQuery={searchQuery}
