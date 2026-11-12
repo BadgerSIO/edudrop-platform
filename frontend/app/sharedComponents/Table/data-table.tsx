@@ -30,6 +30,8 @@ interface DataTableProps<TData, TValue> {
   enableExport?: boolean;
   enablePrefetch?: boolean;
   variant?: "card" | "embedded";
+  showToolbar?: boolean;
+  showPagination?: boolean;
 }
 
 export function DataTable<
@@ -42,6 +44,8 @@ export function DataTable<
   enableExport = true,
   enablePrefetch = true,
   variant = "card",
+  showToolbar = true,
+  showPagination = true,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [globalFilter, setGlobalFilter] = useState("");
@@ -162,49 +166,51 @@ export function DataTable<
   return (
     <div className={containerClass}>
       {/* Search & Actions Bar */}
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border-b border-border-subtle bg-white px-4 py-3.5 sm:px-5">
-        <div className="relative max-w-sm flex-1">
-          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted" />
-          <input
-            type="text"
-            value={globalFilter ?? ""}
-            onChange={(e) => setGlobalFilter(e.target.value)}
-            placeholder={searchPlaceholder}
-            className="w-full rounded-xl border border-border-subtle bg-white py-2 pl-9 pr-4 text-xs font-medium text-text-ink placeholder:text-text-muted focus:border-surface-forest focus:outline-none focus:ring-1 focus:ring-surface-forest/20"
-          />
-        </div>
-
-        <div className="flex items-center gap-3">
-          {/* Page size selector */}
-          <div className="flex items-center gap-1.5 text-xs text-text-muted">
-            <span>Show</span>
-            <select
-              value={table.getState().pagination.pageSize}
-              onChange={(e) => table.setPageSize(Number(e.target.value))}
-              className="rounded-lg border border-border-subtle bg-white py-1 pl-2.5 pr-7 text-xs font-semibold text-text-ink focus:border-surface-forest focus:outline-none cursor-pointer"
-            >
-              {[10, 20, 30, 50].map((pageSize) => (
-                <option key={pageSize} value={pageSize}>
-                  {pageSize}
-                </option>
-              ))}
-            </select>
+      {showToolbar && (
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border-b border-border-subtle bg-white px-4 py-3.5 sm:px-5">
+          <div className="relative max-w-sm flex-1">
+            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted" />
+            <input
+              type="text"
+              value={globalFilter ?? ""}
+              onChange={(e) => setGlobalFilter(e.target.value)}
+              placeholder={searchPlaceholder}
+              className="w-full rounded-xl border border-border-subtle bg-white py-2 pl-9 pr-4 text-xs font-medium text-text-ink placeholder:text-text-muted focus:border-surface-forest focus:outline-none focus:ring-1 focus:ring-surface-forest/20"
+            />
           </div>
 
-          {enableExport && (
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={exportToCSV}
-              className="h-8 rounded-xl border-border-subtle text-xs font-semibold text-surface-forest hover:bg-surface-bento active:scale-[0.98] motion-reduce:active:scale-100 transition-all"
-            >
-              <Download className="mr-1.5 h-3.5 w-3.5" />
-              Export CSV
-            </Button>
-          )}
+          <div className="flex items-center gap-3">
+            {/* Page size selector */}
+            <div className="flex items-center gap-1.5 text-xs text-text-muted">
+              <span>Show</span>
+              <select
+                value={table.getState().pagination.pageSize}
+                onChange={(e) => table.setPageSize(Number(e.target.value))}
+                className="rounded-lg border border-border-subtle bg-white py-1 pl-2.5 pr-7 text-xs font-semibold text-text-ink focus:border-surface-forest focus:outline-none cursor-pointer"
+              >
+                {[10, 20, 30, 50].map((pageSize) => (
+                  <option key={pageSize} value={pageSize}>
+                    {pageSize}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {enableExport && (
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={exportToCSV}
+                className="h-8 rounded-xl border-border-subtle text-xs font-semibold text-surface-forest hover:bg-surface-bento active:scale-[0.98] motion-reduce:active:scale-100 transition-all"
+              >
+                <Download className="mr-1.5 h-3.5 w-3.5" />
+                Export CSV
+              </Button>
+            )}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Borderless Table Grid inside Card */}
       <Table>
@@ -215,7 +221,7 @@ export function DataTable<
                 return (
                   <TableHead
                     key={header.id}
-                    className="h-11 px-4 text-xs font-semibold uppercase tracking-wider text-text-muted"
+                    className="h-11 px-2.5 min-[1400px]:px-4 text-xs font-semibold uppercase tracking-wider text-text-muted"
                   >
                     {header.isPlaceholder
                       ? null
@@ -242,7 +248,10 @@ export function DataTable<
                 data-state={row.getIsSelected() && "selected"}
               >
                 {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id} className="px-4 py-3.5 text-sm text-text-body">
+                  <TableCell
+                    key={cell.id}
+                    className="px-2.5 min-[1400px]:px-4 py-3.5 text-sm text-text-body"
+                  >
                     {flexRender(
                       cell.column.columnDef.cell,
                       cell.getContext(),
@@ -265,33 +274,35 @@ export function DataTable<
       </Table>
 
       {/* Pagination Bar */}
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border-t border-border-subtle bg-surface-bento/20 px-4 py-3 sm:px-5">
-        <div className="text-xs text-text-muted font-medium">
-          Showing {table.getRowModel().rows.length} of {table.getFilteredRowModel().rows.length} entries
+      {showPagination && (
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border-t border-border-subtle bg-surface-bento/20 px-4 py-3 sm:px-5">
+          <div className="text-xs text-text-muted font-medium">
+            Showing {table.getRowModel().rows.length} of {table.getFilteredRowModel().rows.length} entries
+          </div>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => table.previousPage()}
+              disabled={!table.getCanPreviousPage()}
+              className="h-8 rounded-lg border-border-subtle text-xs font-semibold text-text-ink hover:bg-surface-bento active:scale-[0.98] motion-reduce:active:scale-100 transition-all"
+            >
+              <ChevronLeft className="mr-1 h-3.5 w-3.5" />
+              Previous
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => table.nextPage()}
+              disabled={!table.getCanNextPage()}
+              className="h-8 rounded-lg border-border-subtle text-xs font-semibold text-text-ink hover:bg-surface-bento active:scale-[0.98] motion-reduce:active:scale-100 transition-all"
+            >
+              Next
+              <ChevronRight className="ml-1 h-3.5 w-3.5" />
+            </Button>
+          </div>
         </div>
-        <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-            className="h-8 rounded-lg border-border-subtle text-xs font-semibold text-text-ink hover:bg-surface-bento active:scale-[0.98] motion-reduce:active:scale-100 transition-all"
-          >
-            <ChevronLeft className="mr-1 h-3.5 w-3.5" />
-            Previous
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-            className="h-8 rounded-lg border-border-subtle text-xs font-semibold text-text-ink hover:bg-surface-bento active:scale-[0.98] motion-reduce:active:scale-100 transition-all"
-          >
-            Next
-            <ChevronRight className="ml-1 h-3.5 w-3.5" />
-          </Button>
-        </div>
-      </div>
+      )}
     </div>
   );
 }

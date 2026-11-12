@@ -2,7 +2,12 @@ import mongoose, { SortOrder } from "mongoose";
 import { paginationHelper } from "../../../helper/paginationHelper";
 import { IGenericResponse } from "../../../interfaces/common";
 import { IPaginationOptions } from "../../../interfaces/paginationOptions";
-import { orderSearchableFields } from "./order.constants";
+import {
+  CANONICAL_ORDER_STAGES,
+  CanonicalOrderStage,
+  normalizeOrderStatus,
+  orderSearchableFields,
+} from "./order.constants";
 import { IOrder, IOrderFilters } from "./order.interface";
 import { Order } from "./order.model";
 import ApiError from "../../../error/ApiError";
@@ -16,6 +21,8 @@ import { senderMail, transport } from "../../../config/nodemailer";
 import emailTemplate from "../../../shared/emailTemplate";
 import { INotification } from "../notification/notification.interface";
 import { School } from "../school/school.model";
+import { SchoolInfo } from "../schoolInfo/schoolInfo.model";
+import { SchoolInbox } from "../schoolInbox/schoolInbox.model";
 import { NotificationService } from "../notification/notification.services";
 import { Product } from "../product/product.model";
 import crypto from "crypto";
@@ -237,12 +244,14 @@ const createOrder = async (
   }
 };
 
-const getAllOrder = async (
+const buildOrderQuery = (
   filters: IOrderFilters,
-  paginationOptions: IPaginationOptions
-): Promise<IGenericResponse<IOrder[]>> => {
+  paginationOptions: IPaginationOptions,
+  extraConditions: Record<string, any>[] = []
+) => {
   const { searchTerms, ...filterableData } = filters;
-  const andConditions = [];
+  const andConditions: Record<string, any>[] = [];
+
   if (searchTerms) {
     andConditions.push({
       $or: orderSearchableFields.map((field) => ({
@@ -253,12 +262,20 @@ const getAllOrder = async (
       })),
     });
   }
+
   if (Object.keys(filterableData).length) {
     andConditions.push({
       $and: Object.entries(filterableData).map(([fields, value]) => ({
-        [fields]: value,
+        [fields]:
+          fields === "orderStatus" && value === "received"
+            ? { $in: ["received", "delivered"] }
+            : value,
       })),
     });
+  }
+
+  for (const condition of extraConditions) {
+    andConditions.push(condition);
   }
 
   const { page, limit, skip, sortBy, sortOrder } =
@@ -267,15 +284,28 @@ const getAllOrder = async (
   if (sortBy && sortOrder) {
     sortCondition[sortBy] = sortOrder;
   }
+
   const whereCondition =
-    andConditions?.length > 0 ? { $and: andConditions } : {};
-  const result = await Order.find(whereCondition)
-    .populate("schoolId")
-    .populate("user")
-    .sort(sortCondition)
-    .skip(skip)
-    .limit(limit);
-  const total = await Order.countDocuments(whereCondition);
+    andConditions.length > 0 ? { $and: andConditions } : {};
+
+  return { whereCondition, sortCondition, page, limit, skip };
+};
+
+const getAllOrder = async (
+  filters: IOrderFilters,
+  paginationOptions: IPaginationOptions
+): Promise<IGenericResponse<IOrder[]>> => {
+  const { whereCondition, sortCondition, page, limit, skip } =
+    buildOrderQuery(filters, paginationOptions);
+  const [result, total] = await Promise.all([
+    Order.find(whereCondition)
+      .populate("schoolId")
+      .populate("user")
+      .sort(sortCondition)
+      .skip(skip)
+      .limit(limit),
+    Order.countDocuments(whereCondition),
+  ]);
   return {
     meta: {
       page,
@@ -293,42 +323,16 @@ const getAllDonarOrder = async (
   if (!email) {
     throw new ApiError(httpStatus.UNAUTHORIZED, "Unauthorized");
   }
-  const { searchTerms, ...filterableData } = filters;
-  const andConditions = [];
-  if (searchTerms) {
-    andConditions.push({
-      $or: orderSearchableFields.map((field) => ({
-        [field]: {
-          $regex: searchTerms,
-          $options: "i",
-        },
-      })),
-    });
-  }
-  if (Object.keys(filterableData).length) {
-    andConditions.push({
-      $and: Object.entries(filterableData).map(([fields, value]) => ({
-        [fields]: value,
-      })),
-    });
-  }
-  if (email) {
-    andConditions.push({ email: email }); // Replace 'email' with the correct field name in your Order schema
-  }
-  const { page, limit, skip, sortBy, sortOrder } =
-    paginationHelper.calculatePagination(paginationOptions);
-  const sortCondition: { [key: string]: SortOrder } = {};
-  if (sortBy && sortOrder) {
-    sortCondition[sortBy] = sortOrder;
-  }
-  const whereCondition =
-    andConditions?.length > 0 ? { $and: andConditions } : {};
-  const result = await Order.find(whereCondition)
-    .populate("schoolId")
-    .sort(sortCondition)
-    .skip(skip)
-    .limit(limit);
-  const total = await Order.countDocuments(whereCondition);
+  const { whereCondition, sortCondition, page, limit, skip } =
+    buildOrderQuery(filters, paginationOptions, [{ email }]);
+  const [result, total] = await Promise.all([
+    Order.find(whereCondition)
+      .populate("schoolId")
+      .sort(sortCondition)
+      .skip(skip)
+      .limit(limit),
+    Order.countDocuments(whereCondition),
+  ]);
   return {
     meta: {
       page,
@@ -351,42 +355,24 @@ const getAllBursarOrder = async (
     throw new ApiError(httpStatus.UNAUTHORIZED, "Unauthorized");
   }
   const schoolId = bursar?.school;
-  const { searchTerms, ...filterableData } = filters;
-  const andConditions = [];
-  if (searchTerms) {
-    andConditions.push({
-      $or: orderSearchableFields.map((field) => ({
-        [field]: {
-          $regex: searchTerms,
-          $options: "i",
-        },
-      })),
-    });
+  if (!schoolId) {
+    const { page, limit } =
+      paginationHelper.calculatePagination(paginationOptions);
+    return {
+      meta: { page, limit, total: 0 },
+      data: [],
+    };
   }
-  if (Object.keys(filterableData).length) {
-    andConditions.push({
-      $and: Object.entries(filterableData).map(([fields, value]) => ({
-        [fields]: value,
-      })),
-    });
-  }
-  if (schoolId) {
-    andConditions.push({ schoolId }); // Replace 'email' with the correct field name in your Order schema
-  }
-  const { page, limit, skip, sortBy, sortOrder } =
-    paginationHelper.calculatePagination(paginationOptions);
-  const sortCondition: { [key: string]: SortOrder } = {};
-  if (sortBy && sortOrder) {
-    sortCondition[sortBy] = sortOrder;
-  }
-  const whereCondition =
-    andConditions?.length > 0 ? { $and: andConditions } : {};
-  const result = await Order.find(whereCondition)
-    .populate("schoolId")
-    .sort(sortCondition)
-    .skip(skip)
-    .limit(limit);
-  const total = await Order.countDocuments(whereCondition);
+  const { whereCondition, sortCondition, page, limit, skip } =
+    buildOrderQuery(filters, paginationOptions, [{ schoolId }]);
+  const [result, total] = await Promise.all([
+    Order.find(whereCondition)
+      .populate("schoolId")
+      .sort(sortCondition)
+      .skip(skip)
+      .limit(limit),
+    Order.countDocuments(whereCondition),
+  ]);
   return {
     meta: {
       page,
@@ -713,6 +699,264 @@ const deleteOrderById = async (id: string): Promise<IOrder | null> => {
   return result as unknown as IOrder | null; // Explicitly cast to IOrder or null
 };
 
+const roundMoney = (val: number): number => Math.round(val * 100) / 100;
+
+const PRIORITY_RANK: Record<string, number> = {
+  high: 0,
+  medium: 1,
+  low: 2,
+};
+
+const summarizePipeline = (orders: Array<{ orderStatus?: string; totalAmount?: number }>) => {
+  const buckets: Record<CanonicalOrderStage, { count: number; amount: number }> = {
+    pending: { count: 0, amount: 0 },
+    processing: { count: 0, amount: 0 },
+    "on the way": { count: 0, amount: 0 },
+    received: { count: 0, amount: 0 },
+  };
+
+  for (const order of orders) {
+    const stage = normalizeOrderStatus(order.orderStatus);
+    buckets[stage].count += 1;
+    buckets[stage].amount += Number(order.totalAmount || 0);
+  }
+
+  return CANONICAL_ORDER_STAGES.map((stage) => ({
+    status: stage,
+    count: buckets[stage].count,
+    amount: roundMoney(buckets[stage].amount),
+  }));
+};
+
+const getBursarOrderSummary = async (email: string) => {
+  if (!email) {
+    throw new ApiError(httpStatus.UNAUTHORIZED, "Unauthorized");
+  }
+
+  const normalizedEmail = String(email).trim();
+  const bursar = await Bursar.findOne({
+    email: { $regex: `^${escapeRegex(normalizedEmail)}$`, $options: "i" },
+  })
+    .select("_id school")
+    .lean();
+
+  if (!bursar?.school) {
+    return {
+      hasSchool: false,
+      schoolId: null,
+      schoolName: null,
+      schoolSlug: null,
+      cumulativeBalance: 0,
+      verifiedOrderTotal: 0,
+      totalOrders: 0,
+      paidOrdersCount: 0,
+      recurringOrdersCount: 0,
+      receivedCount: 0,
+      inFlightCount: 0,
+      unpaidPendingCount: 0,
+      pipelineBreakdown: summarizePipeline([]),
+      campusNeeds: [],
+      unreadInboxCount: 0,
+      totalInboxCount: 0,
+    };
+  }
+
+  const [school, schoolInfo, orders, unreadInboxCount, totalInboxCount] =
+    await Promise.all([
+      School.findById(bursar.school)
+        .select("name slug amountReceived")
+        .lean(),
+      SchoolInfo.findOne({ school: bursar.school })
+        .select("campusNeeds schoolName slug")
+        .lean(),
+      Order.find({ schoolId: bursar.school })
+        .select("totalAmount orderStatus paymentStatus payMonthly createdAt")
+        .sort({ createdAt: -1 })
+        .lean(),
+      SchoolInbox.countDocuments({
+        bursar: bursar._id,
+        seen: false,
+        isDeleted: { $ne: true },
+      }),
+      SchoolInbox.countDocuments({
+        bursar: bursar._id,
+        isDeleted: { $ne: true },
+      }),
+    ]);
+
+  const paidOrders = orders.filter((o) => Boolean(o.paymentStatus));
+  const unpaidPendingCount = orders.filter(
+    (o) => !o.paymentStatus && normalizeOrderStatus(o.orderStatus) === "pending"
+  ).length;
+  const verifiedOrderTotal = roundMoney(
+    paidOrders.reduce((sum, o) => sum + Number(o.totalAmount || 0), 0)
+  );
+  const recurringOrdersCount = paidOrders.filter(
+    (o) => o.payMonthly === "yes"
+  ).length;
+
+  const pipelineBreakdown = summarizePipeline(paidOrders);
+  const receivedCount =
+    pipelineBreakdown.find((s) => s.status === "received")?.count || 0;
+  const inFlightCount = paidOrders.length - receivedCount;
+
+  const campusNeeds = Array.isArray(schoolInfo?.campusNeeds)
+    ? [...schoolInfo.campusNeeds]
+        .sort(
+          (a, b) =>
+            (PRIORITY_RANK[String(a.priority || "medium")] ?? 1) -
+            (PRIORITY_RANK[String(b.priority || "medium")] ?? 1)
+        )
+        .map((need) => ({
+          itemTitle: need.itemTitle,
+          productSlug: need.productSlug || "",
+          targetQuantity: Number(need.targetQuantity || 0),
+          fulfilledQuantity: Number(need.fulfilledQuantity || 0),
+          priority: (need.priority || "medium") as "high" | "medium" | "low",
+        }))
+    : [];
+
+  return {
+    hasSchool: Boolean(school),
+    schoolId: String(bursar.school),
+    schoolName: schoolInfo?.schoolName || school?.name || "Partner School",
+    schoolSlug: schoolInfo?.slug || school?.slug || "",
+    cumulativeBalance: roundMoney(Number(school?.amountReceived || 0)),
+    verifiedOrderTotal,
+    totalOrders: orders.length,
+    paidOrdersCount: paidOrders.length,
+    recurringOrdersCount,
+    receivedCount,
+    inFlightCount,
+    unpaidPendingCount,
+    pipelineBreakdown,
+    campusNeeds,
+    unreadInboxCount,
+    totalInboxCount,
+  };
+};
+
+const getDonarOrderSummary = async (email: string) => {
+  if (!email) {
+    throw new ApiError(httpStatus.UNAUTHORIZED, "Unauthorized");
+  }
+
+  const normalizedEmail = String(email).trim();
+  const emailMatcher = {
+    $regex: `^${escapeRegex(normalizedEmail)}$`,
+    $options: "i",
+  };
+  const donar = await Donar.findOne({ email: emailMatcher })
+    .select("_id totalDonationAmount")
+    .lean();
+
+  const orderFilter = donar?._id
+    ? { $or: [{ email: emailMatcher }, { user: donar._id }] }
+    : { email: emailMatcher };
+
+  const orders = await Order.find(orderFilter)
+    .select(
+      "totalAmount orderStatus paymentStatus payMonthly nextRecurringDate schoolId createdAt"
+    )
+    .populate("schoolId", "name slug address")
+    .sort({ createdAt: -1 })
+    .lean();
+
+  const paidOrders = orders.filter((o) => Boolean(o.paymentStatus));
+  const unpaidPendingCount = orders.filter(
+    (o) => !o.paymentStatus && normalizeOrderStatus(o.orderStatus) === "pending"
+  ).length;
+  const verifiedOrderTotal = roundMoney(
+    paidOrders.reduce((sum, o) => sum + Number(o.totalAmount || 0), 0)
+  );
+  const activeMonthlyOrders = paidOrders.filter((o) => o.payMonthly === "yes");
+
+  let upcomingRenewalDate: string | null = null;
+  const nowMs = Date.now();
+  const recurringDates = activeMonthlyOrders
+    .map((o) => (o.nextRecurringDate ? new Date(o.nextRecurringDate) : null))
+    .filter((d): d is Date => Boolean(d && !Number.isNaN(d.getTime())))
+    .sort((a, b) => a.getTime() - b.getTime());
+
+  if (recurringDates.length > 0) {
+    const nextFuture = recurringDates.find((d) => d.getTime() >= nowMs);
+    upcomingRenewalDate = (nextFuture || recurringDates[0]).toISOString();
+  }
+
+  const schoolAcc = new Map<
+    string,
+    {
+      schoolId: string;
+      schoolName: string;
+      slug: string;
+      city: string;
+      state: string;
+      amount: number;
+      orderCount: number;
+      recurringCount: number;
+    }
+  >();
+
+  for (const order of paidOrders as any[]) {
+    const schoolObj =
+      order.schoolId && typeof order.schoolId === "object"
+        ? order.schoolId
+        : null;
+    const key = schoolObj?._id
+      ? String(schoolObj._id)
+      : order.schoolId
+        ? String(order.schoolId)
+        : "unassigned";
+
+    const existing = schoolAcc.get(key) || {
+      schoolId: key,
+      schoolName: schoolObj?.name || "Partner Campus",
+      slug: schoolObj?.slug || "",
+      city: schoolObj?.address?.city || "",
+      state: schoolObj?.address?.state || "",
+      amount: 0,
+      orderCount: 0,
+      recurringCount: 0,
+    };
+
+    existing.amount += Number(order.totalAmount || 0);
+    existing.orderCount += 1;
+    if (order.payMonthly === "yes") {
+      existing.recurringCount += 1;
+    }
+    schoolAcc.set(key, existing);
+  }
+
+  const schoolAllocation = Array.from(schoolAcc.values())
+    .map((entry) => ({
+      ...entry,
+      amount: roundMoney(entry.amount),
+    }))
+    .sort((a, b) => b.amount - a.amount);
+
+  const pipelineBreakdown = summarizePipeline(paidOrders);
+  const receivedCount =
+    pipelineBreakdown.find((s) => s.status === "received")?.count || 0;
+  const inFlightCount = paidOrders.length - receivedCount;
+
+  return {
+    totalDonationAmount: roundMoney(
+      Number(donar?.totalDonationAmount || verifiedOrderTotal || 0)
+    ),
+    verifiedOrderTotal,
+    totalOrders: orders.length,
+    paidOrdersCount: paidOrders.length,
+    schoolsSupportedCount: schoolAllocation.length,
+    activeMonthlyCount: activeMonthlyOrders.length,
+    upcomingRenewalDate,
+    unpaidPendingCount,
+    inFlightCount,
+    receivedCount,
+    schoolAllocation,
+    pipelineBreakdown,
+  };
+};
+
 export const OrderService = {
   createOrder,
   getAllOrder,
@@ -722,4 +966,6 @@ export const OrderService = {
   getAllDonarOrder,
   getAllBursarOrder,
   updateOrderPaymentById,
+  getBursarOrderSummary,
+  getDonarOrderSummary,
 };

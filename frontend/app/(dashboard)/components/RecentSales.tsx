@@ -20,7 +20,8 @@ const RecentSales = async () => {
         </h2>
       </div>
     );
-  } else
+  }
+  return (
     <div className="w-full space-y-8 rounded-xl border bg-white px-5 py-10 shadow-sm xl:max-w-md">
       <h2 className="mb-5 font-medium md:text-lg lg:text-2xl">Recent Sales</h2>
       {data?.data?.map((order: IOrder) => (
@@ -50,7 +51,8 @@ const RecentSales = async () => {
           <div className="font-medium sm:ml-auto">+${order?.totalAmount}</div>
         </div>
       ))}
-    </div>;
+    </div>
+  );
 };
 
 export default RecentSales;

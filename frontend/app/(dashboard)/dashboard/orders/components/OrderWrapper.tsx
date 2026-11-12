@@ -2,24 +2,26 @@ import React from "react";
 import TableWrapper from "../../../../sharedComponents/Table/TableWrapper";
 import { getOrders } from "@/app/(dashboard)/components/RecentOrderTable";
 import { IOrder } from "@/app/types/Order";
+import { normalizeFulfillmentStage } from "@/app/utility/orderStage";
 
 const OrderWrapper = async () => {
   const all = await getOrders({}, "createdAt", "desc");
-  const pending = all?.data?.filter(
-    (item: IOrder) => item?.orderStatus === "pending",
+  const orders = all?.data || [];
+  const pending = orders.filter(
+    (item: IOrder) => normalizeFulfillmentStage(item?.orderStatus) === "pending",
   );
-  const processing = all?.data?.filter(
-    (item: IOrder) => item?.orderStatus === "processing",
+  const processing = orders.filter(
+    (item: IOrder) => normalizeFulfillmentStage(item?.orderStatus) === "processing",
   );
-  const onTheWay = all?.data?.filter(
-    (item: IOrder) => item?.orderStatus === "on the way",
+  const onTheWay = orders.filter(
+    (item: IOrder) => normalizeFulfillmentStage(item?.orderStatus) === "on the way",
   );
-  const received = all?.data?.filter(
-    (item: IOrder) => item?.orderStatus === "received",
+  const received = orders.filter(
+    (item: IOrder) => normalizeFulfillmentStage(item?.orderStatus) === "received",
   );
   return (
     <TableWrapper
-      all={all?.data}
+      all={orders}
       pending={pending}
       processing={processing}
       onTheWay={onTheWay}

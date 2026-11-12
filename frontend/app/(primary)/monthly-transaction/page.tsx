@@ -2,7 +2,7 @@
 import React, { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { deleteCookie, getCookie } from "@/app/utility/handleCookie";
-import { handleRevalidation } from "@/app/utility/handleRevalidation";
+import { revalidateOrderTags } from "@/app/utility/handleRevalidation";
 import { SERVERURLAPI } from "@/lib/constants";
 import axios from "axios";
 import toast from "react-hot-toast";
@@ -77,8 +77,7 @@ const MonthlyTransactionContent = () => {
             setRenewedOrder(response.data.data);
           }
           await deleteCookie("paymentIntent");
-          await handleRevalidation("orderInfo");
-          await handleRevalidation("orderCollection");
+          await revalidateOrderTags();
           toast.success("Recurring monthly sponsorship renewed successfully!");
         }
       } catch (error) {
