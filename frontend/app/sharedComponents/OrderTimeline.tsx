@@ -1,7 +1,9 @@
 import React from "react";
 import { Check } from "lucide-react";
-
-const ORDER_STEPS = ["pending", "processing", "on the way", "received"] as const;
+import {
+  CANONICAL_ORDER_STAGES,
+  normalizeFulfillmentStage,
+} from "@/app/utility/orderStage";
 
 export interface OrderTimelineProps {
   currentStatus?: string;
@@ -14,19 +16,18 @@ export interface OrderTimelineProps {
 export const OrderTimeline: React.FC<OrderTimelineProps> = ({
   currentStatus = "pending",
 }) => {
-  const stepIndex = ORDER_STEPS.indexOf(
-    (currentStatus?.toLowerCase() || "pending") as (typeof ORDER_STEPS)[number]
-  );
+  const normalizedStage = normalizeFulfillmentStage(currentStatus);
+  const stepIndex = CANONICAL_ORDER_STAGES.indexOf(normalizedStage);
 
   return (
     <>
       {/* Desktop / Tablet Timeline */}
       <div className="hidden sm:block px-2">
         <div className="flex items-start w-full">
-          {ORDER_STEPS.map((step, idx) => {
+          {CANONICAL_ORDER_STAGES.map((step, idx) => {
             const isPassed = idx <= stepIndex;
             const isCurrent = idx === stepIndex;
-            const isLast = idx === ORDER_STEPS.length - 1;
+            const isLast = idx === CANONICAL_ORDER_STAGES.length - 1;
 
             return (
               <React.Fragment key={step}>

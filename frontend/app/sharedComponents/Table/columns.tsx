@@ -30,7 +30,7 @@ const InvoiceActionCell = ({ order }: { order: IOrder }) => {
       <button
         type="button"
         onClick={() => generateOrderInvoice(order, { audience })}
-        className="inline-flex items-center gap-1.5 rounded-lg border border-border-subtle bg-white px-2.5 py-1 text-xs font-semibold text-text-ink shadow-sm transition-all hover:bg-surface-bento hover:border-surface-forest/30 active:scale-95"
+        className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-lg border border-border-subtle bg-white px-2 py-1 min-[1400px]:px-2.5 text-xs font-semibold text-text-ink shadow-sm transition-all hover:bg-surface-bento hover:border-surface-forest/30 active:scale-95"
         title={tooltip}
       >
         <Download className="h-3.5 w-3.5 text-surface-forest" />
@@ -53,7 +53,7 @@ export const columns: ColumnDef<IOrder>[] = [
         row.original.orderId ||
         (row.original._id ? `ORD-${row.original._id.slice(-8).toUpperCase()}` : "N/A");
       return (
-        <span className="inline-flex items-center rounded-lg border border-border-subtle bg-surface-bento/60 px-2.5 py-1 font-mono text-xs font-bold text-text-ink whitespace-nowrap">
+        <span className="inline-flex items-center rounded-lg border border-border-subtle bg-surface-bento/60 px-2 py-0.5 min-[1400px]:px-2.5 min-[1400px]:py-1 font-mono text-[11px] min-[1400px]:text-xs font-bold text-text-ink whitespace-nowrap">
           {displayId}
         </span>
       );
@@ -70,7 +70,7 @@ export const columns: ColumnDef<IOrder>[] = [
     cell: ({ row }) => {
       const products = row.original.products;
       return (
-        <div className="flex flex-col gap-1 max-w-[260px]">
+        <div className="flex flex-col gap-1 max-w-[160px] min-[1400px]:max-w-[250px]">
           {products?.map((product) => (
             <span
               key={product?._id}
@@ -91,7 +91,7 @@ export const columns: ColumnDef<IOrder>[] = [
         <Button
           variant="ghost"
           size="sm"
-          className="-ml-3 h-8 text-xs font-semibold text-text-muted hover:text-text-ink hover:bg-surface-bento"
+          className="-ml-2 px-2 h-8 text-xs font-semibold text-text-muted hover:text-text-ink hover:bg-surface-bento whitespace-nowrap"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Order Date
@@ -123,12 +123,12 @@ export const columns: ColumnDef<IOrder>[] = [
     cell: ({ row }) => {
       const status = Boolean(row.getValue("paymentStatus"));
       return status ? (
-        <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200/80 bg-emerald-50 px-2.5 py-0.5 text-xs font-semibold text-emerald-700">
+        <span className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border border-emerald-200/80 bg-emerald-50 px-2.5 py-0.5 text-xs font-semibold text-emerald-700">
           <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
           Paid
         </span>
       ) : (
-        <span className="inline-flex items-center gap-1.5 rounded-full border border-zinc-200 bg-zinc-50 px-2.5 py-0.5 text-xs font-medium text-zinc-600">
+        <span className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border border-zinc-200 bg-zinc-50 px-2.5 py-0.5 text-xs font-medium text-zinc-600">
           <span className="h-1.5 w-1.5 rounded-full bg-zinc-400" />
           Unpaid
         </span>
@@ -157,21 +157,21 @@ export const columns: ColumnDef<IOrder>[] = [
       switch (orderStatus) {
         case "pending":
           return (
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-200/80 bg-amber-50 px-2.5 py-0.5 text-xs font-semibold text-amber-700">
+            <span className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border border-amber-200/80 bg-amber-50 px-2.5 py-0.5 text-xs font-semibold text-amber-700">
               <Clock className="h-3 w-3" />
               Pending
             </span>
           );
         case "processing":
           return (
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-sky-200/80 bg-sky-50 px-2.5 py-0.5 text-xs font-semibold text-sky-700">
+            <span className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border border-sky-200/80 bg-sky-50 px-2.5 py-0.5 text-xs font-semibold text-sky-700">
               <AlertCircle className="h-3 w-3" />
               Processing
             </span>
           );
         case "on the way":
           return (
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-purple-200/80 bg-purple-50 px-2.5 py-0.5 text-xs font-semibold text-purple-700">
+            <span className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border border-purple-200/80 bg-purple-50 px-2.5 py-0.5 text-xs font-semibold text-purple-700">
               <Truck className="h-3 w-3" />
               On the Way
             </span>
@@ -179,14 +179,14 @@ export const columns: ColumnDef<IOrder>[] = [
         case "delivered":
         case "received":
           return (
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200/80 bg-emerald-50 px-2.5 py-0.5 text-xs font-semibold text-emerald-700">
+            <span className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border border-emerald-200/80 bg-emerald-50 px-2.5 py-0.5 text-xs font-semibold text-emerald-700">
               <CheckCircle2 className="h-3 w-3" />
               {orderStatus === "delivered" ? "Delivered" : "Received"}
             </span>
           );
         default:
           return (
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-zinc-200 bg-zinc-50 px-2.5 py-0.5 text-xs font-medium text-zinc-700 capitalize">
+            <span className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border border-zinc-200 bg-zinc-50 px-2.5 py-0.5 text-xs font-medium text-zinc-700 capitalize">
               {orderStatus || "Unknown"}
             </span>
           );

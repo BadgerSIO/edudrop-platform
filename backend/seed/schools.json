@@ -15,7 +15,7 @@
       }
     },
     "contactNo": "+1 (512) 555-0142",
-    "amountReceived": 485,
+    "amountReceived": 955,
     "active": true,
     "createdAt": {
       "$date": "2025-01-15T12:00:00.000Z"
@@ -44,7 +44,7 @@
       }
     },
     "contactNo": "+1 (303) 555-0188",
-    "amountReceived": 390,
+    "amountReceived": 803,
     "active": true,
     "createdAt": {
       "$date": "2025-01-16T12:00:00.000Z"
@@ -73,7 +73,7 @@
       }
     },
     "contactNo": "+1 (206) 555-0164",
-    "amountReceived": 310,
+    "amountReceived": 767,
     "active": true,
     "createdAt": {
       "$date": "2025-01-17T12:00:00.000Z"
@@ -102,7 +102,7 @@
       }
     },
     "contactNo": "+1 (617) 555-0193",
-    "amountReceived": 240,
+    "amountReceived": 793,
     "active": true,
     "createdAt": {
       "$date": "2025-01-18T12:00:00.000Z"
