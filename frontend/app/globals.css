@@ -435,3 +435,35 @@ progress.loading-spinner:indeterminate {
     transition-behavior: allow-discrete;
   }
 }
+
+/* 9. Semantic Native <progress> Bar Styling for Campus Needs Meters */
+progress.edudrop-progress {
+  appearance: none;
+  border: 0 solid;
+  inline-size: 100%;
+  block-size: 0.5rem;
+  border-radius: 9999px;
+  overflow: clip;
+  background-color: rgb(var(--surface-bento));
+  box-shadow: inset 0 1px 2px rgb(var(--text-ink) / 0.08);
+  --progress-fill: rgb(var(--surface-forest));
+}
+
+progress.edudrop-progress.edudrop-progress--amber {
+  --progress-fill: rgb(var(--brand-amber));
+}
+
+progress.edudrop-progress::-webkit-progress-bar {
+  background: transparent;
+}
+
+progress.edudrop-progress::-webkit-progress-value {
+  background-color: var(--progress-fill);
+  border-radius: 9999px;
+  transition: inline-size 0.3s ease;
+}
+
+progress.edudrop-progress::-moz-progress-bar {
+  background-color: var(--progress-fill);
+  border-radius: 9999px;
+}

@@ -4,6 +4,7 @@ import { SERVERURLAPI } from "@/lib/constants";
 import { safeFetchJson } from "@/app/utility/safeFetchJson";
 import { IOrder } from "@/app/types/Order";
 import TableWrapper from "@/app/sharedComponents/Table/TableWrapper";
+import { normalizeFulfillmentStage } from "@/app/utility/orderStage";
 export async function getBursarOrders(
   filters: Record<string, any> = {}, // Accept dynamic filters
   sortBy?: string,
@@ -42,21 +43,22 @@ export async function getBursarOrders(
 }
 const OrderTable = async () => {
   const all = await getBursarOrders({}, "createdAt", "desc");
-  const pending = all?.data?.filter(
-    (item: IOrder) => item?.orderStatus === "pending",
+  const orders = all?.data || [];
+  const pending = orders.filter(
+    (item: IOrder) => normalizeFulfillmentStage(item?.orderStatus) === "pending",
   );
-  const processing = all?.data?.filter(
-    (item: IOrder) => item?.orderStatus === "processing",
+  const processing = orders.filter(
+    (item: IOrder) => normalizeFulfillmentStage(item?.orderStatus) === "processing",
   );
-  const onTheWay = all?.data?.filter(
-    (item: IOrder) => item?.orderStatus === "on the way",
+  const onTheWay = orders.filter(
+    (item: IOrder) => normalizeFulfillmentStage(item?.orderStatus) === "on the way",
   );
-  const received = all?.data?.filter(
-    (item: IOrder) => item?.orderStatus === "received",
+  const received = orders.filter(
+    (item: IOrder) => normalizeFulfillmentStage(item?.orderStatus) === "received",
   );
   return (
     <TableWrapper
-      all={all?.data}
+      all={orders}
       pending={pending}
       processing={processing}
       onTheWay={onTheWay}

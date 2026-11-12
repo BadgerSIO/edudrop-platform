@@ -134,6 +134,32 @@ const deleteOrderById: RequestHandler = catchAsync(
   }
 );
 
+const getBursarOrderSummary: RequestHandler = catchAsync(
+  async (req: Request, res: Response) => {
+    const email = res.locals.email;
+    const result = await OrderService.getBursarOrderSummary(email);
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "Bursar order summary retrieved successfully",
+      data: result,
+    });
+  }
+);
+
+const getDonarOrderSummary: RequestHandler = catchAsync(
+  async (req: Request, res: Response) => {
+    const email = res.locals.email;
+    const result = await OrderService.getDonarOrderSummary(email);
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "Donor impact summary retrieved successfully",
+      data: result,
+    });
+  }
+);
+
 export const OrderController = {
   createOrder,
   getAllOrder,
@@ -143,4 +169,6 @@ export const OrderController = {
   getAllDonarOrder,
   getAllBursarOrder,
   updateOrderPaymentById,
+  getBursarOrderSummary,
+  getDonarOrderSummary,
 };

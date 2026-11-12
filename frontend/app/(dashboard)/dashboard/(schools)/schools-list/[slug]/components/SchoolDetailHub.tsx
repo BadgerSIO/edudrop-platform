@@ -228,6 +228,7 @@ export default function SchoolDetailHub({
         toast.success("Campus profile and branding updated successfully");
         await handleRevalidation(rTag);
         await handleRevalidation("schoolInfoCollection");
+        await handleRevalidation("bursarSummary");
         router.refresh();
       }
     } catch (error: any) {

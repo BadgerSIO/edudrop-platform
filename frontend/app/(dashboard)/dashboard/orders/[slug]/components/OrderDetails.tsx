@@ -7,7 +7,7 @@ import { dateConverter } from "@/app/utility/dateConverter";
 import { SERVERURLAPI } from "@/lib/constants";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { handleRevalidation } from "@/app/utility/handleRevalidation";
+import { revalidateOrderTags } from "@/app/utility/handleRevalidation";
 import { getCookie } from "@/app/utility/handleCookie";
 import CustomAlertDialouge from "../../../../../sharedComponents/CustomAlertDialouge";
 import OrderTimeline from "@/app/sharedComponents/OrderTimeline";
@@ -64,8 +64,7 @@ const OrderDetails = ({ order }: { order: IOrder }) => {
 
       if (response.status === 200) {
         toast.success(`Order status changed to "${status}"`);
-        await handleRevalidation("orderInfo");
-        await handleRevalidation("orderCollection");
+        await revalidateOrderTags();
         router.refresh();
       } else {
         // Revert on failure
