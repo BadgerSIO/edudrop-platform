@@ -2,7 +2,10 @@
 import { useNavbarContext } from "@/app/context/NavContext";
 import { IOrder } from "@/app/types/Order";
 import { deleteCookie, getCookie, setCookie } from "@/app/utility/handleCookie";
-import { handleRevalidation } from "@/app/utility/handleRevalidation";
+import {
+  handleRevalidation,
+  revalidateOrderTags,
+} from "@/app/utility/handleRevalidation";
 import { handleBuildImage } from "@/app/utility/handleBuildImage";
 import { SERVERURLAPI } from "@/lib/constants";
 import axios from "axios";
@@ -100,8 +103,7 @@ const TransactionContent = () => {
             : "Sponsorship order confirmed successfully",
           { duration: 5000 },
         );
-        await handleRevalidation("orderInfo");
-        await handleRevalidation("orderCollection");
+        await revalidateOrderTags();
         localStorage.removeItem("cart");
         await deleteCookie("paymentIntent");
         setCaptureCount(!captureCount);

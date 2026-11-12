@@ -43,22 +43,15 @@ export async function getOrders(
 }
 
 const RecentOrderTable = async () => {
-  const data = await getOrders(
-    {
-      paymentStatus: true,
-      orderStatus: "processing",
-    },
-    undefined,
-    undefined,
-    undefined,
-    3,
-  ); // Pass dynamic filter parameters
+  const data = await getOrders({}, "createdAt", "desc", 1, 5);
   return (
     <DataTable
       columns={columns}
-      data={data?.data}
+      data={data?.data || []}
       searchPlaceholder="Search recent orders..."
       variant="embedded"
+      showToolbar={false}
+      showPagination={false}
     />
   );
 };

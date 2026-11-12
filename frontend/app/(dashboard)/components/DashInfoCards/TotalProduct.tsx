@@ -5,7 +5,7 @@ const TotalProduct = async ({ productCount = 0 }: { productCount?: number }) => 
   return (
     <div
       style={{ "--dash-delay": "50ms" } as React.CSSProperties}
-      className="dash-card-enter group rounded-2xl border border-border-subtle bg-white p-5 sm:p-6 shadow-bento transition-all duration-300 hover:shadow-bento-hover hover:-translate-y-0.5 motion-reduce:hover:translate-y-0"
+      className="dash-card-enter group h-full flex flex-col justify-between rounded-2xl border border-border-subtle bg-white p-5 sm:p-6 shadow-bento transition-all duration-300 hover:shadow-bento-hover hover:-translate-y-0.5 motion-reduce:hover:translate-y-0"
     >
       <div className="flex items-center justify-between">
         <span className="text-xs font-semibold uppercase tracking-wider text-text-muted">
