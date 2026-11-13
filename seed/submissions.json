@@ -1,0 +1,40 @@
+[
+  {
+    "_id": {
+      "$oid": "6583194225636757de9e1ca7"
+    },
+    "firstName": "Claire",
+    "lastName": "Hawthorne",
+    "email": "claire.hawthorne@example.com",
+    "message": "Corporate Matching Gift Inquiry: Hello EduDrop team, our company would love to match employee monthly sponsorships for Oakridge Technical High School. Could you share details on corporate partner onboarding?",
+    "seen": true,
+    "status": "read",
+    "isDeleted": false,
+    "createdAt": {
+      "$date": "2025-02-10T16:41:38.587Z"
+    },
+    "updatedAt": {
+      "$date": "2025-02-11T04:01:28.590Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6586e18ae0a5a8c66c00c649"
+    },
+    "firstName": "Robert",
+    "lastName": "Vance",
+    "email": "r.vance@maplehs.edu",
+    "message": "Enrolling Maplewood High School on EduDrop: Good afternoon, we would like to register our school bursar on the EduDrop platform so our alumni network can sponsor classroom hydration stations.",
+    "seen": false,
+    "status": "unread",
+    "isDeleted": false,
+    "createdAt": {
+      "$date": "2025-02-14T13:32:58.500Z"
+    },
+    "updatedAt": {
+      "$date": "2025-02-14T13:32:58.500Z"
+    },
+    "__v": 0
+  }
+]

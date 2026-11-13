@@ -1,0 +1,22 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.DonarRoutes = void 0;
+const express_1 = __importDefault(require("express"));
+const donar_controller_1 = require("./donar.controller");
+const multerUpload_1 = require("../../middleware/multerUpload");
+const verifyAdmin_1 = __importDefault(require("../../middleware/verifyAdmin"));
+const verifyJWT_1 = __importDefault(require("../../middleware/verifyJWT"));
+const requireRole_1 = __importDefault(require("../../middleware/requireRole"));
+const requireSelfOrAdmin_1 = __importDefault(require("../../middleware/requireSelfOrAdmin"));
+const router = express_1.default.Router();
+router.get("/", verifyJWT_1.default, verifyAdmin_1.default, donar_controller_1.DonarController.getAllDonar);
+router.get("/me", verifyJWT_1.default, (0, requireRole_1.default)("donar"), donar_controller_1.DonarController.getMyProfile);
+router.patch("/me", verifyJWT_1.default, (0, requireRole_1.default)("donar"), multerUpload_1.usersImageUpload, donar_controller_1.DonarController.updateMyProfile);
+router.patch("/status-update/:id", verifyJWT_1.default, verifyAdmin_1.default, donar_controller_1.DonarController.updateDonarStatus);
+router.get("/:id", verifyJWT_1.default, (0, requireSelfOrAdmin_1.default)("donar"), donar_controller_1.DonarController.getSingleDonar);
+router.patch("/:id", verifyJWT_1.default, (0, requireSelfOrAdmin_1.default)("donar"), multerUpload_1.usersImageUpload, donar_controller_1.DonarController.updateDonar);
+router.delete("/:id", verifyJWT_1.default, verifyAdmin_1.default, donar_controller_1.DonarController.deleteDonar);
+exports.DonarRoutes = router;

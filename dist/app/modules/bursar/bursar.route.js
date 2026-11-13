@@ -1,0 +1,21 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.BursarRoutes = void 0;
+const express_1 = __importDefault(require("express"));
+const bursar_controller_1 = require("./bursar.controller");
+const multerUpload_1 = require("../../middleware/multerUpload");
+const verifyJWT_1 = __importDefault(require("../../middleware/verifyJWT"));
+const verifyAdmin_1 = __importDefault(require("../../middleware/verifyAdmin"));
+const requireRole_1 = __importDefault(require("../../middleware/requireRole"));
+const requireSelfOrAdmin_1 = __importDefault(require("../../middleware/requireSelfOrAdmin"));
+const router = express_1.default.Router();
+router.get("/", verifyJWT_1.default, verifyAdmin_1.default, bursar_controller_1.BursarController.getAllBursar);
+router.get("/me", verifyJWT_1.default, (0, requireRole_1.default)("bursar"), bursar_controller_1.BursarController.getMyProfile);
+router.patch("/me", verifyJWT_1.default, (0, requireRole_1.default)("bursar"), multerUpload_1.usersImageUpload, bursar_controller_1.BursarController.updateMyProfile);
+router.get("/:id", verifyJWT_1.default, (0, requireSelfOrAdmin_1.default)("bursar"), bursar_controller_1.BursarController.getSingleBursar);
+router.patch("/:id", verifyJWT_1.default, (0, requireSelfOrAdmin_1.default)("bursar"), multerUpload_1.usersImageUpload, bursar_controller_1.BursarController.updateBursar);
+router.delete("/:id", verifyJWT_1.default, verifyAdmin_1.default, bursar_controller_1.BursarController.deleteBursar);
+exports.BursarRoutes = router;

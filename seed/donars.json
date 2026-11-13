@@ -1,0 +1,167 @@
+[
+  {
+    "_id": {
+      "$oid": "659a7dde817e2b807c59da00"
+    },
+    "name": {
+      "firstName": "Liam",
+      "lastName": "Carter",
+      "_id": {
+        "$oid": "659a7dde817e2b807c59da01"
+      }
+    },
+    "email": "liam.carter@example.com",
+    "contactNo": "+1 (512) 555-0110",
+    "address": {
+      "presentAddress": "210 Barton Springs Rd",
+      "city": "Austin",
+      "zipCode": "78704",
+      "country": "🇺🇸 United States",
+      "_id": {
+        "$oid": "659a7dde817e2b807c59da02"
+      }
+    },
+    "enabled": true,
+    "active": true,
+    "totalDonationAmount": 0,
+    "createdAt": {
+      "$date": "2025-01-20T10:33:02.494Z"
+    },
+    "updatedAt": {
+      "$date": "2025-02-08T15:27:14.886Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "659a7e41817e2b807c59da15"
+    },
+    "name": {
+      "firstName": "Alex",
+      "lastName": "Rivera",
+      "_id": {
+        "$oid": "659a7e41817e2b807c59da16"
+      }
+    },
+    "email": "alex.rivera@example.com",
+    "contactNo": "+1 (303) 555-0145",
+    "address": {
+      "presentAddress": "742 Evergreen Terrace",
+      "city": "Denver",
+      "zipCode": "80202",
+      "country": "🇺🇸 United States",
+      "_id": {
+        "$oid": "659a7e41817e2b807c59da17"
+      }
+    },
+    "enabled": true,
+    "active": true,
+    "totalDonationAmount": 886,
+    "createdAt": {
+      "$date": "2025-01-21T10:34:41.715Z"
+    },
+    "updatedAt": {
+      "$date": "2025-02-17T11:15:05.861Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "659a8025817e2b807c59da6a"
+    },
+    "name": {
+      "firstName": "Jordan",
+      "lastName": "Taylor",
+      "_id": {
+        "$oid": "659a8025817e2b807c59da6b"
+      }
+    },
+    "email": "jordan.taylor@example.com",
+    "contactNo": "+1 (206) 555-0177",
+    "address": {
+      "presentAddress": "900 Pine Street",
+      "city": "Seattle",
+      "zipCode": "98101",
+      "country": "🇺🇸 United States",
+      "_id": {
+        "$oid": "659a8025817e2b807c59da6c"
+      }
+    },
+    "enabled": true,
+    "active": true,
+    "totalDonationAmount": 674,
+    "createdAt": {
+      "$date": "2025-01-22T10:42:45.300Z"
+    },
+    "updatedAt": {
+      "$date": "2025-02-19T11:57:55.667Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "65af76dab70d3df025dcff95"
+    },
+    "name": {
+      "firstName": "Maya",
+      "lastName": "Lin",
+      "_id": {
+        "$oid": "65af76dab70d3df025dcff96"
+      }
+    },
+    "email": "donor@edudrop.org",
+    "contactNo": "+1 (512) 555-0199",
+    "enabled": true,
+    "active": true,
+    "totalDonationAmount": 1168,
+    "createdAt": {
+      "$date": "2025-01-23T08:20:42.806Z"
+    },
+    "updatedAt": {
+      "$date": "2025-03-05T03:27:04.479Z"
+    },
+    "__v": 0,
+    "address": {
+      "city": "Austin",
+      "presentAddress": "500 Congress Ave",
+      "state": "Texas",
+      "street": "Congress Ave",
+      "zipCode": "78701",
+      "country": "🇺🇸 United States"
+    },
+    "gender": "female"
+  },
+  {
+    "_id": {
+      "$oid": "65e691b586cfeccf777cced5"
+    },
+    "name": {
+      "firstName": "Noah",
+      "lastName": "Bennett",
+      "_id": {
+        "$oid": "65e691b586cfeccf777cced6"
+      }
+    },
+    "email": "noah.bennett@example.com",
+    "contactNo": "+1 (617) 555-0123",
+    "address": {
+      "presentAddress": "140 Newbury Street",
+      "city": "Boston",
+      "zipCode": "02116",
+      "country": "🇺🇸 United States",
+      "_id": {
+        "$oid": "65e691b586cfeccf777cced7"
+      }
+    },
+    "enabled": true,
+    "active": true,
+    "totalDonationAmount": 590,
+    "createdAt": {
+      "$date": "2025-03-05T03:29:57.639Z"
+    },
+    "updatedAt": {
+      "$date": "2025-03-05T03:29:57.639Z"
+    },
+    "__v": 0
+  }
+]

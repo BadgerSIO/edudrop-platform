@@ -1,0 +1,77 @@
+[
+  {
+    "_id": {
+      "$oid": "658e69a87d9ac5bf07e236d3"
+    },
+    "title": "Hydration Dispensers",
+    "description": "Water dispensers, stands, and classroom hydration equipment",
+    "slug": "hydration-dispensers",
+    "createdAt": {
+      "$date": "2025-01-05T06:39:36.387Z"
+    },
+    "updatedAt": {
+      "$date": "2025-01-05T09:27:28.272Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "658e915b25d97ac11f92b141"
+    },
+    "title": "Cleaning & Sanitization",
+    "description": "Bulk classroom cleaning and sanitization supplies",
+    "slug": "cleaning-chemicals",
+    "createdAt": {
+      "$date": "2025-01-05T09:28:59.834Z"
+    },
+    "updatedAt": {
+      "$date": "2025-01-05T18:46:42.260Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "658e93899f8aa2dbaf23021d"
+    },
+    "title": "Spring Water",
+    "description": "Pure EduDrop spring water cases for students and staff",
+    "slug": "spring-water",
+    "createdAt": {
+      "$date": "2025-01-05T09:38:17.149Z"
+    },
+    "updatedAt": {
+      "$date": "2025-01-05T09:38:59.359Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "658e93c99f8aa2dbaf23022b"
+    },
+    "title": "Paper & Classroom Supplies",
+    "description": "Essential paper products and printing supplies for schools",
+    "slug": "industrial-paper-products",
+    "createdAt": {
+      "$date": "2025-01-05T09:39:21.518Z"
+    },
+    "updatedAt": {
+      "$date": "2025-01-05T09:40:00.525Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "658e93e09f8aa2dbaf230232"
+    },
+    "title": "Cafeteria & Cups",
+    "description": "Eco-friendly cups and cafeteria containers for schools",
+    "slug": "restaurant-and-food-containers",
+    "createdAt": {
+      "$date": "2025-01-05T09:39:44.514Z"
+    },
+    "updatedAt": {
+      "$date": "2025-01-05T09:39:54.863Z"
+    },
+    "__v": 0
+  }
+]

@@ -1,0 +1,24 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.SchoolRoutes = void 0;
+const express_1 = __importDefault(require("express"));
+const school_controller_1 = require("./school.controller");
+const verifyJWT_1 = __importDefault(require("../../middleware/verifyJWT"));
+const verifyAdmin_1 = __importDefault(require("../../middleware/verifyAdmin"));
+const requireRole_1 = __importDefault(require("../../middleware/requireRole"));
+const validateRequest_1 = __importDefault(require("../../middleware/validateRequest"));
+const school_validation_1 = require("./school.validation");
+const multerUpload_1 = require("../../middleware/multerUpload");
+const router = express_1.default.Router();
+router.post("/upload-image", verifyJWT_1.default, (0, requireRole_1.default)("admin", "bursar"), multerUpload_1.schoolSingleUpload, school_controller_1.SchoolController.uploadImage);
+router.post("/create", verifyJWT_1.default, verifyAdmin_1.default, (0, validateRequest_1.default)(school_validation_1.SchoolValidation.createSchoolZodSchema), school_controller_1.SchoolController.createSchool);
+router.get("/get-status", verifyJWT_1.default, school_controller_1.SchoolController.getSchoolStatus);
+router.get("/", school_controller_1.SchoolController.getAllSchool);
+router.get("/:slug", school_controller_1.SchoolController.getSingleSchoolBySlug);
+router.patch("/:id", verifyJWT_1.default, (0, requireRole_1.default)("admin", "bursar"), (0, validateRequest_1.default)(school_validation_1.SchoolValidation.updateSchoolZodSchema), school_controller_1.SchoolController.updateSchoolById);
+router.patch("/status-update/:slug", verifyJWT_1.default, verifyAdmin_1.default, school_controller_1.SchoolController.updateSchoolStatus);
+router.delete("/:id", verifyJWT_1.default, verifyAdmin_1.default, school_controller_1.SchoolController.deleteSchoolById);
+exports.SchoolRoutes = router;

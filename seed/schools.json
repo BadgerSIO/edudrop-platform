@@ -1,0 +1,118 @@
+[
+  {
+    "_id": {
+      "$oid": "65da260d6a332fe6d3d550cc"
+    },
+    "slug": "oakridge-technical-high-school",
+    "name": "Oakridge Technical High School",
+    "address": {
+      "street": "1200 Oakridge Blvd",
+      "city": "Austin",
+      "state": "TX",
+      "zipCode": "78704",
+      "_id": {
+        "$oid": "65da260d6a332fe6d3d550cd"
+      }
+    },
+    "contactNo": "+1 (512) 555-0142",
+    "amountReceived": 955,
+    "active": true,
+    "createdAt": {
+      "$date": "2025-01-15T12:00:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2025-03-01T12:00:00.000Z"
+    },
+    "__v": 0,
+    "bursar": {
+      "$oid": "65da260d6a332fe6d3d550cf"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "65f173f686cfeccf777ccfd1"
+    },
+    "slug": "st-clara-academy",
+    "name": "St. Clara Academy",
+    "address": {
+      "street": "840 St. Clara Pkwy",
+      "city": "Denver",
+      "state": "CO",
+      "zipCode": "80203",
+      "_id": {
+        "$oid": "65f173f686cfeccf777ccfd2"
+      }
+    },
+    "contactNo": "+1 (303) 555-0188",
+    "amountReceived": 803,
+    "active": true,
+    "createdAt": {
+      "$date": "2025-01-16T12:00:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2025-03-01T12:00:00.000Z"
+    },
+    "__v": 0,
+    "bursar": {
+      "$oid": "65f173f686cfeccf777ccfd4"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "65f32bfb86cfeccf777cdbe7"
+    },
+    "slug": "westfield-collegiate-institute",
+    "name": "Westfield Collegiate Institute",
+    "address": {
+      "street": "310 Westfield Ave",
+      "city": "Seattle",
+      "state": "WA",
+      "zipCode": "98101",
+      "_id": {
+        "$oid": "65f32bfb86cfeccf777cdbe8"
+      }
+    },
+    "contactNo": "+1 (206) 555-0164",
+    "amountReceived": 767,
+    "active": true,
+    "createdAt": {
+      "$date": "2025-01-17T12:00:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2025-03-01T12:00:00.000Z"
+    },
+    "__v": 0,
+    "bursar": {
+      "$oid": "65f32bfb86cfeccf777cdbea"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "65f32e7786cfeccf777cdc22"
+    },
+    "slug": "crestview-preparatory-school",
+    "name": "Crestview Preparatory School",
+    "address": {
+      "street": "55 Crestview Common",
+      "city": "Boston",
+      "state": "MA",
+      "zipCode": "02116",
+      "_id": {
+        "$oid": "65f32e7786cfeccf777cdc23"
+      }
+    },
+    "contactNo": "+1 (617) 555-0193",
+    "amountReceived": 793,
+    "active": true,
+    "createdAt": {
+      "$date": "2025-01-18T12:00:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2025-03-01T12:00:00.000Z"
+    },
+    "__v": 0,
+    "bursar": {
+      "$oid": "65f32e7786cfeccf777cdc25"
+    }
+  }
+]

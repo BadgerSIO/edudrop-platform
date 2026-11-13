@@ -1,0 +1,1874 @@
+[
+  {
+    "_id": {
+      "$oid": "65b20af66968672d939051ab"
+    },
+    "card": "(VISA) ... 4242",
+    "transactionId": "EDUDROP-TX-ORDER-5f809549-20250201",
+    "orderId": "ORDER-5f809549",
+    "user": {
+      "$oid": "65af76dab70d3df025dcff95"
+    },
+    "email": "donor@edudrop.org",
+    "name": {
+      "firstName": "Maya",
+      "lastName": "Lin"
+    },
+    "presentAddress": "500 Congress Ave",
+    "country": "🇺🇸 United States",
+    "city": "Austin",
+    "zipCode": "78701",
+    "contactNo": "+1 (512) 555-0199",
+    "schoolId": {
+      "$oid": "65da260d6a332fe6d3d550cc"
+    },
+    "products": [
+      {
+        "_id": "65db53746a332fe6d3d554e9",
+        "active": true,
+        "title": "1.5 Liter Spring Water (Case of 12)",
+        "slug": "15-liter-spring-water",
+        "description": "Ideal for classrooms, faculty lounges, and athletics programs. Sold in cases of 12 bottles.",
+        "category": "658e93899f8aa2dbaf23021d",
+        "price": 22,
+        "productImage": "/uploads/products/spring-water-1-5l-case.webp",
+        "packagingType": "Case",
+        "quantityPerCase": 12,
+        "benefits": [
+          "Convenient 1.5 L classroom size"
+        ],
+        "productDetails": [
+          "12 x 1.5 L bottles per case"
+        ],
+        "createdAt": "2025-01-10T14:49:24.710Z",
+        "updatedAt": "2025-01-15T14:52:15.551Z",
+        "__v": 0,
+        "id": "65db53746a332fe6d3d554e9",
+        "quantity": 5
+      }
+    ],
+    "totalAmount": 110,
+    "payMonthly": "yes",
+    "nextRecurringDate": {
+      "$date": "2026-12-01T10:00:00.000Z"
+    },
+    "orderStatus": "delivered",
+    "paymentStatus": true,
+    "createdAt": {
+      "$date": "2025-02-01T07:17:10.593Z"
+    },
+    "updatedAt": {
+      "$date": "2025-02-05T07:17:10.593Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "65b20d3a7b6cc8bb360e7652"
+    },
+    "card": "(VISA) ... 4242",
+    "transactionId": "EDUDROP-TX-ORDER-2fd32337-20250205",
+    "orderId": "ORDER-2fd32337",
+    "user": {
+      "$oid": "659a7e41817e2b807c59da15"
+    },
+    "email": "alex.rivera@example.com",
+    "name": {
+      "firstName": "Alex",
+      "lastName": "Rivera"
+    },
+    "presentAddress": "742 Evergreen Terrace",
+    "country": "🇺🇸 United States",
+    "city": "Denver",
+    "zipCode": "80202",
+    "contactNo": "+1 (303) 555-0145",
+    "schoolId": {
+      "$oid": "65f173f686cfeccf777ccfd1"
+    },
+    "products": [
+      {
+        "_id": "65db5fcb6a332fe6d3d555f9",
+        "active": true,
+        "title": "Floral Scented Classroom Sanitizer",
+        "slug": "floral-scented-sanitizer",
+        "description": "Commercial-grade floral scented disinfectant and sanitizer for school restrooms and common areas.",
+        "category": "658e915b25d97ac11f92b141",
+        "price": 12,
+        "productImage": "/uploads/products/floral-scented-sanitizer.webp",
+        "packagingType": "Single",
+        "benefits": [],
+        "productDetails": [],
+        "createdAt": "2025-01-10T15:42:03.690Z",
+        "updatedAt": "2025-01-10T15:42:03.690Z",
+        "__v": 0,
+        "id": "65db5fcb6a332fe6d3d555f9",
+        "quantity": 10
+      }
+    ],
+    "totalAmount": 120,
+    "payMonthly": "yes",
+    "nextRecurringDate": {
+      "$date": "2026-12-05T10:00:00.000Z"
+    },
+    "orderStatus": "delivered",
+    "paymentStatus": true,
+    "createdAt": {
+      "$date": "2025-02-05T07:26:50.921Z"
+    },
+    "updatedAt": {
+      "$date": "2025-02-10T07:26:50.921Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "65b213944344abf7cea3c697"
+    },
+    "card": "(MASTERCARD) ... 5100",
+    "transactionId": "EDUDROP-TX-ORDER-53e99cd0-20250212",
+    "orderId": "ORDER-53e99cd0",
+    "user": {
+      "$oid": "659a8025817e2b807c59da6a"
+    },
+    "email": "jordan.taylor@example.com",
+    "name": {
+      "firstName": "Jordan",
+      "lastName": "Taylor"
+    },
+    "presentAddress": "900 Pine Street",
+    "country": "🇺🇸 United States",
+    "city": "Seattle",
+    "zipCode": "98101",
+    "contactNo": "+1 (206) 555-0177",
+    "schoolId": {
+      "$oid": "65f32bfb86cfeccf777cdbe7"
+    },
+    "products": [
+      {
+        "_id": "65db5d786a332fe6d3d555ae",
+        "active": true,
+        "title": "Manual Pump Water Dispenser",
+        "slug": "bowl-cleaner",
+        "description": "Portable hand-pump water dispenser that fits standard classroom water jugs with zero electricity required.",
+        "category": "658e69a87d9ac5bf07e236d3",
+        "price": 15,
+        "productImage": "/uploads/products/manual-pump-dispenser.webp",
+        "packagingType": "Single",
+        "benefits": [
+          "No power outlet needed"
+        ],
+        "productDetails": [],
+        "createdAt": "2025-01-10T15:32:08.143Z",
+        "updatedAt": "2025-01-10T15:32:08.143Z",
+        "__v": 0,
+        "id": "65db5d786a332fe6d3d555ae",
+        "quantity": 6
+      }
+    ],
+    "totalAmount": 90,
+    "payMonthly": "no",
+    "nextRecurringDate": {
+      "$date": "2026-12-12T10:00:00.000Z"
+    },
+    "orderStatus": "on the way",
+    "paymentStatus": true,
+    "createdAt": {
+      "$date": "2025-02-12T07:53:56.363Z"
+    },
+    "updatedAt": {
+      "$date": "2025-02-14T07:53:56.363Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "65e6910886cfeccf777ccea2"
+    },
+    "card": "(VISA) ... 4242",
+    "transactionId": "EDUDROP-TX-ORDER-269a03c1-20250304",
+    "orderId": "ORDER-269a03c1",
+    "user": {
+      "$oid": "65af76dab70d3df025dcff95"
+    },
+    "email": "donor@edudrop.org",
+    "name": {
+      "firstName": "Maya",
+      "lastName": "Lin"
+    },
+    "presentAddress": "500 Congress Ave",
+    "country": "🇺🇸 United States",
+    "city": "Austin",
+    "zipCode": "78701",
+    "contactNo": "+1 (512) 555-0199",
+    "schoolId": {
+      "$oid": "65da260d6a332fe6d3d550cc"
+    },
+    "products": [
+      {
+        "_id": "65db61d46a332fe6d3d55622",
+        "active": true,
+        "title": "Multi-Fold Classroom Paper Towels (Case)",
+        "slug": "paper-towel",
+        "description": "High-absorbency recycled paper hand towels for school washrooms, science labs, and art rooms.",
+        "category": "658e93c99f8aa2dbaf23022b",
+        "price": 38,
+        "productImage": "/uploads/products/multifold-paper-towels.webp",
+        "packagingType": "Single",
+        "benefits": [],
+        "productDetails": [],
+        "createdAt": "2025-01-10T15:50:44.864Z",
+        "updatedAt": "2025-01-10T15:50:44.864Z",
+        "__v": 0,
+        "id": "65db61d46a332fe6d3d55622",
+        "quantity": 3
+      }
+    ],
+    "totalAmount": 114,
+    "payMonthly": "yes",
+    "nextRecurringDate": {
+      "$date": "2026-12-05T03:27:04.398Z"
+    },
+    "orderStatus": "processing",
+    "paymentStatus": true,
+    "createdAt": {
+      "$date": "2025-03-05T03:27:04.584Z"
+    },
+    "updatedAt": {
+      "$date": "2025-03-05T03:27:04.584Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "65e691b686cfeccf777ccedb"
+    },
+    "card": "(VISA) ... 4242",
+    "transactionId": "EDUDROP-TX-ORDER-0e05a435-20250305",
+    "orderId": "ORDER-0e05a435",
+    "user": {
+      "$oid": "65e691b586cfeccf777cced5"
+    },
+    "email": "noah.bennett@example.com",
+    "name": {
+      "firstName": "Noah",
+      "lastName": "Bennett"
+    },
+    "presentAddress": "140 Newbury Street",
+    "country": "🇺🇸 United States",
+    "city": "Boston",
+    "zipCode": "02116",
+    "contactNo": "+1 (617) 555-0123",
+    "schoolId": {
+      "$oid": "65f32e7786cfeccf777cdc22"
+    },
+    "products": [
+      {
+        "_id": "65da3af56a332fe6d3d553f8",
+        "active": true,
+        "title": "500 mL Spring Water (Case of 24)",
+        "slug": "500-ml-spring-water",
+        "description": "Pure, refreshing EduDrop spring water for students and school events. Sold in cases of 24 bottles.",
+        "category": "658e93899f8aa2dbaf23021d",
+        "price": 18,
+        "productImage": "/uploads/products/spring-water-500ml-case.webp",
+        "packagingType": "Case",
+        "benefits": [],
+        "productDetails": [],
+        "createdAt": "2025-01-10T18:52:37.392Z",
+        "updatedAt": "2025-01-15T14:52:36.017Z",
+        "__v": 0,
+        "quantityPerCase": 24,
+        "id": "65da3af56a332fe6d3d553f8",
+        "quantity": 5
+      }
+    ],
+    "totalAmount": 90,
+    "payMonthly": "yes",
+    "nextRecurringDate": {
+      "$date": "2026-12-05T03:29:57.557Z"
+    },
+    "orderStatus": "processing",
+    "paymentStatus": true,
+    "createdAt": {
+      "$date": "2025-03-05T03:29:58.624Z"
+    },
+    "updatedAt": {
+      "$date": "2025-03-05T03:29:58.624Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "660c1a1186cfeccf777d0001"
+    },
+    "card": "(VISA) ... 4242",
+    "transactionId": "EDUDROP-TX-ORDER-25a0411a-20250411",
+    "orderId": "ORDER-25a0411a",
+    "user": {
+      "$oid": "659a7e41817e2b807c59da15"
+    },
+    "email": "alex.rivera@example.com",
+    "name": {
+      "firstName": "Alex",
+      "lastName": "Rivera"
+    },
+    "presentAddress": "742 Evergreen Terrace",
+    "country": "🇺🇸 United States",
+    "city": "Denver",
+    "zipCode": "80202",
+    "contactNo": "+1 (303) 555-0145",
+    "schoolId": {
+      "$oid": "65f32bfb86cfeccf777cdbe7"
+    },
+    "products": [
+      {
+        "_id": "65da3af56a332fe6d3d553f8",
+        "id": "65da3af56a332fe6d3d553f8",
+        "active": true,
+        "title": "500 mL Spring Water (Case of 24)",
+        "slug": "500-ml-spring-water",
+        "description": "Pure, refreshing EduDrop spring water for students and school events. Sold in cases of 24 bottles.",
+        "category": "658e93899f8aa2dbaf23021d",
+        "price": 18,
+        "productImage": "/uploads/products/spring-water-500ml-case.webp",
+        "packagingType": "Case",
+        "quantityPerCase": 24,
+        "benefits": [
+          "100% BPA-free recyclable bottles",
+          "Natural spring source filtration"
+        ],
+        "productDetails": [
+          "24 x 500 mL bottles per case"
+        ],
+        "createdAt": "2025-01-10T18:52:37.392Z",
+        "updatedAt": "2025-01-15T14:52:36.017Z",
+        "__v": 0,
+        "quantity": 4
+      },
+      {
+        "_id": "65db5d786a332fe6d3d555ae",
+        "id": "65db5d786a332fe6d3d555ae",
+        "active": true,
+        "title": "Manual Pump Water Dispenser",
+        "slug": "bowl-cleaner",
+        "description": "Portable hand-pump water dispenser that fits standard classroom water jugs with zero electricity required.",
+        "category": "658e69a87d9ac5bf07e236d3",
+        "price": 15,
+        "productImage": "/uploads/products/manual-pump-dispenser.webp",
+        "packagingType": "Single",
+        "benefits": [
+          "No power outlet needed",
+          "Easy for students to operate"
+        ],
+        "productDetails": [
+          "Includes universal bottle adapter"
+        ],
+        "createdAt": "2025-01-10T15:32:08.143Z",
+        "updatedAt": "2025-01-10T15:32:08.143Z",
+        "__v": 0,
+        "quantity": 2
+      }
+    ],
+    "totalAmount": 102,
+    "payMonthly": "yes",
+    "nextRecurringDate": {
+      "$date": "2026-12-05T10:00:00.000Z"
+    },
+    "orderStatus": "received",
+    "paymentStatus": true,
+    "createdAt": {
+      "$date": "2025-04-11T14:22:10.000Z"
+    },
+    "updatedAt": {
+      "$date": "2025-04-11T14:22:10.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "660c1a1186cfeccf777d0002"
+    },
+    "card": "(MASTERCARD) ... 5100",
+    "transactionId": "EDUDROP-TX-ORDER-25a0522b-20250522",
+    "orderId": "ORDER-25a0522b",
+    "user": {
+      "$oid": "659a8025817e2b807c59da6a"
+    },
+    "email": "jordan.taylor@example.com",
+    "name": {
+      "firstName": "Jordan",
+      "lastName": "Taylor"
+    },
+    "presentAddress": "900 Pine Street",
+    "country": "🇺🇸 United States",
+    "city": "Seattle",
+    "zipCode": "98101",
+    "contactNo": "+1 (206) 555-0177",
+    "schoolId": {
+      "$oid": "65f32e7786cfeccf777cdc22"
+    },
+    "products": [
+      {
+        "_id": "65db63866a332fe6d3d5564e",
+        "id": "65db63866a332fe6d3d5564e",
+        "active": true,
+        "title": "Recycled Classroom Copy & Printing Paper (Case)",
+        "slug": "printing-paper",
+        "description": "Bright white 8.5x11 multipurpose printing paper for student worksheets, exams, and library printers.",
+        "category": "658e93c99f8aa2dbaf23022b",
+        "price": 42,
+        "productImage": "/uploads/products/classroom-copy-paper.webp",
+        "packagingType": "Single",
+        "benefits": [
+          "Acid-free archival quality",
+          "Jam-free guarantee for school copiers"
+        ],
+        "productDetails": [
+          "10 reams (5,000 sheets) per case"
+        ],
+        "createdAt": "2025-01-10T15:57:58.550Z",
+        "updatedAt": "2025-01-10T15:57:58.550Z",
+        "__v": 0,
+        "quantity": 3
+      }
+    ],
+    "totalAmount": 126,
+    "payMonthly": "no",
+    "orderStatus": "received",
+    "paymentStatus": true,
+    "createdAt": {
+      "$date": "2025-05-22T09:15:30.000Z"
+    },
+    "updatedAt": {
+      "$date": "2025-05-22T09:15:30.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "660c1a1186cfeccf777d0003"
+    },
+    "card": "(VISA) ... 4242",
+    "transactionId": "EDUDROP-TX-ORDER-25a0618c-20250618",
+    "orderId": "ORDER-25a0618c",
+    "user": {
+      "$oid": "65af76dab70d3df025dcff95"
+    },
+    "email": "donor@edudrop.org",
+    "name": {
+      "firstName": "Maya",
+      "lastName": "Lin"
+    },
+    "presentAddress": "500 Congress Ave",
+    "country": "🇺🇸 United States",
+    "city": "Austin",
+    "zipCode": "78701",
+    "contactNo": "+1 (512) 555-0199",
+    "schoolId": {
+      "$oid": "65f173f686cfeccf777ccfd1"
+    },
+    "products": [
+      {
+        "_id": "65db5d036a332fe6d3d55586",
+        "id": "65db5d036a332fe6d3d55586",
+        "active": true,
+        "title": "Hot & Cold Classroom Water Dispenser",
+        "slug": "bleach",
+        "description": "Freestanding hot and cold spring water dispenser for school hallways, libraries, and cafeterias.",
+        "category": "658e69a87d9ac5bf07e236d3",
+        "price": 95,
+        "productImage": "/uploads/products/hot-and-cold-dispenser.webp",
+        "packagingType": "Single",
+        "benefits": [
+          "Child-safety hot water lock",
+          "Energy-efficient cooling compressor"
+        ],
+        "productDetails": [
+          "Compatible with 3-gallon and 5-gallon jugs"
+        ],
+        "createdAt": "2025-01-10T15:30:11.430Z",
+        "updatedAt": "2025-01-10T15:32:37.562Z",
+        "__v": 0,
+        "quantity": 1
+      },
+      {
+        "_id": "65db61036a332fe6d3d5560a",
+        "id": "65db61036a332fe6d3d5560a",
+        "active": true,
+        "title": "Compostable Paper Cone Cups (Case of 1,000)",
+        "slug": "industrial-toilet-tissue",
+        "description": "Biodegradable 4.5 oz paper cone water cups for school water coolers and athletic fields.",
+        "category": "658e93e09f8aa2dbaf230232",
+        "price": 32,
+        "productImage": "/uploads/products/compostable-cone-cups.webp",
+        "packagingType": "Single",
+        "benefits": [
+          "100% compostable paper",
+          "Fits standard cooler cup dispensers"
+        ],
+        "productDetails": [
+          "1,000 cups per box (5 sleeves of 200)"
+        ],
+        "createdAt": "2025-01-10T15:47:15.565Z",
+        "updatedAt": "2025-01-10T15:47:15.565Z",
+        "__v": 0,
+        "quantity": 2
+      }
+    ],
+    "totalAmount": 159,
+    "payMonthly": "no",
+    "orderStatus": "received",
+    "paymentStatus": true,
+    "createdAt": {
+      "$date": "2025-06-18T11:40:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2025-06-18T11:40:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "660c1a1186cfeccf777d0004"
+    },
+    "card": "(VISA) ... 4242",
+    "transactionId": "EDUDROP-TX-ORDER-25a0714d-20250714",
+    "orderId": "ORDER-25a0714d",
+    "user": {
+      "$oid": "65e691b586cfeccf777cced5"
+    },
+    "email": "noah.bennett@example.com",
+    "name": {
+      "firstName": "Noah",
+      "lastName": "Bennett"
+    },
+    "presentAddress": "140 Newbury Street",
+    "country": "🇺🇸 United States",
+    "city": "Boston",
+    "zipCode": "02116",
+    "contactNo": "+1 (617) 555-0123",
+    "schoolId": {
+      "$oid": "65da260d6a332fe6d3d550cc"
+    },
+    "products": [
+      {
+        "_id": "65db5ae26a332fe6d3d5553b",
+        "id": "65db5ae26a332fe6d3d5553b",
+        "active": true,
+        "title": "Gentle Classroom Surface Sanitizer",
+        "slug": "baby-powder-sanitizer",
+        "description": "Non-toxic, fresh-scented surface sanitizer formulated for school desks and shared learning spaces.",
+        "category": "658e915b25d97ac11f92b141",
+        "price": 14,
+        "productImage": "/uploads/products/gentle-surface-sanitizer.webp",
+        "packagingType": "Single",
+        "benefits": [
+          "Safe for daily classroom desk cleaning",
+          "Eliminates 99.9% of common germs"
+        ],
+        "productDetails": [
+          "1 Gallon commercial bottle"
+        ],
+        "createdAt": "2025-01-10T15:21:06.724Z",
+        "updatedAt": "2025-01-10T15:30:29.341Z",
+        "__v": 0,
+        "quantity": 5
+      },
+      {
+        "_id": "65db5e966a332fe6d3d555d1",
+        "id": "65db5e966a332fe6d3d555d1",
+        "active": true,
+        "title": "Heavy-Duty Water Bottle Stand",
+        "slug": "car-wash-wax",
+        "description": "Sturdy steel cradle stand with dispensing valve for 5-gallon classroom water bottles.",
+        "category": "658e69a87d9ac5bf07e236d3",
+        "price": 24,
+        "productImage": "/uploads/products/water-bottle-stand.webp",
+        "packagingType": "Single",
+        "benefits": [
+          "Compact footprint for classrooms",
+          "Includes fast-flow spigot"
+        ],
+        "productDetails": [
+          "Powder-coated steel frame"
+        ],
+        "createdAt": "2025-01-10T15:36:54.605Z",
+        "updatedAt": "2025-01-10T15:36:54.605Z",
+        "__v": 0,
+        "quantity": 2
+      }
+    ],
+    "totalAmount": 118,
+    "payMonthly": "yes",
+    "nextRecurringDate": {
+      "$date": "2026-12-05T10:00:00.000Z"
+    },
+    "orderStatus": "received",
+    "paymentStatus": true,
+    "createdAt": {
+      "$date": "2025-07-14T16:05:22.000Z"
+    },
+    "updatedAt": {
+      "$date": "2025-07-14T16:05:22.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "660c1a1186cfeccf777d0005"
+    },
+    "card": "(VISA) ... 4242",
+    "transactionId": "EDUDROP-TX-ORDER-25a0825e-20250825",
+    "orderId": "ORDER-25a0825e",
+    "user": {
+      "$oid": "65af76dab70d3df025dcff95"
+    },
+    "email": "donor@edudrop.org",
+    "name": {
+      "firstName": "Maya",
+      "lastName": "Lin"
+    },
+    "presentAddress": "500 Congress Ave",
+    "country": "🇺🇸 United States",
+    "city": "Austin",
+    "zipCode": "78701",
+    "contactNo": "+1 (512) 555-0199",
+    "schoolId": {
+      "$oid": "65f32bfb86cfeccf777cdbe7"
+    },
+    "products": [
+      {
+        "_id": "65db53746a332fe6d3d554e9",
+        "id": "65db53746a332fe6d3d554e9",
+        "active": true,
+        "title": "1.5 Liter Spring Water (Case of 12)",
+        "slug": "15-liter-spring-water",
+        "description": "Ideal for classrooms, faculty lounges, and athletics programs. Sold in cases of 12 bottles.",
+        "category": "658e93899f8aa2dbaf23021d",
+        "price": 22,
+        "productImage": "/uploads/products/spring-water-1-5l-case.webp",
+        "packagingType": "Case",
+        "quantityPerCase": 12,
+        "benefits": [
+          "Convenient 1.5 L classroom size",
+          "Supports daily student hydration"
+        ],
+        "productDetails": [
+          "12 x 1.5 L bottles per case"
+        ],
+        "createdAt": "2025-01-10T14:49:24.710Z",
+        "updatedAt": "2025-01-15T14:52:15.551Z",
+        "__v": 0,
+        "quantity": 6
+      },
+      {
+        "_id": "65db61d46a332fe6d3d55622",
+        "id": "65db61d46a332fe6d3d55622",
+        "active": true,
+        "title": "Multi-Fold Classroom Paper Towels (Case)",
+        "slug": "paper-towel",
+        "description": "High-absorbency recycled paper hand towels for school washrooms, science labs, and art rooms.",
+        "category": "658e93c99f8aa2dbaf23022b",
+        "price": 38,
+        "productImage": "/uploads/products/multifold-paper-towels.webp",
+        "packagingType": "Single",
+        "benefits": [
+          "EPA-compliant recycled fiber",
+          "Fits standard wall dispensers"
+        ],
+        "productDetails": [
+          "16 packs of 250 sheets (4,000 sheets total)"
+        ],
+        "createdAt": "2025-01-10T15:50:44.864Z",
+        "updatedAt": "2025-01-10T15:50:44.864Z",
+        "__v": 0,
+        "quantity": 2
+      }
+    ],
+    "totalAmount": 208,
+    "payMonthly": "yes",
+    "nextRecurringDate": {
+      "$date": "2026-12-05T10:00:00.000Z"
+    },
+    "orderStatus": "received",
+    "paymentStatus": true,
+    "createdAt": {
+      "$date": "2025-08-25T13:30:15.000Z"
+    },
+    "updatedAt": {
+      "$date": "2025-08-25T13:30:15.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "660c1a1186cfeccf777d0006"
+    },
+    "card": "(VISA) ... 4242",
+    "transactionId": "EDUDROP-TX-ORDER-25a0912f-20250912",
+    "orderId": "ORDER-25a0912f",
+    "user": {
+      "$oid": "659a7e41817e2b807c59da15"
+    },
+    "email": "alex.rivera@example.com",
+    "name": {
+      "firstName": "Alex",
+      "lastName": "Rivera"
+    },
+    "presentAddress": "742 Evergreen Terrace",
+    "country": "🇺🇸 United States",
+    "city": "Denver",
+    "zipCode": "80202",
+    "contactNo": "+1 (303) 555-0145",
+    "schoolId": {
+      "$oid": "65da260d6a332fe6d3d550cc"
+    },
+    "products": [
+      {
+        "_id": "65db5f3a6a332fe6d3d555e5",
+        "id": "65db5f3a6a332fe6d3d555e5",
+        "active": true,
+        "title": "Countertop Ceramic Pump Dispenser",
+        "slug": "carpet-cleaner",
+        "description": "Countertop water crock with lever faucet and manual pump for classroom hydration stations.",
+        "category": "658e69a87d9ac5bf07e236d3",
+        "price": 28,
+        "productImage": "/uploads/products/ceramic-countertop-dispenser.webp",
+        "packagingType": "Single",
+        "benefits": [
+          "Drip-free stainless steel tap",
+          "Easy to sanitize"
+        ],
+        "productDetails": [
+          "Fits standard 3 and 5 gallon bottles"
+        ],
+        "createdAt": "2025-01-10T15:39:38.261Z",
+        "updatedAt": "2025-01-10T15:39:38.261Z",
+        "__v": 0,
+        "quantity": 3
+      },
+      {
+        "_id": "65db53fe6a332fe6d3d554fc",
+        "id": "65db53fe6a332fe6d3d554fc",
+        "active": true,
+        "title": "5 Liter Classroom Jugs (Case of 3)",
+        "slug": "5-liter-spring-water",
+        "description": "Large-capacity 5-liter spring water jugs for classroom hydration stations. Sold in cases of 3.",
+        "category": "658e93899f8aa2dbaf23021d",
+        "price": 16,
+        "productImage": "/uploads/products/spring-water-5l-jugs.webp",
+        "packagingType": "Case",
+        "quantityPerCase": 3,
+        "benefits": [
+          "Easy-pour classroom jugs",
+          "Reduces single-use packaging waste"
+        ],
+        "productDetails": [
+          "3 x 5 L jugs per case"
+        ],
+        "createdAt": "2025-01-10T14:51:42.083Z",
+        "updatedAt": "2025-01-10T14:51:42.083Z",
+        "__v": 0,
+        "quantity": 6
+      }
+    ],
+    "totalAmount": 180,
+    "payMonthly": "yes",
+    "nextRecurringDate": {
+      "$date": "2026-12-05T10:00:00.000Z"
+    },
+    "orderStatus": "received",
+    "paymentStatus": true,
+    "createdAt": {
+      "$date": "2025-09-12T10:18:45.000Z"
+    },
+    "updatedAt": {
+      "$date": "2025-09-12T10:18:45.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "660c1a1186cfeccf777d0007"
+    },
+    "card": "(MASTERCARD) ... 5100",
+    "transactionId": "EDUDROP-TX-ORDER-25a1019g-20251019",
+    "orderId": "ORDER-25a1019g",
+    "user": {
+      "$oid": "659a8025817e2b807c59da6a"
+    },
+    "email": "jordan.taylor@example.com",
+    "name": {
+      "firstName": "Jordan",
+      "lastName": "Taylor"
+    },
+    "presentAddress": "900 Pine Street",
+    "country": "🇺🇸 United States",
+    "city": "Seattle",
+    "zipCode": "98101",
+    "contactNo": "+1 (206) 555-0177",
+    "schoolId": {
+      "$oid": "65f173f686cfeccf777ccfd1"
+    },
+    "products": [
+      {
+        "_id": "65db5fcb6a332fe6d3d555f9",
+        "id": "65db5fcb6a332fe6d3d555f9",
+        "active": true,
+        "title": "Floral Scented Classroom Sanitizer",
+        "slug": "floral-scented-sanitizer",
+        "description": "Commercial-grade floral scented disinfectant and sanitizer for school restrooms and common areas.",
+        "category": "658e915b25d97ac11f92b141",
+        "price": 12,
+        "productImage": "/uploads/products/floral-scented-sanitizer.webp",
+        "packagingType": "Single",
+        "benefits": [
+          "Hospital-grade disinfection",
+          "Pleasant botanical scent"
+        ],
+        "productDetails": [
+          "1 Gallon concentrated bottle"
+        ],
+        "createdAt": "2025-01-10T15:42:03.690Z",
+        "updatedAt": "2025-01-10T15:42:03.690Z",
+        "__v": 0,
+        "quantity": 8
+      }
+    ],
+    "totalAmount": 96,
+    "payMonthly": "yes",
+    "nextRecurringDate": {
+      "$date": "2026-12-05T10:00:00.000Z"
+    },
+    "orderStatus": "received",
+    "paymentStatus": true,
+    "createdAt": {
+      "$date": "2025-10-19T15:50:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2025-10-19T15:50:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "660c1a1186cfeccf777d0008"
+    },
+    "card": "(VISA) ... 4242",
+    "transactionId": "EDUDROP-TX-ORDER-25a1107h-20251107",
+    "orderId": "ORDER-25a1107h",
+    "user": {
+      "$oid": "65e691b586cfeccf777cced5"
+    },
+    "email": "noah.bennett@example.com",
+    "name": {
+      "firstName": "Noah",
+      "lastName": "Bennett"
+    },
+    "presentAddress": "140 Newbury Street",
+    "country": "🇺🇸 United States",
+    "city": "Boston",
+    "zipCode": "02116",
+    "contactNo": "+1 (617) 555-0123",
+    "schoolId": {
+      "$oid": "65f32e7786cfeccf777cdc22"
+    },
+    "products": [
+      {
+        "_id": "65da3af56a332fe6d3d553f8",
+        "id": "65da3af56a332fe6d3d553f8",
+        "active": true,
+        "title": "500 mL Spring Water (Case of 24)",
+        "slug": "500-ml-spring-water",
+        "description": "Pure, refreshing EduDrop spring water for students and school events. Sold in cases of 24 bottles.",
+        "category": "658e93899f8aa2dbaf23021d",
+        "price": 18,
+        "productImage": "/uploads/products/spring-water-500ml-case.webp",
+        "packagingType": "Case",
+        "quantityPerCase": 24,
+        "benefits": [
+          "100% BPA-free recyclable bottles",
+          "Natural spring source filtration"
+        ],
+        "productDetails": [
+          "24 x 500 mL bottles per case"
+        ],
+        "createdAt": "2025-01-10T18:52:37.392Z",
+        "updatedAt": "2025-01-15T14:52:36.017Z",
+        "__v": 0,
+        "quantity": 5
+      },
+      {
+        "_id": "65db61036a332fe6d3d5560a",
+        "id": "65db61036a332fe6d3d5560a",
+        "active": true,
+        "title": "Compostable Paper Cone Cups (Case of 1,000)",
+        "slug": "industrial-toilet-tissue",
+        "description": "Biodegradable 4.5 oz paper cone water cups for school water coolers and athletic fields.",
+        "category": "658e93e09f8aa2dbaf230232",
+        "price": 32,
+        "productImage": "/uploads/products/compostable-cone-cups.webp",
+        "packagingType": "Single",
+        "benefits": [
+          "100% compostable paper",
+          "Fits standard cooler cup dispensers"
+        ],
+        "productDetails": [
+          "1,000 cups per box (5 sleeves of 200)"
+        ],
+        "createdAt": "2025-01-10T15:47:15.565Z",
+        "updatedAt": "2025-01-10T15:47:15.565Z",
+        "__v": 0,
+        "quantity": 2
+      }
+    ],
+    "totalAmount": 154,
+    "payMonthly": "no",
+    "orderStatus": "received",
+    "paymentStatus": true,
+    "createdAt": {
+      "$date": "2025-11-07T08:45:10.000Z"
+    },
+    "updatedAt": {
+      "$date": "2025-11-07T08:45:10.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "660c1a1186cfeccf777d0009"
+    },
+    "card": "(VISA) ... 4242",
+    "transactionId": "EDUDROP-TX-ORDER-25a1215i-20251215",
+    "orderId": "ORDER-25a1215i",
+    "user": {
+      "$oid": "65af76dab70d3df025dcff95"
+    },
+    "email": "donor@edudrop.org",
+    "name": {
+      "firstName": "Maya",
+      "lastName": "Lin"
+    },
+    "presentAddress": "500 Congress Ave",
+    "country": "🇺🇸 United States",
+    "city": "Austin",
+    "zipCode": "78701",
+    "contactNo": "+1 (512) 555-0199",
+    "schoolId": {
+      "$oid": "65f32e7786cfeccf777cdc22"
+    },
+    "products": [
+      {
+        "_id": "65db61d46a332fe6d3d55622",
+        "id": "65db61d46a332fe6d3d55622",
+        "active": true,
+        "title": "Multi-Fold Classroom Paper Towels (Case)",
+        "slug": "paper-towel",
+        "description": "High-absorbency recycled paper hand towels for school washrooms, science labs, and art rooms.",
+        "category": "658e93c99f8aa2dbaf23022b",
+        "price": 38,
+        "productImage": "/uploads/products/multifold-paper-towels.webp",
+        "packagingType": "Single",
+        "benefits": [
+          "EPA-compliant recycled fiber",
+          "Fits standard wall dispensers"
+        ],
+        "productDetails": [
+          "16 packs of 250 sheets (4,000 sheets total)"
+        ],
+        "createdAt": "2025-01-10T15:50:44.864Z",
+        "updatedAt": "2025-01-10T15:50:44.864Z",
+        "__v": 0,
+        "quantity": 3
+      }
+    ],
+    "totalAmount": 114,
+    "payMonthly": "yes",
+    "nextRecurringDate": {
+      "$date": "2026-12-05T10:00:00.000Z"
+    },
+    "orderStatus": "received",
+    "paymentStatus": true,
+    "createdAt": {
+      "$date": "2025-12-15T12:00:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2025-12-15T12:00:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "660c1a1186cfeccf777d0010"
+    },
+    "card": "(VISA) ... 4242",
+    "transactionId": "EDUDROP-TX-ORDER-26b0111j-20260111",
+    "orderId": "ORDER-26b0111j",
+    "user": {
+      "$oid": "659a7e41817e2b807c59da15"
+    },
+    "email": "alex.rivera@example.com",
+    "name": {
+      "firstName": "Alex",
+      "lastName": "Rivera"
+    },
+    "presentAddress": "742 Evergreen Terrace",
+    "country": "🇺🇸 United States",
+    "city": "Denver",
+    "zipCode": "80202",
+    "contactNo": "+1 (303) 555-0145",
+    "schoolId": {
+      "$oid": "65f32e7786cfeccf777cdc22"
+    },
+    "products": [
+      {
+        "_id": "65db5d036a332fe6d3d55586",
+        "id": "65db5d036a332fe6d3d55586",
+        "active": true,
+        "title": "Hot & Cold Classroom Water Dispenser",
+        "slug": "bleach",
+        "description": "Freestanding hot and cold spring water dispenser for school hallways, libraries, and cafeterias.",
+        "category": "658e69a87d9ac5bf07e236d3",
+        "price": 95,
+        "productImage": "/uploads/products/hot-and-cold-dispenser.webp",
+        "packagingType": "Single",
+        "benefits": [
+          "Child-safety hot water lock",
+          "Energy-efficient cooling compressor"
+        ],
+        "productDetails": [
+          "Compatible with 3-gallon and 5-gallon jugs"
+        ],
+        "createdAt": "2025-01-10T15:30:11.430Z",
+        "updatedAt": "2025-01-10T15:32:37.562Z",
+        "__v": 0,
+        "quantity": 1
+      },
+      {
+        "_id": "65db53fe6a332fe6d3d554fc",
+        "id": "65db53fe6a332fe6d3d554fc",
+        "active": true,
+        "title": "5 Liter Classroom Jugs (Case of 3)",
+        "slug": "5-liter-spring-water",
+        "description": "Large-capacity 5-liter spring water jugs for classroom hydration stations. Sold in cases of 3.",
+        "category": "658e93899f8aa2dbaf23021d",
+        "price": 16,
+        "productImage": "/uploads/products/spring-water-5l-jugs.webp",
+        "packagingType": "Case",
+        "quantityPerCase": 3,
+        "benefits": [
+          "Easy-pour classroom jugs",
+          "Reduces single-use packaging waste"
+        ],
+        "productDetails": [
+          "3 x 5 L jugs per case"
+        ],
+        "createdAt": "2025-01-10T14:51:42.083Z",
+        "updatedAt": "2025-01-10T14:51:42.083Z",
+        "__v": 0,
+        "quantity": 4
+      }
+    ],
+    "totalAmount": 159,
+    "payMonthly": "no",
+    "orderStatus": "received",
+    "paymentStatus": true,
+    "createdAt": {
+      "$date": "2026-01-11T14:10:30.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-11T14:10:30.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "660c1a1186cfeccf777d0011"
+    },
+    "card": "(MASTERCARD) ... 5100",
+    "transactionId": "EDUDROP-TX-ORDER-26b0214k-20260214",
+    "orderId": "ORDER-26b0214k",
+    "user": {
+      "$oid": "659a8025817e2b807c59da6a"
+    },
+    "email": "jordan.taylor@example.com",
+    "name": {
+      "firstName": "Jordan",
+      "lastName": "Taylor"
+    },
+    "presentAddress": "900 Pine Street",
+    "country": "🇺🇸 United States",
+    "city": "Seattle",
+    "zipCode": "98101",
+    "contactNo": "+1 (206) 555-0177",
+    "schoolId": {
+      "$oid": "65da260d6a332fe6d3d550cc"
+    },
+    "products": [
+      {
+        "_id": "65db5ae26a332fe6d3d5553b",
+        "id": "65db5ae26a332fe6d3d5553b",
+        "active": true,
+        "title": "Gentle Classroom Surface Sanitizer",
+        "slug": "baby-powder-sanitizer",
+        "description": "Non-toxic, fresh-scented surface sanitizer formulated for school desks and shared learning spaces.",
+        "category": "658e915b25d97ac11f92b141",
+        "price": 14,
+        "productImage": "/uploads/products/gentle-surface-sanitizer.webp",
+        "packagingType": "Single",
+        "benefits": [
+          "Safe for daily classroom desk cleaning",
+          "Eliminates 99.9% of common germs"
+        ],
+        "productDetails": [
+          "1 Gallon commercial bottle"
+        ],
+        "createdAt": "2025-01-10T15:21:06.724Z",
+        "updatedAt": "2025-01-10T15:30:29.341Z",
+        "__v": 0,
+        "quantity": 6
+      }
+    ],
+    "totalAmount": 84,
+    "payMonthly": "yes",
+    "nextRecurringDate": {
+      "$date": "2026-12-05T10:00:00.000Z"
+    },
+    "orderStatus": "received",
+    "paymentStatus": true,
+    "createdAt": {
+      "$date": "2026-02-14T09:30:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-02-14T09:30:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "660c1a1186cfeccf777d0012"
+    },
+    "card": "(VISA) ... 4242",
+    "transactionId": "EDUDROP-TX-ORDER-26b0320l-20260320",
+    "orderId": "ORDER-26b0320l",
+    "user": {
+      "$oid": "65e691b586cfeccf777cced5"
+    },
+    "email": "noah.bennett@example.com",
+    "name": {
+      "firstName": "Noah",
+      "lastName": "Bennett"
+    },
+    "presentAddress": "140 Newbury Street",
+    "country": "🇺🇸 United States",
+    "city": "Boston",
+    "zipCode": "02116",
+    "contactNo": "+1 (617) 555-0123",
+    "schoolId": {
+      "$oid": "65f173f686cfeccf777ccfd1"
+    },
+    "products": [
+      {
+        "_id": "65db63866a332fe6d3d5564e",
+        "id": "65db63866a332fe6d3d5564e",
+        "active": true,
+        "title": "Recycled Classroom Copy & Printing Paper (Case)",
+        "slug": "printing-paper",
+        "description": "Bright white 8.5x11 multipurpose printing paper for student worksheets, exams, and library printers.",
+        "category": "658e93c99f8aa2dbaf23022b",
+        "price": 42,
+        "productImage": "/uploads/products/classroom-copy-paper.webp",
+        "packagingType": "Single",
+        "benefits": [
+          "Acid-free archival quality",
+          "Jam-free guarantee for school copiers"
+        ],
+        "productDetails": [
+          "10 reams (5,000 sheets) per case"
+        ],
+        "createdAt": "2025-01-10T15:57:58.550Z",
+        "updatedAt": "2025-01-10T15:57:58.550Z",
+        "__v": 0,
+        "quantity": 2
+      },
+      {
+        "_id": "65db5fcb6a332fe6d3d555f9",
+        "id": "65db5fcb6a332fe6d3d555f9",
+        "active": true,
+        "title": "Floral Scented Classroom Sanitizer",
+        "slug": "floral-scented-sanitizer",
+        "description": "Commercial-grade floral scented disinfectant and sanitizer for school restrooms and common areas.",
+        "category": "658e915b25d97ac11f92b141",
+        "price": 12,
+        "productImage": "/uploads/products/floral-scented-sanitizer.webp",
+        "packagingType": "Single",
+        "benefits": [
+          "Hospital-grade disinfection",
+          "Pleasant botanical scent"
+        ],
+        "productDetails": [
+          "1 Gallon concentrated bottle"
+        ],
+        "createdAt": "2025-01-10T15:42:03.690Z",
+        "updatedAt": "2025-01-10T15:42:03.690Z",
+        "__v": 0,
+        "quantity": 4
+      }
+    ],
+    "totalAmount": 132,
+    "payMonthly": "yes",
+    "nextRecurringDate": {
+      "$date": "2026-12-05T10:00:00.000Z"
+    },
+    "orderStatus": "received",
+    "paymentStatus": true,
+    "createdAt": {
+      "$date": "2026-03-20T16:45:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-03-20T16:45:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "660c1a1186cfeccf777d0013"
+    },
+    "card": "(VISA) ... 4242",
+    "transactionId": "EDUDROP-TX-ORDER-26b0409m-20260409",
+    "orderId": "ORDER-26b0409m",
+    "user": {
+      "$oid": "65af76dab70d3df025dcff95"
+    },
+    "email": "donor@edudrop.org",
+    "name": {
+      "firstName": "Maya",
+      "lastName": "Lin"
+    },
+    "presentAddress": "500 Congress Ave",
+    "country": "🇺🇸 United States",
+    "city": "Austin",
+    "zipCode": "78701",
+    "contactNo": "+1 (512) 555-0199",
+    "schoolId": {
+      "$oid": "65f173f686cfeccf777ccfd1"
+    },
+    "products": [
+      {
+        "_id": "65db53746a332fe6d3d554e9",
+        "id": "65db53746a332fe6d3d554e9",
+        "active": true,
+        "title": "1.5 Liter Spring Water (Case of 12)",
+        "slug": "15-liter-spring-water",
+        "description": "Ideal for classrooms, faculty lounges, and athletics programs. Sold in cases of 12 bottles.",
+        "category": "658e93899f8aa2dbaf23021d",
+        "price": 22,
+        "productImage": "/uploads/products/spring-water-1-5l-case.webp",
+        "packagingType": "Case",
+        "quantityPerCase": 12,
+        "benefits": [
+          "Convenient 1.5 L classroom size",
+          "Supports daily student hydration"
+        ],
+        "productDetails": [
+          "12 x 1.5 L bottles per case"
+        ],
+        "createdAt": "2025-01-10T14:49:24.710Z",
+        "updatedAt": "2025-01-15T14:52:15.551Z",
+        "__v": 0,
+        "quantity": 4
+      }
+    ],
+    "totalAmount": 88,
+    "payMonthly": "yes",
+    "nextRecurringDate": {
+      "$date": "2026-12-05T10:00:00.000Z"
+    },
+    "orderStatus": "received",
+    "paymentStatus": true,
+    "createdAt": {
+      "$date": "2026-04-09T11:20:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-04-09T11:20:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "660c1a1186cfeccf777d0014"
+    },
+    "card": "(VISA) ... 4242",
+    "transactionId": "EDUDROP-TX-ORDER-26b0518n-20260518",
+    "orderId": "ORDER-26b0518n",
+    "user": {
+      "$oid": "659a7e41817e2b807c59da15"
+    },
+    "email": "alex.rivera@example.com",
+    "name": {
+      "firstName": "Alex",
+      "lastName": "Rivera"
+    },
+    "presentAddress": "742 Evergreen Terrace",
+    "country": "🇺🇸 United States",
+    "city": "Denver",
+    "zipCode": "80202",
+    "contactNo": "+1 (303) 555-0145",
+    "schoolId": {
+      "$oid": "65f32bfb86cfeccf777cdbe7"
+    },
+    "products": [
+      {
+        "_id": "65db5e966a332fe6d3d555d1",
+        "id": "65db5e966a332fe6d3d555d1",
+        "active": true,
+        "title": "Heavy-Duty Water Bottle Stand",
+        "slug": "car-wash-wax",
+        "description": "Sturdy steel cradle stand with dispensing valve for 5-gallon classroom water bottles.",
+        "category": "658e69a87d9ac5bf07e236d3",
+        "price": 24,
+        "productImage": "/uploads/products/water-bottle-stand.webp",
+        "packagingType": "Single",
+        "benefits": [
+          "Compact footprint for classrooms",
+          "Includes fast-flow spigot"
+        ],
+        "productDetails": [
+          "Powder-coated steel frame"
+        ],
+        "createdAt": "2025-01-10T15:36:54.605Z",
+        "updatedAt": "2025-01-10T15:36:54.605Z",
+        "__v": 0,
+        "quantity": 3
+      },
+      {
+        "_id": "65db5d786a332fe6d3d555ae",
+        "id": "65db5d786a332fe6d3d555ae",
+        "active": true,
+        "title": "Manual Pump Water Dispenser",
+        "slug": "bowl-cleaner",
+        "description": "Portable hand-pump water dispenser that fits standard classroom water jugs with zero electricity required.",
+        "category": "658e69a87d9ac5bf07e236d3",
+        "price": 15,
+        "productImage": "/uploads/products/manual-pump-dispenser.webp",
+        "packagingType": "Single",
+        "benefits": [
+          "No power outlet needed",
+          "Easy for students to operate"
+        ],
+        "productDetails": [
+          "Includes universal bottle adapter"
+        ],
+        "createdAt": "2025-01-10T15:32:08.143Z",
+        "updatedAt": "2025-01-10T15:32:08.143Z",
+        "__v": 0,
+        "quantity": 3
+      }
+    ],
+    "totalAmount": 117,
+    "payMonthly": "no",
+    "orderStatus": "received",
+    "paymentStatus": true,
+    "createdAt": {
+      "$date": "2026-05-18T10:00:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-05-18T10:00:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "660c1a1186cfeccf777d0015"
+    },
+    "card": "(MASTERCARD) ... 5100",
+    "transactionId": "EDUDROP-TX-ORDER-26b0622o-20260622",
+    "orderId": "ORDER-26b0622o",
+    "user": {
+      "$oid": "659a8025817e2b807c59da6a"
+    },
+    "email": "jordan.taylor@example.com",
+    "name": {
+      "firstName": "Jordan",
+      "lastName": "Taylor"
+    },
+    "presentAddress": "900 Pine Street",
+    "country": "🇺🇸 United States",
+    "city": "Seattle",
+    "zipCode": "98101",
+    "contactNo": "+1 (206) 555-0177",
+    "schoolId": {
+      "$oid": "65da260d6a332fe6d3d550cc"
+    },
+    "products": [
+      {
+        "_id": "65db5f3a6a332fe6d3d555e5",
+        "id": "65db5f3a6a332fe6d3d555e5",
+        "active": true,
+        "title": "Countertop Ceramic Pump Dispenser",
+        "slug": "carpet-cleaner",
+        "description": "Countertop water crock with lever faucet and manual pump for classroom hydration stations.",
+        "category": "658e69a87d9ac5bf07e236d3",
+        "price": 28,
+        "productImage": "/uploads/products/ceramic-countertop-dispenser.webp",
+        "packagingType": "Single",
+        "benefits": [
+          "Drip-free stainless steel tap",
+          "Easy to sanitize"
+        ],
+        "productDetails": [
+          "Fits standard 3 and 5 gallon bottles"
+        ],
+        "createdAt": "2025-01-10T15:39:38.261Z",
+        "updatedAt": "2025-01-10T15:39:38.261Z",
+        "__v": 0,
+        "quantity": 2
+      },
+      {
+        "_id": "65da3af56a332fe6d3d553f8",
+        "id": "65da3af56a332fe6d3d553f8",
+        "active": true,
+        "title": "500 mL Spring Water (Case of 24)",
+        "slug": "500-ml-spring-water",
+        "description": "Pure, refreshing EduDrop spring water for students and school events. Sold in cases of 24 bottles.",
+        "category": "658e93899f8aa2dbaf23021d",
+        "price": 18,
+        "productImage": "/uploads/products/spring-water-500ml-case.webp",
+        "packagingType": "Case",
+        "quantityPerCase": 24,
+        "benefits": [
+          "100% BPA-free recyclable bottles",
+          "Natural spring source filtration"
+        ],
+        "productDetails": [
+          "24 x 500 mL bottles per case"
+        ],
+        "createdAt": "2025-01-10T18:52:37.392Z",
+        "updatedAt": "2025-01-15T14:52:36.017Z",
+        "__v": 0,
+        "quantity": 4
+      }
+    ],
+    "totalAmount": 128,
+    "payMonthly": "yes",
+    "nextRecurringDate": {
+      "$date": "2026-12-05T10:00:00.000Z"
+    },
+    "orderStatus": "received",
+    "paymentStatus": true,
+    "createdAt": {
+      "$date": "2026-06-22T13:40:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-06-22T13:40:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "660c1a1186cfeccf777d0016"
+    },
+    "card": "(VISA) ... 4242",
+    "transactionId": "EDUDROP-TX-ORDER-26b0716p-20260716",
+    "orderId": "ORDER-26b0716p",
+    "user": {
+      "$oid": "65e691b586cfeccf777cced5"
+    },
+    "email": "noah.bennett@example.com",
+    "name": {
+      "firstName": "Noah",
+      "lastName": "Bennett"
+    },
+    "presentAddress": "140 Newbury Street",
+    "country": "🇺🇸 United States",
+    "city": "Boston",
+    "zipCode": "02116",
+    "contactNo": "+1 (617) 555-0123",
+    "schoolId": {
+      "$oid": "65f32bfb86cfeccf777cdbe7"
+    },
+    "products": [
+      {
+        "_id": "65db61036a332fe6d3d5560a",
+        "id": "65db61036a332fe6d3d5560a",
+        "active": true,
+        "title": "Compostable Paper Cone Cups (Case of 1,000)",
+        "slug": "industrial-toilet-tissue",
+        "description": "Biodegradable 4.5 oz paper cone water cups for school water coolers and athletic fields.",
+        "category": "658e93e09f8aa2dbaf230232",
+        "price": 32,
+        "productImage": "/uploads/products/compostable-cone-cups.webp",
+        "packagingType": "Single",
+        "benefits": [
+          "100% compostable paper",
+          "Fits standard cooler cup dispensers"
+        ],
+        "productDetails": [
+          "1,000 cups per box (5 sleeves of 200)"
+        ],
+        "createdAt": "2025-01-10T15:47:15.565Z",
+        "updatedAt": "2025-01-10T15:47:15.565Z",
+        "__v": 0,
+        "quantity": 3
+      }
+    ],
+    "totalAmount": 96,
+    "payMonthly": "no",
+    "orderStatus": "received",
+    "paymentStatus": true,
+    "createdAt": {
+      "$date": "2026-07-16T15:15:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-07-16T15:15:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "660c1a1186cfeccf777d0017"
+    },
+    "card": "(VISA) ... 4242",
+    "transactionId": "EDUDROP-TX-ORDER-26b0824q-20260824",
+    "orderId": "ORDER-26b0824q",
+    "user": {
+      "$oid": "65af76dab70d3df025dcff95"
+    },
+    "email": "donor@edudrop.org",
+    "name": {
+      "firstName": "Maya",
+      "lastName": "Lin"
+    },
+    "presentAddress": "500 Congress Ave",
+    "country": "🇺🇸 United States",
+    "city": "Austin",
+    "zipCode": "78701",
+    "contactNo": "+1 (512) 555-0199",
+    "schoolId": {
+      "$oid": "65da260d6a332fe6d3d550cc"
+    },
+    "products": [
+      {
+        "_id": "65db5d036a332fe6d3d55586",
+        "id": "65db5d036a332fe6d3d55586",
+        "active": true,
+        "title": "Hot & Cold Classroom Water Dispenser",
+        "slug": "bleach",
+        "description": "Freestanding hot and cold spring water dispenser for school hallways, libraries, and cafeterias.",
+        "category": "658e69a87d9ac5bf07e236d3",
+        "price": 95,
+        "productImage": "/uploads/products/hot-and-cold-dispenser.webp",
+        "packagingType": "Single",
+        "benefits": [
+          "Child-safety hot water lock",
+          "Energy-efficient cooling compressor"
+        ],
+        "productDetails": [
+          "Compatible with 3-gallon and 5-gallon jugs"
+        ],
+        "createdAt": "2025-01-10T15:30:11.430Z",
+        "updatedAt": "2025-01-10T15:32:37.562Z",
+        "__v": 0,
+        "quantity": 1
+      },
+      {
+        "_id": "65db63866a332fe6d3d5564e",
+        "id": "65db63866a332fe6d3d5564e",
+        "active": true,
+        "title": "Recycled Classroom Copy & Printing Paper (Case)",
+        "slug": "printing-paper",
+        "description": "Bright white 8.5x11 multipurpose printing paper for student worksheets, exams, and library printers.",
+        "category": "658e93c99f8aa2dbaf23022b",
+        "price": 42,
+        "productImage": "/uploads/products/classroom-copy-paper.webp",
+        "packagingType": "Single",
+        "benefits": [
+          "Acid-free archival quality",
+          "Jam-free guarantee for school copiers"
+        ],
+        "productDetails": [
+          "10 reams (5,000 sheets) per case"
+        ],
+        "createdAt": "2025-01-10T15:57:58.550Z",
+        "updatedAt": "2025-01-10T15:57:58.550Z",
+        "__v": 0,
+        "quantity": 3
+      }
+    ],
+    "totalAmount": 221,
+    "payMonthly": "yes",
+    "nextRecurringDate": {
+      "$date": "2026-12-05T10:00:00.000Z"
+    },
+    "orderStatus": "on the way",
+    "paymentStatus": true,
+    "createdAt": {
+      "$date": "2026-08-24T10:12:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-08-24T10:12:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "660c1a1186cfeccf777d0018"
+    },
+    "card": "(VISA) ... 4242",
+    "transactionId": "EDUDROP-TX-ORDER-26b0915r-20260915",
+    "orderId": "ORDER-26b0915r",
+    "user": {
+      "$oid": "659a7e41817e2b807c59da15"
+    },
+    "email": "alex.rivera@example.com",
+    "name": {
+      "firstName": "Alex",
+      "lastName": "Rivera"
+    },
+    "presentAddress": "742 Evergreen Terrace",
+    "country": "🇺🇸 United States",
+    "city": "Denver",
+    "zipCode": "80202",
+    "contactNo": "+1 (303) 555-0145",
+    "schoolId": {
+      "$oid": "65f173f686cfeccf777ccfd1"
+    },
+    "products": [
+      {
+        "_id": "65db53746a332fe6d3d554e9",
+        "id": "65db53746a332fe6d3d554e9",
+        "active": true,
+        "title": "1.5 Liter Spring Water (Case of 12)",
+        "slug": "15-liter-spring-water",
+        "description": "Ideal for classrooms, faculty lounges, and athletics programs. Sold in cases of 12 bottles.",
+        "category": "658e93899f8aa2dbaf23021d",
+        "price": 22,
+        "productImage": "/uploads/products/spring-water-1-5l-case.webp",
+        "packagingType": "Case",
+        "quantityPerCase": 12,
+        "benefits": [
+          "Convenient 1.5 L classroom size",
+          "Supports daily student hydration"
+        ],
+        "productDetails": [
+          "12 x 1.5 L bottles per case"
+        ],
+        "createdAt": "2025-01-10T14:49:24.710Z",
+        "updatedAt": "2025-01-15T14:52:15.551Z",
+        "__v": 0,
+        "quantity": 6
+      },
+      {
+        "_id": "65db61d46a332fe6d3d55622",
+        "id": "65db61d46a332fe6d3d55622",
+        "active": true,
+        "title": "Multi-Fold Classroom Paper Towels (Case)",
+        "slug": "paper-towel",
+        "description": "High-absorbency recycled paper hand towels for school washrooms, science labs, and art rooms.",
+        "category": "658e93c99f8aa2dbaf23022b",
+        "price": 38,
+        "productImage": "/uploads/products/multifold-paper-towels.webp",
+        "packagingType": "Single",
+        "benefits": [
+          "EPA-compliant recycled fiber",
+          "Fits standard wall dispensers"
+        ],
+        "productDetails": [
+          "16 packs of 250 sheets (4,000 sheets total)"
+        ],
+        "createdAt": "2025-01-10T15:50:44.864Z",
+        "updatedAt": "2025-01-10T15:50:44.864Z",
+        "__v": 0,
+        "quantity": 2
+      }
+    ],
+    "totalAmount": 208,
+    "payMonthly": "yes",
+    "nextRecurringDate": {
+      "$date": "2026-12-05T10:00:00.000Z"
+    },
+    "orderStatus": "on the way",
+    "paymentStatus": true,
+    "createdAt": {
+      "$date": "2026-09-15T14:35:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-09-15T14:35:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "660c1a1186cfeccf777d0019"
+    },
+    "card": "(MASTERCARD) ... 5100",
+    "transactionId": "EDUDROP-TX-ORDER-26b1019s-20261019",
+    "orderId": "ORDER-26b1019s",
+    "user": {
+      "$oid": "659a8025817e2b807c59da6a"
+    },
+    "email": "jordan.taylor@example.com",
+    "name": {
+      "firstName": "Jordan",
+      "lastName": "Taylor"
+    },
+    "presentAddress": "900 Pine Street",
+    "country": "🇺🇸 United States",
+    "city": "Seattle",
+    "zipCode": "98101",
+    "contactNo": "+1 (206) 555-0177",
+    "schoolId": {
+      "$oid": "65f32e7786cfeccf777cdc22"
+    },
+    "products": [
+      {
+        "_id": "65db53fe6a332fe6d3d554fc",
+        "id": "65db53fe6a332fe6d3d554fc",
+        "active": true,
+        "title": "5 Liter Classroom Jugs (Case of 3)",
+        "slug": "5-liter-spring-water",
+        "description": "Large-capacity 5-liter spring water jugs for classroom hydration stations. Sold in cases of 3.",
+        "category": "658e93899f8aa2dbaf23021d",
+        "price": 16,
+        "productImage": "/uploads/products/spring-water-5l-jugs.webp",
+        "packagingType": "Case",
+        "quantityPerCase": 3,
+        "benefits": [
+          "Easy-pour classroom jugs",
+          "Reduces single-use packaging waste"
+        ],
+        "productDetails": [
+          "3 x 5 L jugs per case"
+        ],
+        "createdAt": "2025-01-10T14:51:42.083Z",
+        "updatedAt": "2025-01-10T14:51:42.083Z",
+        "__v": 0,
+        "quantity": 5
+      },
+      {
+        "_id": "65db5ae26a332fe6d3d5553b",
+        "id": "65db5ae26a332fe6d3d5553b",
+        "active": true,
+        "title": "Gentle Classroom Surface Sanitizer",
+        "slug": "baby-powder-sanitizer",
+        "description": "Non-toxic, fresh-scented surface sanitizer formulated for school desks and shared learning spaces.",
+        "category": "658e915b25d97ac11f92b141",
+        "price": 14,
+        "productImage": "/uploads/products/gentle-surface-sanitizer.webp",
+        "packagingType": "Single",
+        "benefits": [
+          "Safe for daily classroom desk cleaning",
+          "Eliminates 99.9% of common germs"
+        ],
+        "productDetails": [
+          "1 Gallon commercial bottle"
+        ],
+        "createdAt": "2025-01-10T15:21:06.724Z",
+        "updatedAt": "2025-01-10T15:30:29.341Z",
+        "__v": 0,
+        "quantity": 5
+      }
+    ],
+    "totalAmount": 150,
+    "payMonthly": "yes",
+    "nextRecurringDate": {
+      "$date": "2026-12-05T10:00:00.000Z"
+    },
+    "orderStatus": "processing",
+    "paymentStatus": true,
+    "createdAt": {
+      "$date": "2026-10-19T09:25:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-10-19T09:25:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "660c1a1186cfeccf777d0020"
+    },
+    "card": "(VISA) ... 4242",
+    "transactionId": "EDUDROP-TX-ORDER-26b1108t-20261108",
+    "orderId": "ORDER-26b1108t",
+    "user": {
+      "$oid": "65af76dab70d3df025dcff95"
+    },
+    "email": "donor@edudrop.org",
+    "name": {
+      "firstName": "Maya",
+      "lastName": "Lin"
+    },
+    "presentAddress": "500 Congress Ave",
+    "country": "🇺🇸 United States",
+    "city": "Austin",
+    "zipCode": "78701",
+    "contactNo": "+1 (512) 555-0199",
+    "schoolId": {
+      "$oid": "65f32bfb86cfeccf777cdbe7"
+    },
+    "products": [
+      {
+        "_id": "65da3af56a332fe6d3d553f8",
+        "id": "65da3af56a332fe6d3d553f8",
+        "active": true,
+        "title": "500 mL Spring Water (Case of 24)",
+        "slug": "500-ml-spring-water",
+        "description": "Pure, refreshing EduDrop spring water for students and school events. Sold in cases of 24 bottles.",
+        "category": "658e93899f8aa2dbaf23021d",
+        "price": 18,
+        "productImage": "/uploads/products/spring-water-500ml-case.webp",
+        "packagingType": "Case",
+        "quantityPerCase": 24,
+        "benefits": [
+          "100% BPA-free recyclable bottles",
+          "Natural spring source filtration"
+        ],
+        "productDetails": [
+          "24 x 500 mL bottles per case"
+        ],
+        "createdAt": "2025-01-10T18:52:37.392Z",
+        "updatedAt": "2025-01-15T14:52:36.017Z",
+        "__v": 0,
+        "quantity": 5
+      },
+      {
+        "_id": "65db61036a332fe6d3d5560a",
+        "id": "65db61036a332fe6d3d5560a",
+        "active": true,
+        "title": "Compostable Paper Cone Cups (Case of 1,000)",
+        "slug": "industrial-toilet-tissue",
+        "description": "Biodegradable 4.5 oz paper cone water cups for school water coolers and athletic fields.",
+        "category": "658e93e09f8aa2dbaf230232",
+        "price": 32,
+        "productImage": "/uploads/products/compostable-cone-cups.webp",
+        "packagingType": "Single",
+        "benefits": [
+          "100% compostable paper",
+          "Fits standard cooler cup dispensers"
+        ],
+        "productDetails": [
+          "1,000 cups per box (5 sleeves of 200)"
+        ],
+        "createdAt": "2025-01-10T15:47:15.565Z",
+        "updatedAt": "2025-01-10T15:47:15.565Z",
+        "__v": 0,
+        "quantity": 2
+      }
+    ],
+    "totalAmount": 154,
+    "payMonthly": "yes",
+    "nextRecurringDate": {
+      "$date": "2026-12-05T10:00:00.000Z"
+    },
+    "orderStatus": "pending",
+    "paymentStatus": true,
+    "createdAt": {
+      "$date": "2026-11-08T08:50:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-11-08T08:50:00.000Z"
+    },
+    "__v": 0
+  }
+]

@@ -1,0 +1,151 @@
+[
+  {
+    "_id": { "$oid": "672e8111a1b2c3d4e5f60001" },
+    "slug": "global",
+    "hero": {
+      "eyebrow": "School Hydration & Hygiene Platform",
+      "headline": "Empower Classrooms with Clean Water & Health Essentials",
+      "subheadline": "EduDrop connects donors and alumni directly with partner school bursars to supply pure water cases, dispensers, sanitizers, and paper supplies with 100% transparency.",
+      "totalSponsored": "$148,920.00",
+      "progressPercent": 86,
+      "donorCount": "1,250+ donors",
+      "partnerSchoolCount": 48,
+      "highlightText": "Help stock classrooms for the upcoming semester",
+      "trustStrip": [
+        { "metric": "100%", "label": "Direct-to-Bursar Delivery" },
+        { "metric": "48", "label": "Verified Partner Schools" },
+        { "metric": "12,400+", "label": "Cases of Water Delivered" },
+        { "metric": "0%", "label": "Cash Diverted to Overhead" },
+        { "metric": "Monthly", "label": "Campus Delivery Audits" }
+      ]
+    },
+    "whyEduDrop": {
+      "eyebrow": "Who We Are",
+      "heading": "Driven by Wellness, Built on Total Transparency",
+      "leadStatement": "Your donation never disappears into overhead. Every single dollar becomes physical supplies delivered directly to the school gate.",
+      "body": "School bursars publish their exact monthly requirements for pure spring water, classroom dispensers, sanitizers, and paper supplies. Donors select a verified campus, choose the quantity to sponsor, and our team consolidates and delivers every case directly into classroom hands.",
+      "image": "/home/w7.webp",
+      "tags": [
+        { "label": "100% Direct Delivery", "isPrimary": true },
+        { "label": "Verified Campus Needs", "isPrimary": false },
+        { "label": "Pure Spring Water", "isPrimary": false },
+        { "label": "Hygiene Essentials", "isPrimary": false },
+        { "label": "Alumni & Parent Led", "isPrimary": false }
+      ]
+    },
+    "howItWorks": [
+      {
+        "step": "01",
+        "title": "Choose a Verified School",
+        "description": "Pick your alma mater or a partner school in your local area and inspect their bursar's active classroom supply requests."
+      },
+      {
+        "step": "02",
+        "title": "Sponsor Water & Essentials",
+        "description": "Choose the exact items and quantities to sponsor—from spring water cases to classroom dispensers—with a one-time or monthly gift."
+      },
+      {
+        "step": "03",
+        "title": "Direct Campus Delivery",
+        "description": "EduDrop consolidates all community orders and delivers directly to the school bursar on scheduled monthly delivery dates with full photo confirmation."
+      }
+    ],
+    "ourWorks": [
+      {
+        "title": "Oakridge Technical High School",
+        "alt": "Oakridge Technical High School hydration delivery",
+        "description": "40 cases of EduDrop Spring Water and classroom dispensers for the engineering and science wings.",
+        "caption": "Oakridge Technical High School",
+        "imageUrl": "/home/w1.webp",
+        "order": 1,
+        "active": true
+      },
+      {
+        "title": "St. Clara Academy",
+        "alt": "St. Clara Academy classroom supply drive",
+        "description": "Parent council sponsored 25 cases of pure water and sanitization refills for the fall semester.",
+        "caption": "St. Clara Academy",
+        "imageUrl": "/home/w8.webp",
+        "order": 2,
+        "active": true
+      },
+      {
+        "title": "Westfield Collegiate Institute",
+        "alt": "Westfield Collegiate student wellness program",
+        "description": "Installed 8 new hot and cold classroom hydration stations funded by alumni recurring contributions.",
+        "caption": "Westfield Collegiate Institute",
+        "imageUrl": "/home/w3.webp",
+        "order": 3,
+        "active": true
+      },
+      {
+        "title": "Crestview Preparatory High School",
+        "alt": "Crestview Preparatory supply distribution",
+        "description": "Delivered recycled paper towel packages and eco-friendly cone cups across classroom water dispensers.",
+        "caption": "Crestview Preparatory High School",
+        "imageUrl": "/home/w4.webp",
+        "order": 4,
+        "active": true
+      },
+      {
+        "title": "Pinecrest High School",
+        "alt": "Pinecrest High School spring water delivery",
+        "description": "Over 60 cases of EduDrop natural spring water delivered to the athletics department and central cafeteria.",
+        "caption": "Pinecrest High School",
+        "imageUrl": "/home/w5.webp",
+        "order": 5,
+        "active": true
+      },
+      {
+        "title": "Lincoln Charter Academy",
+        "alt": "Lincoln Charter Academy student hydration station",
+        "description": "Placed manual bottle pumps and dispensers in primary grades to encourage daily hydration habits.",
+        "caption": "Lincoln Charter Academy",
+        "imageUrl": "/home/w6.webp",
+        "order": 6,
+        "active": true
+      }
+    ],
+    "testimonials": [
+      {
+        "authorName": "Darrell Steward",
+        "companyName": "Oakridge Alumni Association",
+        "reviewText": "EduDrop took the guesswork out of giving. Knowing our alumni donations turn into physical water cases delivered straight to the bursar gives our members complete peace of mind.",
+        "imageUrl": "/home/user1.webp",
+        "order": 1,
+        "active": true
+      },
+      {
+        "authorName": "Theresa Webb",
+        "companyName": "St. Clara Parent Council",
+        "reviewText": "Our classrooms used to struggle with basic water dispenser refills. Now, monthly deliveries arrive like clockwork, fully funded by community sponsors.",
+        "imageUrl": "/home/user4.webp",
+        "order": 2,
+        "active": true
+      },
+      {
+        "authorName": "Marvin McKinney",
+        "companyName": "Westfield Community Foundation",
+        "reviewText": "The bursar dashboard and real-time school needs list took the guesswork out of giving. Our students now have fresh hydration stations in every hallway.",
+        "imageUrl": "/home/user2.webp",
+        "order": 3,
+        "active": true
+      }
+    ],
+    "contactInfo": {
+      "phone": "+1 (555) 234-8900",
+      "email": "hello@edudrop.org",
+      "location": "450 Education Way, Suite 200, Austin, TX 78701",
+      "linkedin": "https://www.linkedin.com/in/saad-ibne-omar/",
+      "facebook": "",
+      "instagram": "",
+      "youtube": "",
+      "tiktok": ""
+    },
+    "seo": {
+      "metaTitle": "EduDrop — School Donation & Hydration Platform",
+      "metaDescription": "Sponsor clean spring water, hydration stations, and essential classroom supplies directly to verified partner schools.",
+      "keywords": "education, school donations, clean water, bursar, classroom hydration"
+    }
+  }
+]

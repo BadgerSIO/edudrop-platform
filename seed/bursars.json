@@ -1,0 +1,118 @@
+[
+  {
+    "_id": {
+      "$oid": "65da260d6a332fe6d3d550cf"
+    },
+    "name": {
+      "firstName": "Marcus",
+      "lastName": "Vance",
+      "_id": {
+        "$oid": "65da260d6a332fe6d3d550d0"
+      }
+    },
+    "gender": "male",
+    "email": "bursar@oakridge.edu",
+    "contactNo": "+1 (512) 555-0142",
+    "presentAddress": "1200 Oakridge Blvd, Austin, TX 78704",
+    "permanentAddress": "1200 Oakridge Blvd, Austin, TX 78704",
+    "school": {
+      "$oid": "65da260d6a332fe6d3d550cc"
+    },
+    "active": true,
+    "profileImage": "",
+    "createdAt": {
+      "$date": "2025-01-15T12:00:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2025-02-01T12:00:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "65f173f686cfeccf777ccfd4"
+    },
+    "name": {
+      "firstName": "Elena",
+      "lastName": "Rostova",
+      "_id": {
+        "$oid": "65f173f686cfeccf777ccfd5"
+      }
+    },
+    "gender": "female",
+    "email": "bursar@stclara.edu",
+    "contactNo": "+1 (303) 555-0188",
+    "presentAddress": "840 St. Clara Pkwy, Denver, CO 80203",
+    "permanentAddress": "840 St. Clara Pkwy, Denver, CO 80203",
+    "school": {
+      "$oid": "65f173f686cfeccf777ccfd1"
+    },
+    "active": true,
+    "profileImage": "",
+    "createdAt": {
+      "$date": "2025-01-16T12:00:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2025-02-01T12:00:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "65f32bfb86cfeccf777cdbea"
+    },
+    "name": {
+      "firstName": "Samantha",
+      "lastName": "Hudson",
+      "_id": {
+        "$oid": "65f32bfb86cfeccf777cdbeb"
+      }
+    },
+    "gender": "female",
+    "email": "bursar@westfield.edu",
+    "contactNo": "+1 (206) 555-0164",
+    "presentAddress": "310 Westfield Ave, Seattle, WA 98101",
+    "permanentAddress": "310 Westfield Ave, Seattle, WA 98101",
+    "school": {
+      "$oid": "65f32bfb86cfeccf777cdbe7"
+    },
+    "active": true,
+    "profileImage": "",
+    "createdAt": {
+      "$date": "2025-01-17T12:00:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2025-02-01T12:00:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "65f32e7786cfeccf777cdc25"
+    },
+    "name": {
+      "firstName": "David",
+      "lastName": "Kensington",
+      "_id": {
+        "$oid": "65f32e7786cfeccf777cdc26"
+      }
+    },
+    "gender": "male",
+    "email": "bursar@crestview.edu",
+    "contactNo": "+1 (617) 555-0193",
+    "presentAddress": "55 Crestview Common, Boston, MA 02116",
+    "permanentAddress": "55 Crestview Common, Boston, MA 02116",
+    "school": {
+      "$oid": "65f32e7786cfeccf777cdc22"
+    },
+    "active": true,
+    "profileImage": "",
+    "createdAt": {
+      "$date": "2025-01-18T12:00:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2025-02-01T12:00:00.000Z"
+    },
+    "__v": 0
+  }
+]
