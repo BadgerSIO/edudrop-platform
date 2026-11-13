@@ -31,7 +31,7 @@
         "description": "Ideal for classrooms, faculty lounges, and athletics programs. Sold in cases of 12 bottles.",
         "category": "658e93899f8aa2dbaf23021d",
         "price": 22,
-        "productImage": "/uploads/products/edudrop-bottle.webp",
+        "productImage": "/uploads/products/spring-water-1-5l-case.webp",
         "packagingType": "Case",
         "quantityPerCase": 12,
         "benefits": [
@@ -94,7 +94,7 @@
         "description": "Commercial-grade floral scented disinfectant and sanitizer for school restrooms and common areas.",
         "category": "658e915b25d97ac11f92b141",
         "price": 12,
-        "productImage": "/uploads/products/1704079194538-40491392-Floral-Scented-Sanitiser.webp",
+        "productImage": "/uploads/products/floral-scented-sanitizer.webp",
         "packagingType": "Single",
         "benefits": [],
         "productDetails": [],
@@ -152,7 +152,7 @@
         "description": "Portable hand-pump water dispenser that fits standard classroom water jugs with zero electricity required.",
         "category": "658e69a87d9ac5bf07e236d3",
         "price": 15,
-        "productImage": "/uploads/products/1704076558432-979857899-manual-pump.webp",
+        "productImage": "/uploads/products/manual-pump-dispenser.webp",
         "packagingType": "Single",
         "benefits": [
           "No power outlet needed"
@@ -212,7 +212,7 @@
         "description": "High-absorbency recycled paper hand towels for school washrooms, science labs, and art rooms.",
         "category": "658e93c99f8aa2dbaf23022b",
         "price": 38,
-        "productImage": "/uploads/products/paper-towel.webp",
+        "productImage": "/uploads/products/multifold-paper-towels.webp",
         "packagingType": "Single",
         "benefits": [],
         "productDetails": [],
@@ -270,7 +270,7 @@
         "description": "Pure, refreshing EduDrop spring water for students and school events. Sold in cases of 24 bottles.",
         "category": "658e93899f8aa2dbaf23021d",
         "price": 18,
-        "productImage": "/uploads/products/edudrop-bottle.webp",
+        "productImage": "/uploads/products/spring-water-500ml-case.webp",
         "packagingType": "Case",
         "benefits": [],
         "productDetails": [],
@@ -330,7 +330,7 @@
         "description": "Pure, refreshing EduDrop spring water for students and school events. Sold in cases of 24 bottles.",
         "category": "658e93899f8aa2dbaf23021d",
         "price": 18,
-        "productImage": "/uploads/products/edudrop-bottle.webp",
+        "productImage": "/uploads/products/spring-water-500ml-case.webp",
         "packagingType": "Case",
         "quantityPerCase": 24,
         "benefits": [
@@ -354,7 +354,7 @@
         "description": "Portable hand-pump water dispenser that fits standard classroom water jugs with zero electricity required.",
         "category": "658e69a87d9ac5bf07e236d3",
         "price": 15,
-        "productImage": "/uploads/products/1704076558432-979857899-manual-pump.webp",
+        "productImage": "/uploads/products/manual-pump-dispenser.webp",
         "packagingType": "Single",
         "benefits": [
           "No power outlet needed",
@@ -417,7 +417,7 @@
         "description": "Bright white 8.5x11 multipurpose printing paper for student worksheets, exams, and library printers.",
         "category": "658e93c99f8aa2dbaf23022b",
         "price": 42,
-        "productImage": "/uploads/products/paper-towel.webp",
+        "productImage": "/uploads/products/classroom-copy-paper.webp",
         "packagingType": "Single",
         "benefits": [
           "Acid-free archival quality",
@@ -500,7 +500,7 @@
         "description": "Biodegradable 4.5 oz paper cone water cups for school water coolers and athletic fields.",
         "category": "658e93e09f8aa2dbaf230232",
         "price": 32,
-        "productImage": "/uploads/products/cone-cups.webp",
+        "productImage": "/uploads/products/compostable-cone-cups.webp",
         "packagingType": "Single",
         "benefits": [
           "100% compostable paper",
@@ -560,7 +560,7 @@
         "description": "Non-toxic, fresh-scented surface sanitizer formulated for school desks and shared learning spaces.",
         "category": "658e915b25d97ac11f92b141",
         "price": 14,
-        "productImage": "/uploads/products/1704079194538-40491392-Floral-Scented-Sanitiser.webp",
+        "productImage": "/uploads/products/gentle-surface-sanitizer.webp",
         "packagingType": "Single",
         "benefits": [
           "Safe for daily classroom desk cleaning",
@@ -583,7 +583,7 @@
         "description": "Sturdy steel cradle stand with dispensing valve for 5-gallon classroom water bottles.",
         "category": "658e69a87d9ac5bf07e236d3",
         "price": 24,
-        "productImage": "/uploads/products/bottle-stands.webp",
+        "productImage": "/uploads/products/water-bottle-stand.webp",
         "packagingType": "Single",
         "benefits": [
           "Compact footprint for classrooms",
@@ -646,7 +646,7 @@
         "description": "Ideal for classrooms, faculty lounges, and athletics programs. Sold in cases of 12 bottles.",
         "category": "658e93899f8aa2dbaf23021d",
         "price": 22,
-        "productImage": "/uploads/products/edudrop-bottle.webp",
+        "productImage": "/uploads/products/spring-water-1-5l-case.webp",
         "packagingType": "Case",
         "quantityPerCase": 12,
         "benefits": [
@@ -670,7 +670,7 @@
         "description": "High-absorbency recycled paper hand towels for school washrooms, science labs, and art rooms.",
         "category": "658e93c99f8aa2dbaf23022b",
         "price": 38,
-        "productImage": "/uploads/products/paper-towel.webp",
+        "productImage": "/uploads/products/multifold-paper-towels.webp",
         "packagingType": "Single",
         "benefits": [
           "EPA-compliant recycled fiber",
@@ -733,7 +733,7 @@
         "description": "Countertop water crock with lever faucet and manual pump for classroom hydration stations.",
         "category": "658e69a87d9ac5bf07e236d3",
         "price": 28,
-        "productImage": "/uploads/products/pump-dispenser.webp",
+        "productImage": "/uploads/products/ceramic-countertop-dispenser.webp",
         "packagingType": "Single",
         "benefits": [
           "Drip-free stainless steel tap",
@@ -756,7 +756,7 @@
         "description": "Large-capacity 5-liter spring water jugs for classroom hydration stations. Sold in cases of 3.",
         "category": "658e93899f8aa2dbaf23021d",
         "price": 16,
-        "productImage": "/uploads/products/edudrop-bottle.webp",
+        "productImage": "/uploads/products/spring-water-5l-jugs.webp",
         "packagingType": "Case",
         "quantityPerCase": 3,
         "benefits": [
@@ -820,7 +820,7 @@
         "description": "Commercial-grade floral scented disinfectant and sanitizer for school restrooms and common areas.",
         "category": "658e915b25d97ac11f92b141",
         "price": 12,
-        "productImage": "/uploads/products/1704079194538-40491392-Floral-Scented-Sanitiser.webp",
+        "productImage": "/uploads/products/floral-scented-sanitizer.webp",
         "packagingType": "Single",
         "benefits": [
           "Hospital-grade disinfection",
@@ -883,7 +883,7 @@
         "description": "Pure, refreshing EduDrop spring water for students and school events. Sold in cases of 24 bottles.",
         "category": "658e93899f8aa2dbaf23021d",
         "price": 18,
-        "productImage": "/uploads/products/edudrop-bottle.webp",
+        "productImage": "/uploads/products/spring-water-500ml-case.webp",
         "packagingType": "Case",
         "quantityPerCase": 24,
         "benefits": [
@@ -907,7 +907,7 @@
         "description": "Biodegradable 4.5 oz paper cone water cups for school water coolers and athletic fields.",
         "category": "658e93e09f8aa2dbaf230232",
         "price": 32,
-        "productImage": "/uploads/products/cone-cups.webp",
+        "productImage": "/uploads/products/compostable-cone-cups.webp",
         "packagingType": "Single",
         "benefits": [
           "100% compostable paper",
@@ -967,7 +967,7 @@
         "description": "High-absorbency recycled paper hand towels for school washrooms, science labs, and art rooms.",
         "category": "658e93c99f8aa2dbaf23022b",
         "price": 38,
-        "productImage": "/uploads/products/paper-towel.webp",
+        "productImage": "/uploads/products/multifold-paper-towels.webp",
         "packagingType": "Single",
         "benefits": [
           "EPA-compliant recycled fiber",
@@ -1053,7 +1053,7 @@
         "description": "Large-capacity 5-liter spring water jugs for classroom hydration stations. Sold in cases of 3.",
         "category": "658e93899f8aa2dbaf23021d",
         "price": 16,
-        "productImage": "/uploads/products/edudrop-bottle.webp",
+        "productImage": "/uploads/products/spring-water-5l-jugs.webp",
         "packagingType": "Case",
         "quantityPerCase": 3,
         "benefits": [
@@ -1114,7 +1114,7 @@
         "description": "Non-toxic, fresh-scented surface sanitizer formulated for school desks and shared learning spaces.",
         "category": "658e915b25d97ac11f92b141",
         "price": 14,
-        "productImage": "/uploads/products/1704079194538-40491392-Floral-Scented-Sanitiser.webp",
+        "productImage": "/uploads/products/gentle-surface-sanitizer.webp",
         "packagingType": "Single",
         "benefits": [
           "Safe for daily classroom desk cleaning",
@@ -1177,7 +1177,7 @@
         "description": "Bright white 8.5x11 multipurpose printing paper for student worksheets, exams, and library printers.",
         "category": "658e93c99f8aa2dbaf23022b",
         "price": 42,
-        "productImage": "/uploads/products/paper-towel.webp",
+        "productImage": "/uploads/products/classroom-copy-paper.webp",
         "packagingType": "Single",
         "benefits": [
           "Acid-free archival quality",
@@ -1200,7 +1200,7 @@
         "description": "Commercial-grade floral scented disinfectant and sanitizer for school restrooms and common areas.",
         "category": "658e915b25d97ac11f92b141",
         "price": 12,
-        "productImage": "/uploads/products/1704079194538-40491392-Floral-Scented-Sanitiser.webp",
+        "productImage": "/uploads/products/floral-scented-sanitizer.webp",
         "packagingType": "Single",
         "benefits": [
           "Hospital-grade disinfection",
@@ -1263,7 +1263,7 @@
         "description": "Ideal for classrooms, faculty lounges, and athletics programs. Sold in cases of 12 bottles.",
         "category": "658e93899f8aa2dbaf23021d",
         "price": 22,
-        "productImage": "/uploads/products/edudrop-bottle.webp",
+        "productImage": "/uploads/products/spring-water-1-5l-case.webp",
         "packagingType": "Case",
         "quantityPerCase": 12,
         "benefits": [
@@ -1327,7 +1327,7 @@
         "description": "Sturdy steel cradle stand with dispensing valve for 5-gallon classroom water bottles.",
         "category": "658e69a87d9ac5bf07e236d3",
         "price": 24,
-        "productImage": "/uploads/products/bottle-stands.webp",
+        "productImage": "/uploads/products/water-bottle-stand.webp",
         "packagingType": "Single",
         "benefits": [
           "Compact footprint for classrooms",
@@ -1350,7 +1350,7 @@
         "description": "Portable hand-pump water dispenser that fits standard classroom water jugs with zero electricity required.",
         "category": "658e69a87d9ac5bf07e236d3",
         "price": 15,
-        "productImage": "/uploads/products/1704076558432-979857899-manual-pump.webp",
+        "productImage": "/uploads/products/manual-pump-dispenser.webp",
         "packagingType": "Single",
         "benefits": [
           "No power outlet needed",
@@ -1410,7 +1410,7 @@
         "description": "Countertop water crock with lever faucet and manual pump for classroom hydration stations.",
         "category": "658e69a87d9ac5bf07e236d3",
         "price": 28,
-        "productImage": "/uploads/products/pump-dispenser.webp",
+        "productImage": "/uploads/products/ceramic-countertop-dispenser.webp",
         "packagingType": "Single",
         "benefits": [
           "Drip-free stainless steel tap",
@@ -1433,7 +1433,7 @@
         "description": "Pure, refreshing EduDrop spring water for students and school events. Sold in cases of 24 bottles.",
         "category": "658e93899f8aa2dbaf23021d",
         "price": 18,
-        "productImage": "/uploads/products/edudrop-bottle.webp",
+        "productImage": "/uploads/products/spring-water-500ml-case.webp",
         "packagingType": "Case",
         "quantityPerCase": 24,
         "benefits": [
@@ -1497,7 +1497,7 @@
         "description": "Biodegradable 4.5 oz paper cone water cups for school water coolers and athletic fields.",
         "category": "658e93e09f8aa2dbaf230232",
         "price": 32,
-        "productImage": "/uploads/products/cone-cups.webp",
+        "productImage": "/uploads/products/compostable-cone-cups.webp",
         "packagingType": "Single",
         "benefits": [
           "100% compostable paper",
@@ -1580,7 +1580,7 @@
         "description": "Bright white 8.5x11 multipurpose printing paper for student worksheets, exams, and library printers.",
         "category": "658e93c99f8aa2dbaf23022b",
         "price": 42,
-        "productImage": "/uploads/products/paper-towel.webp",
+        "productImage": "/uploads/products/classroom-copy-paper.webp",
         "packagingType": "Single",
         "benefits": [
           "Acid-free archival quality",
@@ -1643,7 +1643,7 @@
         "description": "Ideal for classrooms, faculty lounges, and athletics programs. Sold in cases of 12 bottles.",
         "category": "658e93899f8aa2dbaf23021d",
         "price": 22,
-        "productImage": "/uploads/products/edudrop-bottle.webp",
+        "productImage": "/uploads/products/spring-water-1-5l-case.webp",
         "packagingType": "Case",
         "quantityPerCase": 12,
         "benefits": [
@@ -1667,7 +1667,7 @@
         "description": "High-absorbency recycled paper hand towels for school washrooms, science labs, and art rooms.",
         "category": "658e93c99f8aa2dbaf23022b",
         "price": 38,
-        "productImage": "/uploads/products/paper-towel.webp",
+        "productImage": "/uploads/products/multifold-paper-towels.webp",
         "packagingType": "Single",
         "benefits": [
           "EPA-compliant recycled fiber",
@@ -1730,7 +1730,7 @@
         "description": "Large-capacity 5-liter spring water jugs for classroom hydration stations. Sold in cases of 3.",
         "category": "658e93899f8aa2dbaf23021d",
         "price": 16,
-        "productImage": "/uploads/products/edudrop-bottle.webp",
+        "productImage": "/uploads/products/spring-water-5l-jugs.webp",
         "packagingType": "Case",
         "quantityPerCase": 3,
         "benefits": [
@@ -1754,7 +1754,7 @@
         "description": "Non-toxic, fresh-scented surface sanitizer formulated for school desks and shared learning spaces.",
         "category": "658e915b25d97ac11f92b141",
         "price": 14,
-        "productImage": "/uploads/products/1704079194538-40491392-Floral-Scented-Sanitiser.webp",
+        "productImage": "/uploads/products/gentle-surface-sanitizer.webp",
         "packagingType": "Single",
         "benefits": [
           "Safe for daily classroom desk cleaning",
@@ -1817,7 +1817,7 @@
         "description": "Pure, refreshing EduDrop spring water for students and school events. Sold in cases of 24 bottles.",
         "category": "658e93899f8aa2dbaf23021d",
         "price": 18,
-        "productImage": "/uploads/products/edudrop-bottle.webp",
+        "productImage": "/uploads/products/spring-water-500ml-case.webp",
         "packagingType": "Case",
         "quantityPerCase": 24,
         "benefits": [
@@ -1841,7 +1841,7 @@
         "description": "Biodegradable 4.5 oz paper cone water cups for school water coolers and athletic fields.",
         "category": "658e93e09f8aa2dbaf230232",
         "price": 32,
-        "productImage": "/uploads/products/cone-cups.webp",
+        "productImage": "/uploads/products/compostable-cone-cups.webp",
         "packagingType": "Single",
         "benefits": [
           "100% compostable paper",
